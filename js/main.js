@@ -162,7 +162,7 @@
         scrollTrigger: { trigger: ".contact", start: "top 75%", once: true }
       });
 
-      /* Persistent Ambient Pointer Highlighter & Text Motion Flare */
+      /* Persistent Ambient Pointer Highlighter */
       if (window.matchMedia("(pointer: fine)").matches) {
         var glow = document.querySelector(".cursor-glow");
         if (glow) {
@@ -179,19 +179,6 @@
 
           window.addEventListener("pointerleave", function () {
             glow.classList.remove("active");
-          });
-
-          /* Text Elements Focus Bloom */
-          var textTargets = document.querySelectorAll(
-            ".hero-title, .hero-sub, .scrub-text, .section-head, .card-title, .card-desc, .stats-grid, .tl-item, .pan-meta, .contact-title, .email-link"
-          );
-          textTargets.forEach(function (el) {
-            el.addEventListener("pointerenter", function () {
-              glow.classList.add("text-flare");
-            });
-            el.addEventListener("pointerleave", function () {
-              glow.classList.remove("text-flare");
-            });
           });
         }
 

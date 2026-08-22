@@ -85,23 +85,18 @@ section[id], footer[id] { scroll-margin-top: calc(var(--nav-h) + 24px); }
 .cursor-glow {
   position: fixed;
   top: 0; left: 0;
-  width: 550px; height: 550px;
-  margin-top: -275px; margin-left: -275px;
+  width: 260px; height: 260px;
+  margin-top: -130px; margin-left: -130px;
   border-radius: 50%;
   pointer-events: none;
-  background: radial-gradient(circle, rgba(233, 84, 32, 0.16) 0%, rgba(233, 84, 32, 0.04) 40%, transparent 70%);
+  background: radial-gradient(circle, rgba(233, 84, 32, 0.12) 0%, rgba(233, 84, 32, 0.03) 45%, transparent 70%);
   z-index: 45;
   opacity: 0;
-  will-change: transform, width, height, opacity;
-  transition: opacity 0.5s ease, width 0.35s ease, height 0.35s ease, background 0.35s ease;
+  will-change: transform, opacity;
+  transition: opacity 0.4s ease;
   mix-blend-mode: screen;
 }
 .cursor-glow.active { opacity: 1; }
-.cursor-glow.text-flare {
-  width: 750px; height: 750px;
-  margin-top: -375px; margin-left: -375px;
-  background: radial-gradient(circle, rgba(233, 84, 32, 0.28) 0%, rgba(233, 84, 32, 0.08) 45%, transparent 70%);
-}
 
 .loader {
   position: fixed; inset: 0; z-index: 100;
@@ -347,12 +342,11 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 }
 .scrub-text .w {
   display: inline-block;
-  transition: opacity 0.25s ease, color 0.2s ease, text-shadow 0.25s ease, transform 0.25s var(--ease-out);
+  transition: opacity 0.25s ease, color 0.2s ease, text-shadow 0.2s ease;
 }
 .scrub-text .w:hover {
   color: #FFFFFF !important;
-  text-shadow: 0 0 24px rgba(233, 84, 32, 0.85), 0 0 48px rgba(233, 84, 32, 0.4);
-  transform: translateY(-3px) scale(1.05);
+  text-shadow: 0 0 14px rgba(233, 84, 32, 0.4);
 }
 
 .hero-title .line-inner,
@@ -365,7 +359,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 .hero-title .line-inner:hover,
 .section-head h2:hover,
 .contact-title .line-inner:hover {
-  text-shadow: 0 0 32px rgba(233, 84, 32, 0.5);
+  text-shadow: 0 0 16px rgba(233, 84, 32, 0.25);
 }
 
 /* ---------- Stats bento ---------- */
