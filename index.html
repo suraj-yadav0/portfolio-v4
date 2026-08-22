@@ -115,6 +115,10 @@
             <img src="assets/projects/quantro.webp" width="1200" height="800" alt="Quantro Smart Finance Manager cross-platform Android and Web dashboard" loading="lazy">
           </figure>
           <div class="card-body">
+            <div class="card-meta-bar">
+              <span class="card-idx">01 // 05</span>
+              <span class="card-pulse"><span class="pulse-dot"></span> FLAGSHIP</span>
+            </div>
             <p class="card-tags">Cross-Platform · Android &amp; Web</p>
             <h3 class="card-title">Quantro</h3>
             <p class="card-desc">Local-first personal finance suite built with Flutter and Drift SQLite with real-time Firebase cloud sync. Features automatic SMS expense detection on Android, a 200+ keyword categorization engine, budget pacing, savings goals, and multi-currency net worth tracking.</p>
@@ -133,6 +137,10 @@
             <img src="assets/projects/utgpt.webp" width="1200" height="800" alt="Offline on-device AI chat app running on Ubuntu Touch Lomiri" loading="lazy">
           </figure>
           <div class="card-body">
+            <div class="card-meta-bar">
+              <span class="card-idx">02 // 05</span>
+              <span class="card-pulse"><span class="pulse-dot"></span> ON-DEVICE AI</span>
+            </div>
             <p class="card-tags">Ubuntu Touch · On-device AI</p>
             <h3 class="card-title">utgpt</h3>
             <p class="card-desc">Offline AI chat for Ubuntu Touch. Lightweight LLMs (Qwen 2.5, TinyLlama, SmolLM2) run entirely on the phone with zero network dependency, preserving complete privacy. Published natively on OpenStore.</p>
@@ -151,6 +159,10 @@
             <img src="assets/projects/timemanagement.webp" width="1200" height="800" alt="Enterprise Time Management timesheet tracking and Odoo ERP sync interface" loading="lazy">
           </figure>
           <div class="card-body">
+            <div class="card-meta-bar">
+              <span class="card-idx">03 // 05</span>
+              <span class="card-pulse"><span class="pulse-dot"></span> ENTERPRISE</span>
+            </div>
             <p class="card-tags">Enterprise · Odoo Integration</p>
             <h3 class="card-title">Time Management</h3>
             <p class="card-desc">Timesheets, task tracking and project sync for Ubuntu Touch and desktop, wired into Odoo through REST APIs across multiple server instances.</p>
@@ -169,6 +181,10 @@
             <img src="assets/projects/wishgift.webp" width="1200" height="800" alt="WishGift full-stack collaborative wishlist platform interface" loading="lazy">
           </figure>
           <div class="card-body">
+            <div class="card-meta-bar">
+              <span class="card-idx">04 // 05</span>
+              <span class="card-pulse"><span class="pulse-dot"></span> FULL-STACK</span>
+            </div>
             <p class="card-tags">Full-Stack Web · Social Gifting</p>
             <h3 class="card-title">WishGift</h3>
             <p class="card-desc">Full-stack wishlist and social gifting platform built with Next.js 16, React 19, and Prisma. Users curate wishlists, reserve items in real-time, and manage follower requests across a serverless database architecture.</p>
@@ -186,6 +202,10 @@
             <img src="assets/projects/clockapp.webp" width="1200" height="800" alt="GNOME Shell extension geometric background clock with Anurati font" loading="lazy">
           </figure>
           <div class="card-body">
+            <div class="card-meta-bar">
+              <span class="card-idx">05 // 05</span>
+              <span class="card-pulse"><span class="pulse-dot"></span> SHELL TOOLING</span>
+            </div>
             <p class="card-tags">GNOME Desktop · Shell Extension</p>
             <h3 class="card-title">clockApp</h3>
             <p class="card-desc">A geometric clock face for the GNOME desktop, shipped as a Shell extension with custom typography, customizable positions, and layered visual effects.</p>
@@ -212,7 +232,7 @@
     <section class="stats" id="proof" aria-label="Achievements in numbers">
       <div class="shell stats-grid">
         <div class="cell cell-num span6">
-          <p class="numeral">1,100+</p>
+          <p class="numeral"><span class="count-num" data-target="1100">1,100</span>+</p>
           <p class="cell-label">DSA problems solved across LeetCode, HackerRank and GeeksforGeeks, backed by a 650+ day streak.</p>
         </div>
         <div class="cell cell-mid span3">
@@ -234,7 +254,7 @@
           <p class="cell-label">Upstream contributions to Ubuntu Touch's flagship convergent email client.</p>
         </div>
         <div class="cell cell-num span4">
-          <p class="numeral">100+</p>
+          <p class="numeral"><span class="count-num" data-target="100">100</span>+</p>
           <p class="cell-label">Pull requests and contributions merged across open source repositories.</p>
         </div>
       </div>
@@ -284,8 +304,15 @@
     <section class="morebuilds" id="builds">
       <div class="pan-pin">
         <div class="shell pan-head">
-          <h2>More builds.</h2>
-          <p>Side projects and experiments, each shipped and maintained.</p>
+          <div class="pan-head-content">
+            <h2>More builds.</h2>
+            <p>Side projects, tools, and open source explorations.</p>
+          </div>
+          <div class="pan-progress-wrap" aria-hidden="true">
+            <span class="pan-count pan-curr">01</span>
+            <div class="pan-progress-track"><div class="pan-progress-bar"></div></div>
+            <span class="pan-count pan-total">11</span>
+          </div>
         </div>
         <div class="pan-track-wrap">
           <ul class="pan-track">
@@ -433,6 +460,7 @@
     <div class="loader-bar"><span></span></div>
   </div>
 
+  <script defer src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js"></script>
   <script defer src="js/main.js"></script>
