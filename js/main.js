@@ -162,8 +162,40 @@
         scrollTrigger: { trigger: ".contact", start: "top 75%", once: true }
       });
 
-      /* Interactive Spotlight on Mouse Move */
+      /* Persistent Ambient Pointer Highlighter & Text Motion Flare */
       if (window.matchMedia("(pointer: fine)").matches) {
+        var glow = document.querySelector(".cursor-glow");
+        if (glow) {
+          var xGlow = gsap.quickTo(glow, "x", { duration: 0.35, ease: "power3" });
+          var yGlow = gsap.quickTo(glow, "y", { duration: 0.35, ease: "power3" });
+
+          window.addEventListener("pointermove", function (e) {
+            if (!glow.classList.contains("active")) {
+              glow.classList.add("active");
+            }
+            xGlow(e.clientX);
+            yGlow(e.clientY);
+          });
+
+          window.addEventListener("pointerleave", function () {
+            glow.classList.remove("active");
+          });
+
+          /* Text Elements Focus Bloom */
+          var textTargets = document.querySelectorAll(
+            ".hero-title, .hero-sub, .scrub-text, .section-head, .card-title, .card-desc, .stats-grid, .tl-item, .pan-meta, .contact-title, .email-link"
+          );
+          textTargets.forEach(function (el) {
+            el.addEventListener("pointerenter", function () {
+              glow.classList.add("text-flare");
+            });
+            el.addEventListener("pointerleave", function () {
+              glow.classList.remove("text-flare");
+            });
+          });
+        }
+
+        /* Card specular lighting */
         var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell");
         glowCards.forEach(function (card) {
           card.addEventListener("pointermove", function (e) {
