@@ -254,7 +254,7 @@
 
     mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", function () {
 
-      /* Flagship sticky-stack: 3D receding depth & blur on stacked cards */
+      /* Flagship sticky-stack: clean physical deck layering without black dimming */
       var cards = gsap.utils.toArray(".stack-card");
       cards.forEach(function (card, i) {
         if (i === cards.length - 1) return;
@@ -268,10 +268,8 @@
         });
 
         gsap.to(card, {
-          scale: 0.90,
-          yPercent: -3,
-          opacity: 0.28,
-          filter: "brightness(0.4) blur(4px)",
+          scale: 0.95,
+          opacity: 0.88,
           ease: "none",
           transformOrigin: "50% 0%",
           scrollTrigger: {
