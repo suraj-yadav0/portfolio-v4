@@ -188,20 +188,22 @@ html.lenis, html.lenis body { height: auto; }
 }
 .nav-links a.active::after { transform: scaleX(1); }
 
-.nav-actions { display: flex; align-items: center; gap: 14px; }
+.nav-actions { display: flex; align-items: center; gap: 18px; }
 .theme-toggle {
   display: grid; place-items: center;
-  width: 36px; height: 36px;
-  border: 1px solid var(--line-strong);
+  width: 24px; height: 24px;
+  padding: 0; margin: 0;
+  border: none;
   background: transparent;
   color: var(--text-2);
-  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease, transform 0.2s ease;
+  opacity: 0.75;
+  cursor: pointer;
+  transition: opacity 0.2s ease, color 0.2s ease, transform 0.3s var(--ease-out);
 }
 .theme-toggle:hover {
-  color: var(--text);
-  border-color: var(--accent);
-  background-color: var(--accent-soft);
-  transform: scale(1.05);
+  opacity: 1;
+  color: var(--accent);
+  transform: rotate(20deg) scale(1.08);
 }
 .sun-icon { display: block; }
 .moon-icon { display: none; }
