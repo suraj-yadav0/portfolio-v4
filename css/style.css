@@ -18,7 +18,7 @@
   --accent-line: rgba(233, 84, 32, 0.4);
   --font-d: "Space Grotesk", system-ui, -apple-system, sans-serif;
   --font-m: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  --nav-h: 64px;
+  --nav-h: 72px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -103,13 +103,14 @@ html.lenis, html.lenis body { height: auto; }
 
 .nav {
   position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+  width: 100%;
   height: var(--nav-h);
   display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding-inline: clamp(20px, 4vw, 48px);
-  background: rgba(11, 12, 14, 0.78);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
-  backdrop-filter: blur(16px) saturate(140%);
-  border-bottom: 1px solid var(--line);
+  padding-inline: clamp(24px, 4.5vw, 64px);
+  background: rgba(11, 12, 14, 0.82);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  backdrop-filter: blur(20px) saturate(140%);
+  border-bottom: 1px solid var(--line-strong);
   transition: transform 0.3s ease, background 0.3s ease;
 }
 .nav-logo {
@@ -155,7 +156,7 @@ html.lenis, html.lenis body { height: auto; }
 .hero-inner {
   position: relative; z-index: 1;
   display: flex; flex-direction: column; justify-content: center;
-  padding-top: calc(var(--nav-h) + 40px);
+  padding-top: calc(var(--nav-h) + 60px);
   padding-bottom: 72px;
 }
 .hero-status {
@@ -518,8 +519,9 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 
 @media (max-width: 640px) {
   .shell, .shell-wide { width: calc(100% - 32px); }
+  .nav { padding-inline: 20px; }
   .nav-links { display: none; }
-  .hero-inner { padding-top: calc(var(--nav-h) + 24px); }
+  .hero-inner { padding-top: calc(var(--nav-h) + 28px); }
   .hero-status span { max-width: 220px; line-height: 1.5; }
   .hero-ctas { flex-direction: column; align-items: stretch; }
   .btn { width: 100%; }

@@ -254,7 +254,7 @@
 
     mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", function () {
 
-      /* Flagship sticky-stack: pure physical deck layering with 100% crystal clear readability */
+      /* Flagship sticky-stack: 100% bright in focus, subtle depth dimming only when superseded */
       var cards = gsap.utils.toArray(".stack-card");
       cards.forEach(function (card, i) {
         if (i === cards.length - 1) return;
@@ -268,12 +268,14 @@
         });
 
         gsap.to(card, {
-          scale: 0.96,
+          scale: 0.95,
+          opacity: 0.72,
+          filter: "brightness(0.75)",
           ease: "none",
           transformOrigin: "50% 0%",
           scrollTrigger: {
             trigger: cards[i + 1],
-            start: "top bottom",
+            start: "top 45%",
             end: "top top",
             scrub: true
           }
