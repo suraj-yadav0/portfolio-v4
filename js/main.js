@@ -4,6 +4,37 @@
 (function () {
   "use strict";
 
+  /* ---------- Theme Toggle System ---------- */
+  (function () {
+    var toggleBtn = document.querySelector(".theme-toggle");
+    if (!toggleBtn) return;
+
+    function getTheme() {
+      return document.documentElement.getAttribute("data-theme") || "dark";
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute("data-theme", theme);
+      try { localStorage.setItem("theme", theme); } catch (e) {}
+      toggleBtn.setAttribute("aria-label", "Switch to " + (theme === "light" ? "dark" : "light") + " theme");
+      toggleBtn.setAttribute("title", "Switch to " + (theme === "light" ? "dark" : "light") + " theme");
+    }
+
+    toggleBtn.addEventListener("click", function () {
+      var current = getTheme();
+      var next = current === "light" ? "dark" : "light";
+      setTheme(next);
+    });
+
+    if (window.matchMedia) {
+      window.matchMedia("(prefers-color-scheme: light)").addEventListener("change", function (e) {
+        if (!localStorage.getItem("theme")) {
+          setTheme(e.matches ? "light" : "dark");
+        }
+      });
+    }
+  })();
+
   var loader = document.querySelector(".loader");
 
   function killLoader() {
