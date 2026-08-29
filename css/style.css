@@ -292,7 +292,7 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- Section headers ---------- */
 
 section { padding-block: clamp(96px, 13vh, 160px) 0; }
-.work, .manifesto, .stats, .journey, .morebuilds { padding-bottom: 0; }
+.work, .manifesto, .stats, .activity, .journey, .morebuilds { padding-bottom: 0; }
 
 .section-head { margin-bottom: 64px; display: grid; gap: 18px; }
 .section-head h2 {
@@ -489,6 +489,153 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   transform: scale(1.04);
 }
 
+/* ---------- GitHub Activity & Achievements ---------- */
+
+.activity { padding-bottom: 0; }
+
+.heatmap-card {
+  position: relative;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: clamp(20px, 3vw, 36px);
+  margin-bottom: 44px;
+  box-shadow: var(--pan-shadow);
+  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+.heatmap-card::before {
+  content: ""; position: absolute; inset: -1px; pointer-events: none;
+  background: radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(233, 84, 32, 0.18), transparent 45%);
+  opacity: 0; transition: opacity 0.45s ease; z-index: 2;
+}
+.heatmap-card:hover::before { opacity: 1; }
+
+.heatmap-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 16px; padding-bottom: 18px; margin-bottom: 22px;
+  border-bottom: 1px solid var(--line-strong);
+}
+.heatmap-title {
+  font-family: var(--font-m); font-size: 13px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.14em; color: var(--text);
+}
+.heatmap-sub {
+  font-family: var(--font-m); font-size: 12px; color: var(--text-2); margin-left: 8px;
+}
+.heatmap-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.heatmap-profile-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-m); font-size: 12px; text-transform: uppercase;
+  letter-spacing: 0.1em; color: var(--text);
+  border-bottom: 1px solid var(--line-strong); padding-bottom: 3px;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.heatmap-profile-link:hover { color: var(--accent); border-color: var(--accent); }
+
+.heatmap-scroll-wrap {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-block: 8px 14px;
+}
+.heatmap-scroll-wrap::-webkit-scrollbar { height: 6px; }
+.heatmap-scroll-wrap::-webkit-scrollbar-track { background: var(--bg); }
+.heatmap-scroll-wrap::-webkit-scrollbar-thumb { background: var(--line-strong); }
+
+.heatmap-inner {
+  min-width: 720px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.heatmap-img {
+  width: 100%;
+  max-width: 900px;
+  height: auto;
+  display: block;
+}
+
+[data-theme="dark"] .legend-box-0 { background: #1C1E24; }
+[data-theme="light"] .legend-box-0 { background: #EBEDF0; }
+
+.heatmap-footer {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 14px; margin-top: 18px; padding-top: 14px;
+  border-top: 1px solid var(--line);
+  font-family: var(--font-m); font-size: 11px; color: var(--text-2);
+}
+.heatmap-legend { display: flex; align-items: center; gap: 5px; }
+.legend-txt { font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; margin-inline: 2px; }
+.legend-box { width: 11px; height: 11px; border: 1px solid rgba(255, 255, 255, 0.08); }
+
+/* ---------- Trophies Grid ---------- */
+
+.trophies-wrap { margin-top: 40px; }
+.trophies-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: 12px; margin-bottom: 22px;
+}
+.trophies-badge {
+  font-family: var(--font-m); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.12em; color: #F59E0B;
+  background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 4px 10px;
+}
+
+.trophies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+  gap: 14px;
+}
+
+.trophy-card {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  padding: 16px 8px 14px;
+  min-height: 172px;
+  text-align: center;
+  transition: border-color 0.25s ease, transform 0.25s var(--ease-out), box-shadow 0.25s ease;
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+}
+.trophy-card::before {
+  content: ""; position: absolute; inset: -1px; pointer-events: none;
+  background: radial-gradient(180px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(233, 84, 32, 0.15), transparent 45%);
+  opacity: 0; transition: opacity 0.4s ease; z-index: 2;
+}
+.trophy-card:hover::before { opacity: 1; }
+.trophy-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.trophy-tag {
+  font-family: var(--font-m); font-size: 9.5px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.1em; color: #60A5FA;
+  margin-bottom: 6px; width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.trophy-icon-wrap {
+  display: flex; align-items: center; justify-content: center;
+  height: 60px; width: 100%; margin-block: 4px;
+}
+.trophy-svg { display: block; max-width: 100%; height: auto; }
+.trophy-title {
+  font-size: 11.5px; font-weight: 600; color: var(--text);
+  margin-top: 6px; line-height: 1.25;
+}
+.trophy-pts {
+  font-family: var(--font-m); font-size: 10px; color: var(--text-2); margin-top: 2px;
+}
+.trophy-bar {
+  width: 78%; height: 2px; background: var(--line-strong);
+  margin-top: 8px; overflow: hidden;
+}
+.trophy-bar span { display: block; height: 100%; }
+
 /* ---------- Journey timeline ---------- */
 
 .journey .tl-rail path { stroke: rgba(232, 233, 235, 0.1); stroke-width: 2; vector-effect: non-scaling-stroke; fill: none; }
@@ -682,7 +829,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 }
 .to-top:hover { color: var(--text); border-color: var(--accent); }
 
-/* ---------- Adaptive Icons for Light Mode ---------- */
+/* ---------- Adaptive Icons & Elements for Light Mode ---------- */
 
 [data-theme="light"] .marquee-track img,
 [data-theme="light"] .nav-icon img,

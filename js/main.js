@@ -293,6 +293,18 @@
         });
       })();
 
+      /* Activity HeatMap & Trophies entrance */
+      (function () {
+        gsap.from(".heatmap-card", {
+          y: 36, autoAlpha: 0, duration: 0.85, ease: "power3.out",
+          scrollTrigger: { trigger: ".heatmap-card", start: "top 85%", once: true }
+        });
+        gsap.from(".trophy-card", {
+          y: 28, autoAlpha: 0, duration: 0.7, ease: "power3.out", stagger: 0.05,
+          scrollTrigger: { trigger: ".trophies-grid", start: "top 85%", once: true }
+        });
+      })();
+
       /* Journey: rail draws with scroll, entries rise */
       (function () {
         var railPath = document.querySelector(".tl-rail path");
@@ -342,7 +354,7 @@
         }
 
         /* Card specular lighting */
-        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell");
+        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell, .trophy-card, .heatmap-card");
         glowCards.forEach(function (card) {
           card.addEventListener("pointermove", function (e) {
             var rect = card.getBoundingClientRect();
