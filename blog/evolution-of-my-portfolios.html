@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Evolution of My Portfolios: From HTML Basics to Portfolio v4 · Suraj Yadav</title>
+  <meta name="description" content="A comprehensive breakdown of all 4 personal portfolio iterations built by Suraj Yadav—from early college HTML/CSS to zero-framework GSAP physics.">
+  <link rel="canonical" href="https://suraj-yadav0.github.io/blog/evolution-of-my-portfolios.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://suraj-yadav0.github.io/blog/evolution-of-my-portfolios.html">
+  <meta property="og:site_name" content="Suraj Yadav · Engineering Blog">
+  <meta property="og:title" content="The Evolution of My Portfolios: From HTML Basics to Portfolio v4">
+  <meta property="og:description" content="A retrospective of all 4 portfolio iterations: architectural decisions, typography systems, and zero-framework engineering.">
+  <meta property="og:image" content="https://avatars.githubusercontent.com/u/90672206?v=4&s=512">
+
+  <!-- Favicon & PWA Manifest -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E95420'/%3E%3Ctext x='32' y='43' font-family='ui-monospace,monospace' font-size='27' font-weight='700' text-anchor='middle' fill='%230B0C0E'%3ESY%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0B0C0E" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F6F7F9" media="(prefers-color-scheme: light)">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <script>
+    (function () {
+      var saved = localStorage.getItem("theme");
+      var theme = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+</head>
+<body class="article-body">
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <!-- SITE NAV -->
+  <header class="nav">
+    <a class="nav-logo" href="../index.html" aria-label="Back to home">suraj<span aria-hidden="true">.</span>yadav</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#activity">Activity</a>
+      <a href="../index.html#journey">Journey</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#builds">Builds</a>
+      <a class="active" href="../blog.html">Blog</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+        <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      </button>
+      <a class="nav-icon" href="https://github.com/suraj-yadav0" target="_blank" rel="noopener" aria-label="GitHub profile">
+        <img class="icon-adaptive" src="https://cdn.simpleicons.org/github/E8E9EB" width="20" height="20" alt="" loading="lazy">
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article-container">
+      <header class="article-header">
+        <div class="shell article-shell">
+          <div class="article-breadcrumb">
+            <a class="back-link" href="../blog.html">← Back to All Articles</a>
+          </div>
+          <div class="post-meta-row">
+            <span class="post-tag">Portfolio Evolution</span>
+            <span class="post-date">August 2026</span>
+            <span class="post-readtime">12 min read</span>
+          </div>
+          <h1 class="article-main-title">The Evolution of My Portfolios: From HTML Basics to Portfolio v4</h1>
+          <p class="article-lead">A deep retrospective on every personal portfolio iteration I've designed and shipped—how my architecture matured from basic college templates to a zero-framework, hardware-accelerated Linux engineering showcase.</p>
+
+          <div class="author-bar">
+            <img class="author-avatar" src="https://avatars.githubusercontent.com/u/90672206?v=4&s=96" width="44" height="44" alt="Suraj Yadav">
+            <div class="author-info">
+              <span class="author-name">Suraj Yadav</span>
+              <span class="author-role">Software Engineer · CALIN Global Services India</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="shell article-shell">
+        <div class="article-layout">
+
+          <!-- TABLE OF CONTENTS (STICKY SIDEBAR) -->
+          <aside class="article-toc">
+            <div class="toc-inner">
+              <p class="toc-title">Table of Contents</p>
+              <nav class="toc-nav">
+                <a href="#intro">1. The Philosophy of a Portfolio</a>
+                <a href="#v1">2. Portfolio v1 (2021) — The Genesis</a>
+                <a href="#v2">3. Portfolio v2 (2023) — The Interactive Era</a>
+                <a href="#v3">4. Portfolio v3 (2024) — The Linux &amp; QML Identity</a>
+                <a href="#v4">5. Portfolio v4 (2026) — The Masterpiece</a>
+                <a href="#matrix">6. Comparative Matrix</a>
+                <a href="#learnings">7. 5 Key Takeaways</a>
+              </nav>
+            </div>
+          </aside>
+
+          <!-- MAIN EDITORIAL CONTENT -->
+          <div class="article-content">
+
+            <section id="intro">
+              <h2>1. The Philosophy of an Engineering Portfolio</h2>
+              <p>A software engineer's portfolio is more than an online resume—it is living proof of your taste, attention to detail, and technical standards. In an era where boilerplate AI templates and generic component libraries look identical, building a distinctive personal site is your strongest signal of craftsmanship.</p>
+              <p>Over my five years of software engineering—from starting Computer Science at Chandigarh Engineering College to writing native QML/C++ applications for Ubuntu Touch at CALIN—my personal portfolio underwent four major generational redesigns. Each version mirrors an exact chapter in my technical growth.</p>
+            </section>
+
+            <section id="v1">
+              <h2>2. Portfolio v1 (2021 – 2022): The Genesis</h2>
+              <div class="version-badge">Version 1.0 · First Year B.Tech CSE</div>
+              <p>Portfolio v1 was built during my first semester of college when I was discovering the fundamentals of web standards. It was raw, straightforward, and focused on proving that I could build something from scratch.</p>
+
+              <div class="article-callout">
+                <div class="callout-kicker">TECH STACK: PORTFOLIO V1</div>
+                <p>Pure HTML5, Vanilla CSS3, minimal JS. Zero build tools. Hosted on GitHub Pages.</p>
+              </div>
+
+              <h3>What Worked Well:</h3>
+              <ul>
+                <li><strong>No Dependencies:</strong> No heavy libraries; the page weighed less than 120KB.</li>
+                <li><strong>Clear Intent:</strong> Listed early C++ algorithmic assignments, basic data structures, and linked directly to my fresh GitHub profile.</li>
+              </ul>
+
+              <h3>What Needed Improvement:</h3>
+              <ul>
+                <li><strong>Static Visuals:</strong> No scroll physics, no dynamic telemetry, and standard browser fonts.</li>
+                <li><strong>Lacked Identity:</strong> Looked like a standard student website without a clear niche or personal brand.</li>
+              </ul>
+            </section>
+
+            <section id="v2">
+              <h2>3. Portfolio v2 (2023): The Interactive Era &amp; DSA Streak</h2>
+              <div class="version-badge">Version 2.0 · Competitive Programming &amp; Flutter</div>
+              <p>By 2023, I was deep into data structures and algorithms, solving hundreds of problems across LeetCode, HackerRank, and GeeksforGeeks. Portfolio v2 was designed to showcase quantitative problem-solving rigor alongside my early cross-platform Flutter experiments.</p>
+
+              <div class="article-callout">
+                <div class="callout-kicker">TECH STACK: PORTFOLIO V2</div>
+                <p>CSS Grid &amp; Flexbox architecture, dark/light theme engine via CSS variables, automated LeetCode stat counters.</p>
+              </div>
+
+              <h3>Key Advancements:</h3>
+              <ul>
+                <li><strong>Bento Grid Layout:</strong> Introduced structured metric cards displaying 500+ solved problems and continuous streak stats.</li>
+                <li><strong>Thematic Consistency:</strong> Shifted to a focused dark theme with neon accent lines and monospace data readouts.</li>
+                <li><strong>First Mobile Showcase:</strong> Embedded interactive preview mockups of early Flutter applications.</li>
+              </ul>
+            </section>
+
+            <section id="v3">
+              <h2>4. Portfolio v3 (2024): The Linux &amp; QML Identity</h2>
+              <div class="version-badge">Version 3.0 · Ubuntu Touch &amp; Lomiri Desktop</div>
+              <p>2024 marked my definitive shift into native Linux application development. While most engineers focused exclusively on iOS and Android, I began writing native QML, C++, and Python software for Ubuntu Touch and open Linux desktops. Portfolio v3 was engineered around this core thesis: <em>"Native software for platforms others forgot."</em></p>
+
+              <div class="article-callout">
+                <div class="callout-kicker">TECH STACK: PORTFOLIO V3</div>
+                <p>Modular ES6 architecture, SVG badges for OpenStore listings, upstream Dekko 2 merge request badges, and NotAtMrp internship metrics.</p>
+              </div>
+
+              <h3>Milestones Showcased:</h3>
+              <ul>
+                <li><strong>OpenStore Ecosystem:</strong> Direct links to live installs for <em>WhatsWeb</em>, <em>Money Manager UT</em>, and <em>clockApp</em>.</li>
+                <li><strong>Upstream Open Source:</strong> Documented 5 merged merge requests to the core Dekko 2 email client.</li>
+                <li><strong>Internship Impact:</strong> Quantified a 70% decrease in wait time and 30% speed lift achieved during my Flutter internship at NotAtMrp.</li>
+              </ul>
+            </section>
+
+            <section id="v4">
+              <h2>5. Portfolio v4 (2025 – 2026): The Zero-Framework Masterpiece (Current)</h2>
+              <div class="version-badge highlight">Version 4.0 · Current Production Site</div>
+              <p>Portfolio v4 represents the culmination of everything I've learned about web performance, typography, inertial physics, and engineering aesthetic. Built with <strong>zero framework overhead</strong>, it combines terminal precision with high-end agency polish.</p>
+
+              <div class="code-preview-box">
+                <div class="code-preview-head">
+                  <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                  <span class="code-title">portfolio-v4-spec.json</span>
+                </div>
+                <pre class="code-block"><code>{
+  "runtime": "Vanilla ES6+ (Zero Build Step)",
+  "accent": "#E95420 (Ubuntu Orange)",
+  "typography": ["Space Grotesk", "JetBrains Mono"],
+  "scrollPhysics": "Lenis 1.1 + GSAP 3 ScrollTrigger",
+  "radius": 0, // Strict rule: radius 0 everywhere
+  "liveTelemetry": ["GitHub API", "LeetCode API", "53-Week HeatMap"],
+  "lighthouseScore": 100
+}</code></pre>
+              </div>
+
+              <h3>Core Architecture Innovations in v4:</h3>
+              <ol>
+                <li><strong>Flagship Sticky Card Stack:</strong> Multi-layer card deck where each of the 5 flagship projects (<em>Quantro</em>, <em>utgpt</em>, <em>Time Management</em>, <em>WishGift</em>, <em>clockApp</em>) pins to the top of the viewport with hardware-accelerated depth scaling.</li>
+                <li><strong>Universal Word-by-Word Scroll Illumination:</strong> Text starts dimmed at <code>opacity: 0.16</code> and progressively illuminates into sharp white as the reader's eyes move down the page, acting as an ambient visual reading guide.</li>
+                <li><strong>Real-Time 53-Week GitHub HeatMap:</strong> An interactive SVG calendar engine rendering 371 daily contribution squares with instant hover tooltips, daily commit counts, all-time totals (4,506+), and multi-year filter tabs.</li>
+                <li><strong>9 Verified GitHub Achievement Trophies:</strong> Custom inline vector badges matching high-tier ranks (Rainbow S, Gold SSS, Rose AAA) with specular pointer lighting.</li>
+                <li><strong>Live API Telemetry &amp; Quick-Copy:</strong> Asynchronous live synchronization with GitHub and LeetCode endpoints with graceful static fallbacks and zero layout shift.</li>
+              </ol>
+            </section>
+
+            <section id="matrix">
+              <h2>6. Comparative Evolution Matrix</h2>
+              <p>A side-by-side technical comparison of how each iteration scaled across architecture, bundle size, and capabilities:</p>
+
+              <div class="table-wrap">
+                <table class="evolution-table">
+                  <thead>
+                    <tr>
+                      <th>Iteration</th>
+                      <th>Year</th>
+                      <th>Primary Stack</th>
+                      <th>Bundle Size</th>
+                      <th>Key Focus</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>Portfolio v1</strong></td>
+                      <td>2021</td>
+                      <td>HTML5, Vanilla CSS3</td>
+                      <td>~110 KB</td>
+                      <td>First college projects &amp; basic bio</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Portfolio v2</strong></td>
+                      <td>2023</td>
+                      <td>CSS Grid, Theme Switcher</td>
+                      <td>~240 KB</td>
+                      <td>500+ DSA Streak &amp; Flutter mobile apps</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Portfolio v3</strong></td>
+                      <td>2024</td>
+                      <td>Modular JS, OpenStore APIs</td>
+                      <td>~380 KB</td>
+                      <td>Ubuntu Touch, QML &amp; Linux convergence</td>
+                    </tr>
+                    <tr>
+                      <td><strong>Portfolio v4</strong></td>
+                      <td>2026</td>
+                      <td>Lenis + GSAP, Zero Framework</td>
+                      <td>~420 KB</td>
+                      <td>Full engineering stack, live telemetry &amp; heatmap</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <section id="learnings">
+              <h2>7. 5 Key Takeaways for Developers Building Portfolios</h2>
+              <div class="takeaways-list">
+                <div class="takeaway-item">
+                  <div class="takeaway-num">01</div>
+                  <div class="takeaway-text">
+                    <h4>Do Not Use Generic Templates</h4>
+                    <p>Recruiters and engineers can identify generic frameworks in 3 seconds. Custom typography, strict layout constraints (like our radius-0 rule), and calibrated accents make your work unforgettable.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">02</div>
+                  <div class="takeaway-text">
+                    <h4>Performance is a Feature</h4>
+                    <p>A portfolio with a 5MB JavaScript bundle defeats its own purpose. Zero-framework HTML/CSS/JS loads instantaneously and provides 60FPS animations on any device.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">03</div>
+                  <div class="takeaway-text">
+                    <h4>Highlight Your Niche</h4>
+                    <p>Instead of claiming to do everything, double down on what makes you unique—for me, that was building native software for Linux phones and open desktops.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">04</div>
+                  <div class="takeaway-text">
+                    <h4>Proof Over Promises</h4>
+                    <p>Don't just write "proficient in Python". Show 1,100+ solved DSA problems, 112 public repositories, 5 merged Dekko 2 MRs, and verified GitHub trophies.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">05</div>
+                  <div class="takeaway-text">
+                    <h4>Iterate Constantly</h4>
+                    <p>Your portfolio is never finished. Revisit it every year to prune outdated projects, refine typography, and reflect your current technical ceiling.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- AUTHOR BIO BOX -->
+            <div class="article-author-box">
+              <img class="author-box-avatar" src="https://avatars.githubusercontent.com/u/90672206?v=4&s=96" width="60" height="60" alt="Suraj Yadav">
+              <div class="author-box-content">
+                <h3>Written by Suraj Yadav</h3>
+                <p>Junior Software Engineer at CALIN Global Services India. Author of native Ubuntu Touch applications (utgpt, Quantro, clockApp) and co-author of the official Lomiri curriculum.</p>
+                <div class="author-box-links">
+                  <a href="https://github.com/suraj-yadav0" target="_blank" rel="noopener">GitHub</a>
+                  <a href="https://www.linkedin.com/in/suraj-yadav-a63b3b220" target="_blank" rel="noopener">LinkedIn</a>
+                  <a href="mailto:surajyadav200701@gmail.com">Email</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PREV / NEXT NAV -->
+            <div class="article-pager">
+              <a class="pager-btn prev" href="../blog.html">
+                <span class="pager-label">← Back to Blog</span>
+                <span class="pager-title">All Case Studies &amp; Articles</span>
+              </a>
+              <a class="pager-btn next" href="../index.html#work">
+                <span class="pager-label">Explore Projects →</span>
+                <span class="pager-title">View Selected Work &amp; Builds</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- FOOTER -->
+    <footer class="contact" id="contact">
+      <div class="shell">
+        <h2 class="contact-title"><span class="line"><span class="line-inner">Got something worth</span></span><span class="line"><span class="line-inner">building?</span></span></h2>
+        <div class="email-row">
+          <a class="email-link" href="mailto:surajyadav200701@gmail.com" title="Send email to surajyadav200701@gmail.com">surajyadav200701@gmail.com</a>
+          <button class="copy-email-btn magnetic" type="button" aria-label="Copy email address to clipboard" data-copy="surajyadav200701@gmail.com" title="Copy email address">
+            <svg class="copy-icon icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="0" ry="0"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg class="copy-icon icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="copy-btn-text">Copy</span>
+          </button>
+        </div>
+        <ul class="social-row">
+          <li><a href="https://github.com/suraj-yadav0" target="_blank" rel="noopener" aria-label="GitHub"><img src="https://cdn.simpleicons.org/github/E8E9EB" width="22" height="22" alt="" loading="lazy"></a></li>
+          <li><a href="https://www.linkedin.com/in/suraj-yadav-a63b3b220" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="social-txt">in</span></a></li>
+          <li><a href="https://open-store.io/app/utgpt.surajyadav" target="_blank" rel="noopener" aria-label="OpenStore"><img src="../assets/icons/openstore.svg" width="22" height="22" alt="" loading="lazy"></a></li>
+        </ul>
+      </div>
+      <div class="foot-bottom">
+        <div class="foot-row">
+          <p>© 2026 Suraj Yadav · Built with zero-framework engineering.</p>
+          <a class="to-top" href="../index.html">Main Portfolio ↑</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg">Copied to clipboard</span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</body>
+</html>

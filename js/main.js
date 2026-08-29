@@ -701,7 +701,24 @@
           startOpacity: 0.18
         });
 
-        // 7. Contact Headline (.contact-title)
+        // 7. Featured Case Studies & Blog (.featured-post-title, .featured-post-desc)
+        applyScrub(document.querySelectorAll(".featured-post-title"), {
+          trigger: ".featured-post-card",
+          start: "top 85%",
+          end: "top 55%",
+          stagger: 0.05,
+          startOpacity: 0.18
+        });
+
+        applyScrub(document.querySelectorAll(".featured-post-desc"), {
+          trigger: ".featured-post-card",
+          start: "top 78%",
+          end: "top 45%",
+          stagger: 0.03,
+          startOpacity: 0.18
+        });
+
+        // 8. Contact Headline (.contact-title)
         applyScrub(document.querySelectorAll(".contact-title"), {
           trigger: ".contact",
           start: "top 80%",
@@ -805,7 +822,7 @@
         }
 
         /* Card specular lighting */
-        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell, .trophy-card");
+        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell, .trophy-card, .featured-post-card, .article-card");
         glowCards.forEach(function (card) {
           card.addEventListener("pointermove", function (e) {
             var rect = card.getBoundingClientRect();
