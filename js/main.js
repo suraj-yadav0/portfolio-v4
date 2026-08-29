@@ -195,18 +195,29 @@
     }
 
     function renderHeatmap(data, selectedYear) {
-      if (!data || !data.contributions) return;
+      if (!data) return;
 
-      var allContributions = data.contributions;
       var filtered = [];
       var totalCount = 0;
       var peakCount = 0;
 
       if (selectedYear === "last") {
-        filtered = allContributions.slice(-371);
+        if (data.lastYearContributions && data.lastYearContributions.length) {
+          filtered = data.lastYearContributions.slice();
+        } else if (data.allContributions && data.allContributions.length) {
+          filtered = data.allContributions.slice(-371);
+        } else if (data.contributions && data.contributions.length) {
+          var sorted = data.contributions.slice().sort(function (a, b) {
+            return a.date.localeCompare(b.date);
+          });
+          filtered = sorted.slice(-371);
+        }
       } else {
-        filtered = allContributions.filter(function (item) {
+        var sourceList = data.allContributions || (data.years && data.years[selectedYear]) || data.contributions || [];
+        filtered = sourceList.filter(function (item) {
           return item.date.startsWith(selectedYear + "-");
+        }).sort(function (a, b) {
+          return a.date.localeCompare(b.date);
         });
       }
 
@@ -279,14 +290,16 @@
         svg.appendChild(textEl);
       });
 
-      // 2. Month labels across top
+      // 2. Month labels across top (clean non-overlapping placement)
       var lastMonth = -1;
+      var lastColIdx = -10;
       weeks.forEach(function (w, colIdx) {
         for (var r = 0; r < w.length; r++) {
           if (w[r]) {
             var m = parseInt(w[r].date.split("-")[1], 10) - 1;
-            if (m !== lastMonth && colIdx < weeks.length - 2) {
+            if (m !== lastMonth && (colIdx - lastColIdx >= 3) && colIdx < weeks.length - 2) {
               lastMonth = m;
+              lastColIdx = colIdx;
               var mText = document.createElementNS("http://www.w3.org/2000/svg", "text");
               mText.setAttribute("class", "heatmap-month-txt");
               mText.setAttribute("x", offsetX + colIdx * (cellWidth + cellGap));
@@ -387,14 +400,14 @@
       })
       .then(function (data) {
         globalData = data;
-        if (data.total) {
-          var grandTotal = 0;
+        var grandTotal = data.total && (data.total.allTime || 0);
+        if (!grandTotal && data.total) {
           for (var yr in data.total) {
-            grandTotal += data.total[yr];
+            if (yr !== "lastYear") grandTotal += data.total[yr];
           }
-          if (allTimeNum && grandTotal > 0) {
-            allTimeNum.textContent = grandTotal.toLocaleString();
-          }
+        }
+        if (allTimeNum && grandTotal > 0) {
+          allTimeNum.textContent = grandTotal.toLocaleString();
         }
         renderHeatmap(globalData, currentYear);
       })
@@ -407,7 +420,11 @@
       })
       .then(function (freshData) {
         if (freshData && freshData.contributions && freshData.contributions.length) {
-          globalData = freshData;
+          var sorted = freshData.contributions.slice().sort(function (a, b) {
+            return a.date.localeCompare(b.date);
+          });
+          globalData = globalData || {};
+          globalData.allContributions = sorted;
           if (freshData.total) {
             var grandTotal = 0;
             for (var yr in freshData.total) {
