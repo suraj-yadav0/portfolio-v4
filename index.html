@@ -233,34 +233,56 @@
           <h2>Contributions &amp; Achievements.</h2>
         </header>
 
-        <!-- Contribution HeatMap -->
-        <div class="heatmap-card">
+        <!-- Interactive GitHub HeatMap Calendar -->
+        <div class="heatmap-card" id="heatmap-card">
           <div class="heatmap-head">
-            <div class="heatmap-title-group">
-              <span class="heatmap-title">Contribution Calendar</span>
+            <div class="heatmap-titles">
+              <span class="heatmap-title">Contribution Activity</span>
               <span class="heatmap-sub">@suraj-yadav0 on GitHub</span>
             </div>
             <div class="heatmap-meta">
-              <span class="live-pill"><span class="pulse-dot"></span> 1,700+ COMMITS</span>
+              <div class="heatmap-alltime-pill" title="Total public contributions recorded on GitHub across all years">
+                <span class="pulse-dot"></span>
+                <span class="alltime-txt"><strong id="heatmap-alltime-num">4,506</strong> ALL-TIME CONTRIBUTIONS</span>
+              </div>
               <a class="heatmap-profile-link" href="https://github.com/suraj-yadav0" target="_blank" rel="noopener">
                 View GitHub <img class="ext-ico" src="https://cdn.simpleicons.org/github/9BA0A6" width="14" height="14" alt="" loading="lazy">
               </a>
             </div>
           </div>
-          <div class="heatmap-scroll-wrap">
-            <div class="heatmap-inner">
-              <img class="heatmap-img" src="https://ghchart.rshah.org/E95420/suraj-yadav0" alt="Suraj Yadav's GitHub Contribution HeatMap" loading="lazy">
+
+          <!-- Year Filter Tabs -->
+          <div class="heatmap-years-bar" role="tablist" aria-label="Select year for GitHub contribution heatmap">
+            <button class="year-tab active" type="button" data-year="last" role="tab" aria-selected="true">Last 12 Months</button>
+            <button class="year-tab" type="button" data-year="2026" role="tab" aria-selected="false">2026</button>
+            <button class="year-tab" type="button" data-year="2025" role="tab" aria-selected="false">2025</button>
+            <button class="year-tab" type="button" data-year="2024" role="tab" aria-selected="false">2024</button>
+            <button class="year-tab" type="button" data-year="2023" role="tab" aria-selected="false">2023</button>
+          </div>
+
+          <!-- HeatMap Scroll & Tooltip Viewport -->
+          <div class="heatmap-scroll-wrap" id="heatmap-scroll-wrap">
+            <div class="heatmap-inner" id="heatmap-canvas-container">
+              <!-- SVG dynamically generated and hydrated by main.js -->
+            </div>
+            <div class="heat-tooltip" id="heat-tooltip" role="tooltip" aria-hidden="true">
+              <div class="heat-tooltip-body"><strong class="tt-count">0 contributions</strong> on <span class="tt-date">Date</span></div>
+              <div class="heat-tooltip-arrow"></div>
             </div>
           </div>
+
           <div class="heatmap-footer">
-            <span class="heatmap-legend-label">1-Year Activity Timeline</span>
+            <div class="heatmap-period-info">
+              <span id="heatmap-period-text"><strong>1,950 contributions</strong> in the last 12 months</span>
+              <span class="heatmap-peak-badge" id="heatmap-peak-text">Peak: 34 commits / day</span>
+            </div>
             <div class="heatmap-legend">
               <span class="legend-txt">Less</span>
-              <span class="legend-box legend-box-0"></span>
-              <span class="legend-box" style="background: #ffa16d;"></span>
-              <span class="legend-box" style="background: #ff8753;"></span>
-              <span class="legend-box" style="background: #E95420;"></span>
-              <span class="legend-box" style="background: #ba431a;"></span>
+              <span class="legend-box level-0" title="No contributions"></span>
+              <span class="legend-box level-1" title="1-3 contributions"></span>
+              <span class="legend-box level-2" title="4-9 contributions"></span>
+              <span class="legend-box level-3" title="10-19 contributions"></span>
+              <span class="legend-box level-4" title="20+ contributions"></span>
               <span class="legend-txt">More</span>
             </div>
           </div>

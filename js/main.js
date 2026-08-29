@@ -163,6 +163,266 @@
       });
   })();
 
+  /* ---------- Interactive GitHub Heatmap Engine (Daily Commits, All-Time Totals, Tooltips, Year Switcher) ---------- */
+  (function () {
+    var canvasContainer = document.getElementById("heatmap-canvas-container");
+    var tooltip = document.getElementById("heat-tooltip");
+    var scrollWrap = document.getElementById("heatmap-scroll-wrap");
+    var periodText = document.getElementById("heatmap-period-text");
+    var peakText = document.getElementById("heatmap-peak-text");
+    var allTimeNum = document.getElementById("heatmap-alltime-num");
+    var yearButtons = document.querySelectorAll(".year-tab");
+
+    if (!canvasContainer || !tooltip || !scrollWrap) return;
+
+    var globalData = null;
+    var currentYear = "last";
+
+    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    var monthFull = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    function formatDate(dateStr) {
+      var parts = dateStr.split("-");
+      if (parts.length !== 3) return dateStr;
+      var y = parseInt(parts[0], 10);
+      var m = parseInt(parts[1], 10) - 1;
+      var d = parseInt(parts[2], 10);
+      var dt = new Date(y, m, d);
+      var dayName = dayNames[dt.getDay()];
+      var monName = monthFull[m];
+      return dayName + ", " + monName + " " + d + ", " + y;
+    }
+
+    function renderHeatmap(data, selectedYear) {
+      if (!data || !data.contributions) return;
+
+      var allContributions = data.contributions;
+      var filtered = [];
+      var totalCount = 0;
+      var peakCount = 0;
+
+      if (selectedYear === "last") {
+        filtered = allContributions.slice(-371);
+      } else {
+        filtered = allContributions.filter(function (item) {
+          return item.date.startsWith(selectedYear + "-");
+        });
+      }
+
+      if (!filtered.length) return;
+
+      filtered.forEach(function (c) {
+        totalCount += c.count;
+        if (c.count > peakCount) peakCount = c.count;
+      });
+
+      if (periodText) {
+        var periodLabel = selectedYear === "last" ? "the last 12 months" : selectedYear;
+        periodText.innerHTML = "<strong>" + totalCount.toLocaleString() + " contributions</strong> in " + periodLabel;
+      }
+      if (peakText) {
+        peakText.textContent = "Peak: " + peakCount + " commits / day";
+      }
+
+      var cellWidth = 10.5;
+      var cellHeight = 10.5;
+      var cellGap = 3.5;
+      var offsetX = 28;
+      var offsetY = 20;
+
+      var firstDateObj = new Date(filtered[0].date);
+      var startDayOfWeek = firstDateObj.getDay();
+
+      var weeks = [];
+      var currentWeek = [];
+
+      for (var p = 0; p < startDayOfWeek; p++) {
+        currentWeek.push(null);
+      }
+
+      filtered.forEach(function (day) {
+        currentWeek.push(day);
+        if (currentWeek.length === 7) {
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
+      });
+      if (currentWeek.length > 0) {
+        while (currentWeek.length < 7) {
+          currentWeek.push(null);
+        }
+        weeks.push(currentWeek);
+      }
+
+      var svgWidth = offsetX + weeks.length * (cellWidth + cellGap) + 12;
+      var svgHeight = offsetY + 7 * (cellHeight + cellGap) + 8;
+
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "heatmap-svg");
+      svg.setAttribute("viewBox", "0 0 " + svgWidth + " " + svgHeight);
+      svg.setAttribute("width", "100%");
+      svg.setAttribute("height", "auto");
+
+      // 1. Day of week labels (Mon, Wed, Fri)
+      var dayLabels = [
+        { name: "Mon", row: 1 },
+        { name: "Wed", row: 3 },
+        { name: "Fri", row: 5 }
+      ];
+      dayLabels.forEach(function (dl) {
+        var textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        textEl.setAttribute("class", "heatmap-wday-txt");
+        textEl.setAttribute("x", "0");
+        textEl.setAttribute("y", offsetY + dl.row * (cellHeight + cellGap) + 8.5);
+        textEl.textContent = dl.name;
+        svg.appendChild(textEl);
+      });
+
+      // 2. Month labels across top
+      var lastMonth = -1;
+      weeks.forEach(function (w, colIdx) {
+        for (var r = 0; r < w.length; r++) {
+          if (w[r]) {
+            var m = parseInt(w[r].date.split("-")[1], 10) - 1;
+            if (m !== lastMonth && colIdx < weeks.length - 2) {
+              lastMonth = m;
+              var mText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+              mText.setAttribute("class", "heatmap-month-txt");
+              mText.setAttribute("x", offsetX + colIdx * (cellWidth + cellGap));
+              mText.setAttribute("y", "12");
+              mText.textContent = monthNames[m];
+              svg.appendChild(mText);
+            }
+            break;
+          }
+        }
+      });
+
+      // 3. Render cells
+      weeks.forEach(function (w, colIdx) {
+        w.forEach(function (cell, rowIdx) {
+          if (!cell) return;
+
+          var rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+          var x = offsetX + colIdx * (cellWidth + cellGap);
+          var y = offsetY + rowIdx * (cellHeight + cellGap);
+
+          rect.setAttribute("class", "heat-square level-" + cell.level);
+          rect.setAttribute("x", x);
+          rect.setAttribute("y", y);
+          rect.setAttribute("width", cellWidth);
+          rect.setAttribute("height", cellHeight);
+          rect.setAttribute("rx", "2");
+          rect.setAttribute("data-date", cell.date);
+          rect.setAttribute("data-count", cell.count);
+          rect.setAttribute("data-level", cell.level);
+          rect.setAttribute("fill", "var(--heat-l" + cell.level + ")");
+
+          rect.addEventListener("pointerenter", function () {
+            showHeatmapTooltip(rect, cell.date, cell.count);
+          });
+          rect.addEventListener("pointerleave", function () {
+            hideHeatmapTooltip();
+          });
+
+          svg.appendChild(rect);
+        });
+      });
+
+      canvasContainer.innerHTML = "";
+      canvasContainer.appendChild(svg);
+    }
+
+    var ttCountEl = tooltip.querySelector(".tt-count");
+    var ttDateEl = tooltip.querySelector(".tt-date");
+
+    function showHeatmapTooltip(rectEl, dateStr, count) {
+      if (!tooltip || !ttCountEl || !ttDateEl) return;
+
+      var formatted = formatDate(dateStr);
+      if (count === 0) {
+        ttCountEl.textContent = "No contributions";
+      } else if (count === 1) {
+        ttCountEl.textContent = "1 contribution";
+      } else {
+        ttCountEl.textContent = count + " contributions";
+      }
+      ttDateEl.textContent = formatted;
+
+      var rectBounds = rectEl.getBoundingClientRect();
+      var wrapBounds = scrollWrap.getBoundingClientRect();
+
+      var leftPos = rectBounds.left - wrapBounds.left + scrollWrap.scrollLeft + rectBounds.width / 2;
+      var topPos = rectBounds.top - wrapBounds.top + scrollWrap.scrollTop;
+
+      tooltip.style.left = leftPos + "px";
+      tooltip.style.top = topPos + "px";
+      tooltip.classList.add("show");
+    }
+
+    function hideHeatmapTooltip() {
+      if (tooltip) tooltip.classList.remove("show");
+    }
+
+    yearButtons.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        yearButtons.forEach(function (b) {
+          b.classList.remove("active");
+          b.setAttribute("aria-selected", "false");
+        });
+        btn.classList.add("active");
+        btn.setAttribute("aria-selected", "true");
+        currentYear = btn.getAttribute("data-year");
+        if (globalData) {
+          renderHeatmap(globalData, currentYear);
+        }
+      });
+    });
+
+    fetch("assets/contributions-cache.json")
+      .then(function (res) {
+        if (!res.ok) throw new Error("Cache not available");
+        return res.json();
+      })
+      .then(function (data) {
+        globalData = data;
+        if (data.total) {
+          var grandTotal = 0;
+          for (var yr in data.total) {
+            grandTotal += data.total[yr];
+          }
+          if (allTimeNum && grandTotal > 0) {
+            allTimeNum.textContent = grandTotal.toLocaleString();
+          }
+        }
+        renderHeatmap(globalData, currentYear);
+      })
+      .catch(function () {});
+
+    fetch("https://github-contributions-api.jogruber.de/v4/suraj-yadav0?y=all")
+      .then(function (res) {
+        if (!res.ok) throw new Error("API not ok");
+        return res.json();
+      })
+      .then(function (freshData) {
+        if (freshData && freshData.contributions && freshData.contributions.length) {
+          globalData = freshData;
+          if (freshData.total) {
+            var grandTotal = 0;
+            for (var yr in freshData.total) {
+              grandTotal += freshData.total[yr];
+            }
+            if (allTimeNum && grandTotal > 0) {
+              allTimeNum.textContent = grandTotal.toLocaleString();
+            }
+          }
+          renderHeatmap(globalData, currentYear);
+        }
+      })
+      .catch(function () {});
+  })();
+
   var loader = document.querySelector(".loader");
 
   function killLoader() {
