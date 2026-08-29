@@ -1,0 +1,17 @@
+{
+  "name": "Suraj Yadav · Software Engineer",
+  "short_name": "Suraj Yadav",
+  "description": "Portfolio of Suraj Yadav, software engineer building native Ubuntu Touch apps in QML, Flutter products and GNOME tooling.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0C0E",
+  "theme_color": "#E95420",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E95420'/%3E%3Ctext x='32' y='43' font-family='ui-monospace,monospace' font-size='27' font-weight='700' text-anchor='middle' fill='%230B0C0E'%3ESY%3C/text%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
