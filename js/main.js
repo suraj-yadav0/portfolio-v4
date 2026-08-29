@@ -35,6 +35,73 @@
     }
   })();
 
+  /* ---------- Toast Notification System ---------- */
+  var toastTimer = null;
+  function showToast(message, icon) {
+    var toast = document.getElementById("toast");
+    if (!toast) return;
+    var msgEl = toast.querySelector(".toast-msg");
+    var iconEl = toast.querySelector(".toast-icon");
+    if (msgEl) msgEl.textContent = message || "Copied to clipboard";
+    if (iconEl && icon) iconEl.textContent = icon;
+    toast.classList.add("show");
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      toast.classList.remove("show");
+    }, 2800);
+  }
+
+  /* ---------- Quick-Copy to Clipboard System ---------- */
+  (function () {
+    var copyButtons = document.querySelectorAll(".copy-email-btn, [data-copy]");
+    copyButtons.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        var textToCopy = btn.getAttribute("data-copy") || btn.textContent.trim();
+        if (!textToCopy) return;
+
+        function onSuccess() {
+          btn.classList.add("copied");
+          var btnText = btn.querySelector(".copy-btn-text");
+          var originalText = btnText ? btnText.textContent : "";
+          if (btnText) btnText.textContent = "Copied!";
+          showToast("Copied " + textToCopy + " to clipboard", "✓");
+
+          setTimeout(function () {
+            btn.classList.remove("copied");
+            if (btnText) btnText.textContent = originalText;
+          }, 2200);
+        }
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(textToCopy).then(onSuccess).catch(function () {
+            fallbackCopy(textToCopy, onSuccess);
+          });
+        } else {
+          fallbackCopy(textToCopy, onSuccess);
+        }
+      });
+    });
+
+    function fallbackCopy(text, cb) {
+      try {
+        var textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "-9999px";
+        textArea.style.left = "-9999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        var successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        if (successful && cb) cb();
+      } catch (err) {
+        showToast("Press Ctrl+C to copy: " + text, "i");
+      }
+    }
+  })();
+
   var loader = document.querySelector(".loader");
 
   function killLoader() {

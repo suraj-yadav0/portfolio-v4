@@ -479,7 +479,19 @@
     <footer class="contact" id="contact">
       <div class="shell">
         <h2 class="contact-title"><span class="line"><span class="line-inner">Got something worth</span></span><span class="line"><span class="line-inner">building?</span></span></h2>
-        <a class="email-link" href="mailto:surajyadav200701@gmail.com">surajyadav200701@gmail.com</a>
+        <div class="email-row">
+          <a class="email-link" href="mailto:surajyadav200701@gmail.com" title="Send email to surajyadav200701@gmail.com">surajyadav200701@gmail.com</a>
+          <button class="copy-email-btn magnetic" type="button" aria-label="Copy email address to clipboard" data-copy="surajyadav200701@gmail.com" title="Copy email address">
+            <svg class="copy-icon icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="0" ry="0"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <svg class="copy-icon icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="copy-btn-text">Copy</span>
+          </button>
+        </div>
         <ul class="social-row">
           <li><a href="https://github.com/suraj-yadav0" target="_blank" rel="noopener" aria-label="GitHub"><img src="https://cdn.simpleicons.org/github/E8E9EB" width="22" height="22" alt="" loading="lazy"></a></li>
           <li><a href="https://www.linkedin.com/in/suraj-yadav-a63b3b220" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="social-txt">in</span></a></li>
@@ -497,6 +509,11 @@
     </footer>
 
   </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg">Copied to clipboard</span>
+  </div>
 
   <div class="loader" aria-hidden="true">
     <p class="loader-mark">SY</p>
