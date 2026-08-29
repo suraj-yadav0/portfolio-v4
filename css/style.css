@@ -391,7 +391,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 }
 .card-link:hover { color: var(--accent); border-color: var(--accent); transform: translateX(3px); }
 
-/* ---------- Manifesto scrub ---------- */
+/* ---------- Universal word scroll scrub illumination ---------- */
 
 .manifesto .shell { display: block; }
 .scrub-text {
@@ -400,13 +400,20 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   max-width: 900px;
   cursor: default;
 }
-.scrub-text .w {
+
+.w {
   display: inline-block;
-  transition: opacity 0.25s ease, color 0.2s ease, text-shadow 0.2s ease;
+  will-change: opacity;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
 }
-.scrub-text .w:hover {
+.w:hover {
   color: #FFFFFF !important;
-  text-shadow: 0 0 14px rgba(233, 84, 32, 0.4);
+  text-shadow: 0 0 14px rgba(233, 84, 32, 0.45);
+}
+
+[data-theme="light"] .w:hover {
+  color: #0E1013 !important;
+  text-shadow: 0 0 10px rgba(233, 84, 32, 0.3);
 }
 
 .hero-title .line-inner,

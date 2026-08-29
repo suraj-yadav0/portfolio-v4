@@ -249,22 +249,85 @@
         scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.25 }
       });
 
-      /* Manifesto: word-by-word scrub reveal */
+      /* Universal Word-by-Word Scroll Scrub Illumination */
       (function () {
-        var el = document.querySelector(".scrub-text");
-        if (!el) return;
-        var words = el.textContent.trim().split(/\s+/);
-        el.innerHTML = words.map(function (w) { return '<span class="w">' + w + "</span>"; }).join(" ");
-        var wordEls = el.querySelectorAll(".w");
-        gsap.fromTo(wordEls,
-          { opacity: 0.14 },
-          {
-            opacity: 1,
-            stagger: 0.05,
-            ease: "none",
-            scrollTrigger: { trigger: el, start: "top 82%", end: "bottom 55%", scrub: true }
-          }
-        );
+        function scrubTokenizeAndAnimate(elements, config) {
+          elements.forEach(function (el) {
+            var text = el.textContent.trim();
+            if (!text || el.dataset.scrubbed) return;
+            el.dataset.scrubbed = "1";
+
+            var words = text.split(/\s+/);
+            el.innerHTML = words.map(function (w) {
+              return '<span class="w">' + w + '</span>';
+            }).join(' ');
+
+            var wordEls = el.querySelectorAll('.w');
+            if (!wordEls.length) return;
+
+            var triggerEl = config.trigger ? (typeof config.trigger === "function" ? config.trigger(el) : el.closest(config.trigger) || el) : el;
+
+            gsap.fromTo(wordEls,
+              { opacity: config.startOpacity !== undefined ? config.startOpacity : 0.16 },
+              {
+                opacity: 1,
+                stagger: config.stagger || 0.04,
+                ease: "none",
+                scrollTrigger: {
+                  trigger: triggerEl,
+                  start: config.start || "top 82%",
+                  end: config.end || "bottom 58%",
+                  scrub: config.scrub !== undefined ? config.scrub : 0.35,
+                  invalidateOnRefresh: true
+                }
+              }
+            );
+          });
+        }
+
+        // 1. Manifesto
+        scrubTokenizeAndAnimate(document.querySelectorAll(".scrub-text"), {
+          start: "top 82%",
+          end: "bottom 55%",
+          stagger: 0.05,
+          startOpacity: 0.14
+        });
+
+        // 2. Flagship Project Descriptions (.card-desc)
+        scrubTokenizeAndAnimate(document.querySelectorAll(".card-desc"), {
+          trigger: ".stack-card",
+          start: "top 72%",
+          end: "top 25%",
+          stagger: 0.03,
+          startOpacity: 0.18
+        });
+
+        // 3. Journey Milestones (.tl-what p:not(.tl-org))
+        scrubTokenizeAndAnimate(document.querySelectorAll(".tl-what p:not(.tl-org)"), {
+          trigger: ".tl-item",
+          start: "top 82%",
+          end: "bottom 60%",
+          stagger: 0.03,
+          startOpacity: 0.18
+        });
+
+        // 4. Proof Bento Descriptions (.cell-label)
+        scrubTokenizeAndAnimate(document.querySelectorAll(".cell-label"), {
+          trigger: ".stats-grid",
+          start: "top 80%",
+          end: "bottom 62%",
+          stagger: 0.025,
+          startOpacity: 0.18
+        });
+
+        // 5. Section Subtitles (.pan-head-content p)
+        scrubTokenizeAndAnimate(document.querySelectorAll(".pan-head-content p"), {
+          trigger: ".pan-head",
+          start: "top 85%",
+          end: "bottom 65%",
+          stagger: 0.03,
+          startOpacity: 0.18
+        });
       })();
 
       /* Proof bento entrance + number roll-up */
