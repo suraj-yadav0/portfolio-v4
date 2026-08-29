@@ -791,10 +791,21 @@
           window.addEventListener("pointerleave", function () {
             glow.classList.remove("active");
           });
+
+          // Smoothly hide ambient glow when hovering over the HeatMap
+          var heatmapCard = document.querySelector(".heatmap-card");
+          if (heatmapCard) {
+            heatmapCard.addEventListener("pointerenter", function () {
+              glow.classList.add("hidden");
+            });
+            heatmapCard.addEventListener("pointerleave", function () {
+              glow.classList.remove("hidden");
+            });
+          }
         }
 
         /* Card specular lighting */
-        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell, .trophy-card, .heatmap-card");
+        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell, .trophy-card");
         glowCards.forEach(function (card) {
           card.addEventListener("pointermove", function (e) {
             var rect = card.getBoundingClientRect();

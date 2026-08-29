@@ -143,6 +143,10 @@ section[id], footer[id] { scroll-margin-top: calc(var(--nav-h) + 24px); }
   mix-blend-mode: screen;
 }
 .cursor-glow.active { opacity: 1; }
+.cursor-glow.hidden,
+body:has(.heatmap-card:hover) .cursor-glow {
+  opacity: 0 !important;
+}
 
 .loader {
   position: fixed; inset: 0; z-index: 100;
@@ -523,15 +527,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   margin-bottom: 44px;
   box-shadow: var(--pan-shadow);
   transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  --mouse-x: 50%;
-  --mouse-y: 50%;
 }
-.heatmap-card::before {
-  content: ""; position: absolute; inset: -1px; pointer-events: none;
-  background: radial-gradient(450px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(233, 84, 32, 0.18), transparent 45%);
-  opacity: 0; transition: opacity 0.45s ease; z-index: 2;
-}
-.heatmap-card:hover::before { opacity: 1; }
 
 .heatmap-head {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
