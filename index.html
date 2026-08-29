@@ -272,9 +272,17 @@
     <!-- PROOF BENTO -->
     <section class="stats" id="proof" aria-label="Achievements in numbers">
       <div class="shell stats-grid">
-        <div class="cell cell-num span6">
-          <p class="numeral"><span class="count-num" data-target="1100">1,100</span>+</p>
-          <p class="cell-label">DSA problems solved across LeetCode, HackerRank and GeeksforGeeks, backed by a 650+ day streak.</p>
+        <div class="cell cell-num span6" id="dsa-cell">
+          <div class="cell-top-row">
+            <span class="cell-kicker">Problem Solving</span>
+            <span class="live-pill" id="dsa-live-pill" title="DSA status"><span class="pulse-dot"></span> <span class="pill-text">LIVE SYNC</span></span>
+          </div>
+          <p class="numeral"><span class="count-num" id="dsa-count" data-target="1100">1,100</span>+</p>
+          <p class="cell-label">DSA problems solved across LeetCode, HackerRank, and GeeksforGeeks, backed by a 650+ day streak.</p>
+          <div class="cell-stats-sub" id="dsa-subtext">
+            <span class="sub-badge"><img src="https://cdn.simpleicons.org/leetcode/9BA0A6" width="14" height="14" alt="" loading="lazy"> LeetCode: <strong id="lc-count">439+</strong></span>
+            <span class="sub-badge">Rank: <strong id="lc-rank">Top 6%</strong></span>
+          </div>
         </div>
         <div class="cell cell-mid span3">
           <p class="cell-kicker">Lomiri Courses</p>
@@ -294,9 +302,17 @@
           <p class="cell-big">5 MRs Merged</p>
           <p class="cell-label">Upstream contributions to Ubuntu Touch's flagship convergent email client.</p>
         </div>
-        <div class="cell cell-num span4">
-          <p class="numeral"><span class="count-num" data-target="100">100</span>+</p>
-          <p class="cell-label">Pull requests and contributions merged across open source repositories.</p>
+        <div class="cell cell-num span4" id="gh-cell">
+          <div class="cell-top-row">
+            <span class="cell-kicker">Open Source</span>
+            <span class="live-pill" id="gh-live-pill" title="GitHub public status"><span class="pulse-dot"></span> <span class="pill-text">GITHUB API</span></span>
+          </div>
+          <p class="numeral"><span class="count-num" id="gh-count" data-target="112">112</span>+</p>
+          <p class="cell-label">Public repositories, tools &amp; 100+ merged PRs across open source systems.</p>
+          <div class="cell-stats-sub" id="gh-subtext">
+            <span class="sub-badge"><img src="https://cdn.simpleicons.org/github/9BA0A6" width="14" height="14" alt="" loading="lazy"> <strong id="gh-repos-badge">112 Repos</strong></span>
+            <span class="sub-badge">Active Builder</span>
+          </div>
         </div>
       </div>
     </section>

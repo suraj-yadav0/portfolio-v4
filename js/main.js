@@ -102,6 +102,67 @@
     }
   })();
 
+  /* ---------- Live Metrics API Sync (GitHub & LeetCode) ---------- */
+  (function () {
+    // 1. Fetch GitHub live statistics
+    fetch("https://api.github.com/users/suraj-yadav0")
+      .then(function (res) {
+        if (!res.ok) throw new Error("GitHub API response not ok");
+        return res.json();
+      })
+      .then(function (data) {
+        if (data && typeof data.public_repos === "number") {
+          var ghRepoCount = document.getElementById("gh-count");
+          var ghReposBadge = document.getElementById("gh-repos-badge");
+          if (ghRepoCount) {
+            ghRepoCount.setAttribute("data-target", data.public_repos);
+            ghRepoCount.textContent = data.public_repos.toLocaleString();
+          }
+          if (ghReposBadge) {
+            ghReposBadge.textContent = data.public_repos + " Repos";
+          }
+          var ghPill = document.getElementById("gh-live-pill");
+          if (ghPill) {
+            var text = ghPill.querySelector(".pill-text");
+            if (text) text.textContent = "LIVE SYNCED";
+          }
+        }
+      })
+      .catch(function () {
+        // Graceful fallback to pre-rendered static numbers
+      });
+
+    // 2. Fetch LeetCode live statistics
+    fetch("https://alfa-leetcode-api.onrender.com/userProfile/suraj_yadav07")
+      .then(function (res) {
+        if (!res.ok) throw new Error("LeetCode API response not ok");
+        return res.json();
+      })
+      .then(function (data) {
+        if (data && typeof data.totalSolved === "number") {
+          var lcCount = document.getElementById("lc-count");
+          if (lcCount) {
+            lcCount.textContent = data.totalSolved + "+";
+          }
+          if (data.ranking) {
+            var rank = document.getElementById("lc-rank");
+            if (rank) {
+              var rankStr = data.ranking > 1000 ? "#" + Math.round(data.ranking / 1000) + "k" : "#" + data.ranking;
+              rank.textContent = rankStr;
+            }
+          }
+          var dsaPill = document.getElementById("dsa-live-pill");
+          if (dsaPill) {
+            var dsaText = dsaPill.querySelector(".pill-text");
+            if (dsaText) dsaText.textContent = "LIVE SYNCED";
+          }
+        }
+      })
+      .catch(function () {
+        // Graceful fallback
+      });
+  })();
+
   var loader = document.querySelector(".loader");
 
   function killLoader() {

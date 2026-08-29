@@ -430,12 +430,34 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 }
 .cell {
   position: relative;
-  display: flex; flex-direction: column; justify-content: space-between; gap: 24px;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 20px;
   border: 1px solid var(--line);
   padding: clamp(24px, 2.6vw, 36px); min-height: 210px;
   transition: border-color 0.3s ease, transform 0.3s var(--ease-out);
 }
 .cell:hover { border-color: var(--line-strong); }
+.cell-top-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+}
+.cell-top-row .cell-kicker { margin-bottom: 0; }
+.live-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-m); font-size: 10px; text-transform: uppercase;
+  letter-spacing: 0.14em; color: var(--accent);
+  border: 1px solid var(--accent-line); background: var(--accent-soft);
+  padding: 3px 8px; white-space: nowrap;
+}
+.cell-stats-sub {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 4px;
+}
+.sub-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-m); font-size: 11px; letter-spacing: 0.06em;
+  color: var(--text-2); background: var(--chip-bg);
+  border: 1px solid var(--line); padding: 4px 10px;
+}
+.sub-badge strong { color: var(--text); font-weight: 500; }
+.sub-badge img { opacity: 0.85; }
 .span6 { grid-column: span 6; }
 .span4 { grid-column: span 4; }
 .span3 { grid-column: span 3; }
@@ -665,6 +687,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 [data-theme="light"] .marquee-track img,
 [data-theme="light"] .nav-icon img,
 [data-theme="light"] .card-links img,
+[data-theme="light"] .sub-badge img,
 [data-theme="light"] .social-row img {
   filter: brightness(0);
   opacity: 0.85;
@@ -722,6 +745,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   .email-row { flex-direction: column; align-items: flex-start; gap: 16px; margin-top: 36px; }
   .copy-email-btn { width: 100%; justify-content: center; }
   .toast { left: 16px; right: 16px; bottom: 20px; justify-content: center; text-align: center; }
+  .cell-top-row { flex-wrap: wrap; }
   .foot-row { flex-direction: column; align-items: flex-start; }
   .email-link { word-break: break-all; }
 }
