@@ -401,6 +401,10 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   cursor: default;
 }
 
+.w-group {
+  display: inline;
+}
+
 .w {
   display: inline-block;
   will-change: opacity;
@@ -419,6 +423,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 .hero-title .line-inner,
 .section-head h2,
 .card-title,
+.contact-title,
 .contact-title .line-inner {
   transition: text-shadow 0.3s ease, color 0.3s ease;
   cursor: default;

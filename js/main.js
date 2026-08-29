@@ -251,23 +251,53 @@
 
       /* Universal Word-by-Word Scroll Scrub Illumination */
       (function () {
-        function scrubTokenizeAndAnimate(elements, config) {
+        function scrubTokenize(el) {
+          if (!el || el.dataset.scrubbed) return el ? el.querySelectorAll(".w") : [];
+          el.dataset.scrubbed = "1";
+
+          var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+          var textNodes = [];
+          var node;
+          while ((node = walker.nextNode())) {
+            if (node.nodeValue && node.nodeValue.trim()) {
+              textNodes.push(node);
+            }
+          }
+
+          var allWords = [];
+          textNodes.forEach(function (tNode) {
+            var words = tNode.nodeValue.trim().split(/\s+/);
+            var spanContainer = document.createElement("span");
+            spanContainer.className = "w-group";
+            words.forEach(function (w, i) {
+              var wSpan = document.createElement("span");
+              wSpan.className = "w";
+              wSpan.textContent = w;
+              spanContainer.appendChild(wSpan);
+              allWords.push(wSpan);
+              if (i < words.length - 1) {
+                spanContainer.appendChild(document.createTextNode(" "));
+              }
+            });
+            if (tNode.parentNode) {
+              tNode.parentNode.replaceChild(spanContainer, tNode);
+            }
+          });
+
+          return allWords;
+        }
+
+        function applyScrub(elements, config) {
           elements.forEach(function (el) {
-            var text = el.textContent.trim();
-            if (!text || el.dataset.scrubbed) return;
-            el.dataset.scrubbed = "1";
+            var wordEls = scrubTokenize(el);
+            if (!wordEls || !wordEls.length) return;
 
-            var words = text.split(/\s+/);
-            el.innerHTML = words.map(function (w) {
-              return '<span class="w">' + w + '</span>';
-            }).join(' ');
+            var triggerEl = config.trigger
+              ? (typeof config.trigger === "function" ? config.trigger(el) : el.closest(config.trigger) || el)
+              : el;
 
-            var wordEls = el.querySelectorAll('.w');
-            if (!wordEls.length) return;
-
-            var triggerEl = config.trigger ? (typeof config.trigger === "function" ? config.trigger(el) : el.closest(config.trigger) || el) : el;
-
-            gsap.fromTo(wordEls,
+            gsap.fromTo(
+              wordEls,
               { opacity: config.startOpacity !== undefined ? config.startOpacity : 0.16 },
               {
                 opacity: 1,
@@ -275,8 +305,8 @@
                 ease: "none",
                 scrollTrigger: {
                   trigger: triggerEl,
-                  start: config.start || "top 82%",
-                  end: config.end || "bottom 58%",
+                  start: config.start || "top 85%",
+                  end: config.end || "top 55%",
                   scrub: config.scrub !== undefined ? config.scrub : 0.35,
                   invalidateOnRefresh: true
                 }
@@ -286,47 +316,121 @@
         }
 
         // 1. Manifesto
-        scrubTokenizeAndAnimate(document.querySelectorAll(".scrub-text"), {
+        applyScrub(document.querySelectorAll(".scrub-text"), {
           start: "top 82%",
-          end: "bottom 55%",
+          end: "bottom 52%",
           stagger: 0.05,
           startOpacity: 0.14
         });
 
-        // 2. Flagship Project Descriptions (.card-desc)
-        scrubTokenizeAndAnimate(document.querySelectorAll(".card-desc"), {
+        // 2. Section Headers & Eyebrows (.section-head h2, .pan-head-content h2, .eyebrow)
+        applyScrub(document.querySelectorAll(".section-head h2, .pan-head-content h2"), {
+          trigger: ".section-head, .pan-head",
+          start: "top 88%",
+          end: "top 55%",
+          stagger: 0.06,
+          startOpacity: 0.18
+        });
+
+        applyScrub(document.querySelectorAll(".eyebrow"), {
+          trigger: ".section-head",
+          start: "top 90%",
+          end: "top 65%",
+          stagger: 0.04,
+          startOpacity: 0.22
+        });
+
+        // 3. Flagship Project Titles (.card-title), Tags (.card-tags) & Descriptions (.card-desc)
+        applyScrub(document.querySelectorAll(".card-title"), {
           trigger: ".stack-card",
-          start: "top 72%",
+          start: "top 78%",
+          end: "top 42%",
+          stagger: 0.06,
+          startOpacity: 0.18
+        });
+
+        applyScrub(document.querySelectorAll(".card-tags"), {
+          trigger: ".stack-card",
+          start: "top 82%",
+          end: "top 50%",
+          stagger: 0.04,
+          startOpacity: 0.22
+        });
+
+        applyScrub(document.querySelectorAll(".card-desc"), {
+          trigger: ".stack-card",
+          start: "top 68%",
           end: "top 25%",
           stagger: 0.03,
           startOpacity: 0.18
         });
 
-        // 3. Journey Milestones (.tl-what p:not(.tl-org))
-        scrubTokenizeAndAnimate(document.querySelectorAll(".tl-what p:not(.tl-org)"), {
+        // 4. Journey Timeline Titles (.tl-what h3) & Milestones (.tl-what p:not(.tl-org))
+        applyScrub(document.querySelectorAll(".tl-what h3"), {
           trigger: ".tl-item",
-          start: "top 82%",
+          start: "top 88%",
+          end: "top 60%",
+          stagger: 0.05,
+          startOpacity: 0.2
+        });
+
+        applyScrub(document.querySelectorAll(".tl-what p:not(.tl-org)"), {
+          trigger: ".tl-item",
+          start: "top 80%",
           end: "bottom 60%",
           stagger: 0.03,
           startOpacity: 0.18
         });
 
-        // 4. Proof Bento Descriptions (.cell-label)
-        scrubTokenizeAndAnimate(document.querySelectorAll(".cell-label"), {
+        // 5. Proof Bento Descriptions (.cell-label) & Headings (.cell-big)
+        applyScrub(document.querySelectorAll(".cell-big"), {
+          trigger: ".stats-grid",
+          start: "top 84%",
+          end: "top 58%",
+          stagger: 0.05,
+          startOpacity: 0.2
+        });
+
+        applyScrub(document.querySelectorAll(".cell-label"), {
           trigger: ".stats-grid",
           start: "top 80%",
-          end: "bottom 62%",
+          end: "bottom 60%",
           stagger: 0.025,
           startOpacity: 0.18
         });
 
-        // 5. Section Subtitles (.pan-head-content p)
-        scrubTokenizeAndAnimate(document.querySelectorAll(".pan-head-content p"), {
+        // 6. More Builds Pan Titles (.pan-meta h3), Subtitles (.pan-head-content p) & Descriptions (.pan-meta p)
+        applyScrub(document.querySelectorAll(".pan-head-content p"), {
           trigger: ".pan-head",
           start: "top 85%",
           end: "bottom 65%",
           stagger: 0.03,
           startOpacity: 0.18
+        });
+
+        applyScrub(document.querySelectorAll(".pan-meta h3"), {
+          trigger: ".pan-card",
+          start: "top 90%",
+          end: "top 65%",
+          stagger: 0.05,
+          startOpacity: 0.2
+        });
+
+        applyScrub(document.querySelectorAll(".pan-meta p"), {
+          trigger: ".pan-card",
+          start: "top 86%",
+          end: "top 55%",
+          stagger: 0.03,
+          startOpacity: 0.18
+        });
+
+        // 7. Contact Headline (.contact-title)
+        applyScrub(document.querySelectorAll(".contact-title"), {
+          trigger: ".contact",
+          start: "top 80%",
+          end: "top 45%",
+          stagger: 0.06,
+          startOpacity: 0.16
         });
       })();
 
@@ -391,12 +495,6 @@
           });
         });
       })();
-
-      /* Contact headline mask reveal */
-      gsap.from(".contact-title .line-inner", {
-        yPercent: 110, duration: 1.0, ease: "power4.out", stagger: 0.12,
-        scrollTrigger: { trigger: ".contact", start: "top 75%", once: true }
-      });
 
       /* Persistent Ambient Pointer Highlighter */
       if (window.matchMedia("(pointer: fine)").matches) {
