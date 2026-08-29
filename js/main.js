@@ -296,12 +296,14 @@
       /* Activity HeatMap & Trophies entrance */
       (function () {
         gsap.from(".heatmap-card", {
-          y: 36, autoAlpha: 0, duration: 0.85, ease: "power3.out",
+          y: 32, autoAlpha: 0, duration: 0.8, ease: "power3.out",
+          clearProps: "transform,opacity,visibility",
           scrollTrigger: { trigger: ".heatmap-card", start: "top 85%", once: true }
         });
-        gsap.from(".trophy-card", {
-          y: 28, autoAlpha: 0, duration: 0.7, ease: "power3.out", stagger: 0.05,
-          scrollTrigger: { trigger: ".trophies-grid", start: "top 85%", once: true }
+        gsap.from(".trophies-wrap", {
+          y: 32, autoAlpha: 0, duration: 0.8, ease: "power3.out",
+          clearProps: "transform,opacity,visibility",
+          scrollTrigger: { trigger: ".trophies-wrap", start: "top 85%", once: true }
         });
       })();
 
