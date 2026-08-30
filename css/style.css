@@ -1562,6 +1562,7 @@ html, body {
     box-sizing: border-box !important;
   }
 
+  section[id], footer[id] { scroll-margin-top: 80px; }
   section { padding-block: clamp(56px, 9vh, 88px) 0; }
   .section-head { margin-bottom: 36px; gap: 12px; }
   .section-head h2 {
@@ -1778,29 +1779,111 @@ html, body {
   .article-pager { grid-template-columns: 1fr; gap: 10px; }
 
   /* Contact & Footer */
+  .contact {
+    padding-top: clamp(40px, 7vh, 60px);
+    scroll-margin-top: calc(var(--nav-h) + 24px);
+  }
+  .contact-title {
+    font-size: clamp(1.75rem, 6.8vw, 2.6rem);
+    line-height: 1.08;
+  }
+  .footer-desc {
+    font-size: 13.5px;
+    line-height: 1.55;
+    margin-top: 12px;
+  }
   .footer-top-grid {
     grid-template-columns: 1fr;
-    gap: 36px;
-  }
-  .footer-nav-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
   }
-  .footer-big-name-wrap {
-    margin-top: 32px;
-    margin-bottom: 12px;
-    padding-inline: 12px;
-  }
   .email-row {
-    flex-direction: column; align-items: stretch; gap: 10px; margin-top: 24px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 18px;
+    padding: 8px 12px;
+    background: var(--bg-2);
+    border: 1px solid var(--line-strong);
+    width: 100%;
+    box-sizing: border-box;
   }
-  .copy-email-btn { width: 100%; justify-content: center; height: 44px; }
-  .email-link { font-size: clamp(1rem, 5vw, 1.5rem); word-break: break-all; }
-  .social-row { flex-wrap: wrap; gap: 8px; margin-top: 24px; }
-  .social-row a { width: 42px; height: 42px; }
-  .foot-row { flex-direction: column; align-items: center; text-align: center; gap: 12px; }
-  .foot-brand { flex-direction: column; gap: 4px; }
-  .foot-role { border-left: none; padding-left: 0; }
+  .email-link {
+    font-size: clamp(12px, 3.6vw, 14px);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .copy-email-btn {
+    height: 32px;
+    padding: 0 12px;
+    font-size: 10.5px;
+    flex-shrink: 0;
+  }
+  .social-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .social-row a {
+    width: 38px;
+    height: 38px;
+  }
+  .social-row a img {
+    width: 18px;
+    height: 18px;
+  }
+  .social-txt {
+    font-size: 14px;
+  }
+  .footer-nav-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px 10px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+  }
+  .footer-nav-col {
+    gap: 8px;
+  }
+  .footer-col-title {
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+  }
+  .footer-nav-col ul {
+    gap: 6px;
+  }
+  .footer-nav-col a {
+    font-size: 11.5px;
+    line-height: 1.35;
+  }
+  .footer-big-name-wrap {
+    margin-top: 24px;
+    margin-bottom: 8px;
+    padding-inline: 4px;
+  }
+  .foot-bottom {
+    padding: 16px 0 24px;
+  }
+  .foot-row {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 8px;
+    font-size: 11px;
+  }
+  .foot-brand {
+    flex-direction: row;
+    gap: 8px;
+  }
+  .foot-role {
+    border-left: 1px solid var(--line-strong);
+    padding-left: 8px;
+  }
   .toast { left: 12px; right: 12px; bottom: 16px; justify-content: center; text-align: center; }
 }
 
@@ -1814,8 +1897,13 @@ html, body {
   .marquee-track li span { font-size: 11px; }
   .cell-num { font-size: 2rem; }
   .card-media { min-height: 150px; }
-  .footer-nav-grid { grid-template-columns: 1fr; gap: 20px; }
-  .footer-big-name-wrap { padding-inline: 6px; }
+  .footer-nav-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px 6px;
+  }
+  .footer-col-title { font-size: 9.5px; }
+  .footer-nav-col a { font-size: 10.5px; }
+  .footer-big-name-wrap { padding-inline: 2px; }
 }
 
 /* ---------- Reduced motion ---------- */
