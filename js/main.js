@@ -986,70 +986,25 @@
       return function () { killLoader(); };
     });
 
-    /* ---------- More Builds Horizontal Carousel Controller ---------- */
-    var trackWrap = document.querySelector(".pan-track-wrap");
+    /* ---------- More Builds Infinite Auto-Scrolling Marquee Controller ---------- */
+    var marqueeInner = document.querySelector(".pan-marquee-inner");
     var prevBtn = document.querySelector(".pan-prev");
     var nextBtn = document.querySelector(".pan-next");
-    var progressBar = document.querySelector(".pan-progress-bar");
-    var countCurr = document.querySelector(".pan-curr");
-    var panCards = document.querySelectorAll(".pan-card");
 
-    if (trackWrap) {
-      function getScrollStep() {
-        var firstCard = document.querySelector(".pan-card");
-        return firstCard ? firstCard.offsetWidth + 24 : 360;
-      }
-
+    if (marqueeInner) {
       if (prevBtn) {
         prevBtn.addEventListener("click", function () {
-          trackWrap.scrollBy({ left: -getScrollStep(), behavior: "smooth" });
+          marqueeInner.style.animationDirection = "reverse";
+          marqueeInner.classList.remove("is-paused");
         });
       }
 
       if (nextBtn) {
         nextBtn.addEventListener("click", function () {
-          trackWrap.scrollBy({ left: getScrollStep(), behavior: "smooth" });
+          marqueeInner.style.animationDirection = "normal";
+          marqueeInner.classList.remove("is-paused");
         });
       }
-
-      /* Update progress bar and counter on track scroll */
-      trackWrap.addEventListener("scroll", function () {
-        var maxScroll = trackWrap.scrollWidth - trackWrap.clientWidth;
-        if (maxScroll > 0) {
-          var progress = trackWrap.scrollLeft / maxScroll;
-          if (progressBar) {
-            progressBar.style.transform = "scaleX(" + Math.max(0.09, progress) + ")";
-          }
-          if (countCurr && panCards.length > 0) {
-            var idx = Math.min(panCards.length, Math.floor(progress * (panCards.length - 1)) + 1);
-            var str = idx < 10 ? "0" + idx : "" + idx;
-            if (countCurr.textContent !== str) {
-              countCurr.textContent = str;
-            }
-          }
-        }
-      }, { passive: true });
-
-      /* Drag to scroll support */
-      var isDown = false;
-      var startX = 0;
-      var scrollLeftStart = 0;
-
-      trackWrap.addEventListener("mousedown", function (e) {
-        isDown = true;
-        startX = e.pageX - trackWrap.offsetLeft;
-        scrollLeftStart = trackWrap.scrollLeft;
-      });
-
-      trackWrap.addEventListener("mouseleave", function () { isDown = false; });
-      trackWrap.addEventListener("mouseup", function () { isDown = false; });
-      trackWrap.addEventListener("mousemove", function (e) {
-        if (!isDown) return;
-        e.preventDefault();
-        var x = e.pageX - trackWrap.offsetLeft;
-        var walk = (x - startX) * 1.5;
-        trackWrap.scrollLeft = scrollLeftStart - walk;
-      });
     }
 
     /* Back to top button */
