@@ -922,23 +922,16 @@
         });
       }
 
-      /* Card images: Monochrome by default, illuminate smoothly as they scroll into view */
+      /* Card images: Crisp monochrome by default with subtle breathing focus on arrival */
       gsap.utils.toArray(".card-media img, .pan-card figure img, .cell-img img").forEach(function (img) {
         var parentTrigger = img.closest("article, li, .cell") || img;
 
         gsap.fromTo(img,
-          { scale: 1.08 },
+          { scale: 1.06 },
           {
             scale: 1.001, ease: "none",
             scrollTrigger: { trigger: parentTrigger, start: "top bottom", end: "top 30%", scrub: true }
           });
-
-        ScrollTrigger.create({
-          trigger: parentTrigger,
-          start: "top 75%",
-          end: "bottom 25%",
-          toggleClass: { targets: img, className: "img-in-view" }
-        });
       });
 
       /* Nav ScrollSpy */
