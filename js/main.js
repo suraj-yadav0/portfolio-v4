@@ -647,28 +647,28 @@
           startOpacity: 0.22
         });
 
-        // 3. Flagship Project Titles (.card-title), Tags (.card-tags) & Descriptions (.card-desc)
-        applyScrub(document.querySelectorAll(".card-title"), {
-          trigger: ".stack-card",
-          start: "top 78%",
-          end: "top 42%",
-          stagger: 0.06,
+        // 3. Flagship Project Titles (.project-title, .card-title), Taglines & Descriptions (.project-desc, .card-desc)
+        applyScrub(document.querySelectorAll(".project-title, .card-title"), {
+          trigger: ".project-showcase-card, .stack-card",
+          start: "top 80%",
+          end: "top 50%",
+          stagger: 0.05,
           startOpacity: 0.18
         });
 
-        applyScrub(document.querySelectorAll(".card-tags"), {
-          trigger: ".stack-card",
-          start: "top 82%",
-          end: "top 50%",
-          stagger: 0.04,
-          startOpacity: 0.22
+        applyScrub(document.querySelectorAll(".project-tagline"), {
+          trigger: ".project-showcase-card",
+          start: "top 78%",
+          end: "top 48%",
+          stagger: 0.03,
+          startOpacity: 0.2
         });
 
-        applyScrub(document.querySelectorAll(".card-desc"), {
-          trigger: ".stack-card",
-          start: "top 68%",
-          end: "top 25%",
-          stagger: 0.03,
+        applyScrub(document.querySelectorAll(".project-desc, .card-desc"), {
+          trigger: ".project-showcase-card, .stack-card",
+          start: "top 72%",
+          end: "top 35%",
+          stagger: 0.025,
           startOpacity: 0.18
         });
 
@@ -883,7 +883,7 @@
         }
 
         /* Card specular lighting */
-        var glowCards = document.querySelectorAll(".stack-card, .pan-card, .cell, .trophy-card, .featured-post-card, .article-card");
+        var glowCards = document.querySelectorAll(".project-showcase-card, .stack-card, .pan-card, .cell, .trophy-card, .featured-post-card, .article-card");
         glowCards.forEach(function (card) {
           card.addEventListener("pointermove", function (e) {
             var rect = card.getBoundingClientRect();
@@ -891,6 +891,21 @@
             var y = e.clientY - rect.top;
             card.style.setProperty("--mouse-x", x + "px");
             card.style.setProperty("--mouse-y", y + "px");
+          });
+        });
+
+        /* Project Showcase Cards entrance animation */
+        gsap.utils.toArray(".project-showcase-card").forEach(function (card) {
+          gsap.from(card, {
+            y: 36,
+            autoAlpha: 0,
+            duration: 0.8,
+            ease: "power3.out",
+            scrollTrigger: {
+              trigger: card,
+              start: "top 88%",
+              toggleActions: "play none none reverse"
+            }
           });
         });
 
@@ -910,7 +925,7 @@
       /* Card images breathe into focus as their card arrives */
       gsap.utils.toArray(".card-media img, .pan-card figure img").forEach(function (img) {
         gsap.fromTo(img,
-          { scale: 1.12 },
+          { scale: 1.1 },
           {
             scale: 1.001, ease: "none",
             scrollTrigger: { trigger: img.closest("article, li"), start: "top bottom", end: "top 30%", scrub: true }
