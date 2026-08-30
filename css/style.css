@@ -1020,9 +1020,9 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   width: 100%;
   max-width: 100vw;
   overflow: hidden;
-  margin-top: clamp(48px, 7vw, 96px);
-  margin-bottom: clamp(12px, 2vw, 28px);
-  padding-inline: clamp(16px, 4vw, 64px);
+  margin-top: clamp(48px, 8vw, 110px);
+  margin-bottom: clamp(8px, 1.5vw, 20px);
+  padding-inline: clamp(8px, 2.5vw, 36px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1032,7 +1032,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 }
 .footer-name-svg {
   width: 100%;
-  max-width: 1320px;
+  max-width: min(1800px, 98vw);
   height: auto;
   display: block;
   overflow: visible;
@@ -1040,7 +1040,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 }
 .footer-svg-text {
   font-family: var(--font-d);
-  font-size: 165px;
+  font-size: 182px;
   font-weight: 700;
   letter-spacing: -0.035em;
   fill: var(--text);
