@@ -197,23 +197,23 @@
     function renderHeatmap(data, selectedYear) {
       if (!data) return;
 
+      var todayStr = new Date().toISOString().split("T")[0];
       var filtered = [];
       var totalCount = 0;
       var peakCount = 0;
 
+      var sourceList = data.allContributions || data.contributions || [];
+
       if (selectedYear === "last") {
-        if (data.lastYearContributions && data.lastYearContributions.length) {
-          filtered = data.lastYearContributions.slice();
-        } else if (data.allContributions && data.allContributions.length) {
-          filtered = data.allContributions.slice(-371);
-        } else if (data.contributions && data.contributions.length) {
-          var sorted = data.contributions.slice().sort(function (a, b) {
-            return a.date.localeCompare(b.date);
+        if (sourceList.length) {
+          var pastOnly = sourceList.filter(function (item) {
+            return item.date <= todayStr;
           });
-          filtered = sorted.slice(-371);
+          filtered = pastOnly.slice(-365);
+        } else if (data.lastYearContributions && data.lastYearContributions.length) {
+          filtered = data.lastYearContributions.slice();
         }
       } else {
-        var sourceList = data.allContributions || (data.years && data.years[selectedYear]) || data.contributions || [];
         filtered = sourceList.filter(function (item) {
           return item.date.startsWith(selectedYear + "-");
         }).sort(function (a, b) {
@@ -398,29 +398,33 @@
       });
     });
 
+    // 1. Instant load from offline cache to prevent layout shift
     fetch("assets/contributions-cache.json")
       .then(function (res) {
         if (!res.ok) throw new Error("Cache not available");
         return res.json();
       })
       .then(function (data) {
-        globalData = data;
-        var grandTotal = data.total && (data.total.allTime || 0);
-        if (!grandTotal && data.total) {
-          for (var yr in data.total) {
-            if (yr !== "lastYear") grandTotal += data.total[yr];
+        if (!globalData) {
+          globalData = data;
+          var grandTotal = data.allTimeTotal || (data.total && data.total.allTime) || 0;
+          if (!grandTotal && data.total) {
+            for (var yr in data.total) {
+              if (yr !== "lastYear") grandTotal += data.total[yr];
+            }
           }
+          if (allTimeNum && grandTotal > 0) {
+            allTimeNum.textContent = grandTotal.toLocaleString();
+          }
+          renderHeatmap(globalData, currentYear);
         }
-        if (allTimeNum && grandTotal > 0) {
-          allTimeNum.textContent = grandTotal.toLocaleString();
-        }
-        renderHeatmap(globalData, currentYear);
       })
       .catch(function () {});
 
+    // 2. Real-time live fetch from GitHub Contributions API
     fetch("https://github-contributions-api.jogruber.de/v4/suraj-yadav0?y=all")
       .then(function (res) {
-        if (!res.ok) throw new Error("API not ok");
+        if (!res.ok) throw new Error("Live API not ok");
         return res.json();
       })
       .then(function (freshData) {
@@ -428,21 +432,36 @@
           var sorted = freshData.contributions.slice().sort(function (a, b) {
             return a.date.localeCompare(b.date);
           });
-          globalData = globalData || {};
-          globalData.allContributions = sorted;
+
+          var grandTotal = 0;
           if (freshData.total) {
-            var grandTotal = 0;
             for (var yr in freshData.total) {
               grandTotal += freshData.total[yr];
             }
-            if (allTimeNum && grandTotal > 0) {
-              allTimeNum.textContent = grandTotal.toLocaleString();
-            }
           }
+
+          var todayStr = new Date().toISOString().split("T")[0];
+          var pastOnly = sorted.filter(function (item) {
+            return item.date <= todayStr;
+          });
+
+          globalData = {
+            total: freshData.total,
+            allTimeTotal: grandTotal,
+            allContributions: sorted,
+            lastYearContributions: pastOnly.slice(-365)
+          };
+
+          if (allTimeNum && grandTotal > 0) {
+            allTimeNum.textContent = grandTotal.toLocaleString();
+          }
+
           renderHeatmap(globalData, currentYear);
         }
       })
-      .catch(function () {});
+      .catch(function (err) {
+        console.warn("Live GitHub contributions fetch fallback:", err);
+      });
   })();
 
   var loader = document.querySelector(".loader");
