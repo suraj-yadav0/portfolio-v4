@@ -440,6 +440,7 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 
 .w {
   display: inline-block;
+  opacity: 0.18;
   will-change: opacity;
   transition: color 0.25s ease, text-shadow 0.25s ease;
 }

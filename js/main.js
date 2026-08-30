@@ -345,6 +345,11 @@
 
       canvasContainer.innerHTML = "";
       canvasContainer.appendChild(svg);
+      if (window.ScrollTrigger) {
+        requestAnimationFrame(function () {
+          ScrollTrigger.refresh();
+        });
+      }
     }
 
     var ttCountEl = tooltip.querySelector(".tt-count");
@@ -510,7 +515,10 @@
         .from(".hero-title .line-inner", { yPercent: 110, duration: 1.1, stagger: 0.12 }, "-=0.4")
         .from(".hero-sub", { y: 22, autoAlpha: 0, duration: 0.75 }, "-=0.7")
         .from(".hero-ctas .btn", { y: 18, autoAlpha: 0, duration: 0.65, stagger: 0.08 }, "-=0.55")
-        .add(killLoader);
+        .add(function () {
+          killLoader();
+          if (window.ScrollTrigger) ScrollTrigger.refresh();
+        });
 
       /* Hero blueprint grid drifts with subtle parallax */
       gsap.to(".hero-bg", {
@@ -565,6 +573,7 @@
         }
 
         function applyScrub(elements, config) {
+          var startOp = config.startOpacity !== undefined ? config.startOpacity : 0.18;
           elements.forEach(function (el) {
             var wordEls = scrubTokenize(el);
             if (!wordEls || !wordEls.length) return;
@@ -573,31 +582,33 @@
               ? (typeof config.trigger === "function" ? config.trigger(el) : el.closest(config.trigger) || el)
               : el;
 
-            gsap.fromTo(
-              wordEls,
-              { opacity: config.startOpacity !== undefined ? config.startOpacity : 0.16 },
-              {
-                opacity: 1,
-                stagger: config.stagger || 0.04,
-                ease: "none",
-                scrollTrigger: {
-                  trigger: triggerEl,
-                  start: config.start || "top 85%",
-                  end: config.end || "top 55%",
-                  scrub: config.scrub !== undefined ? config.scrub : 0.35,
-                  invalidateOnRefresh: true
-                }
+            gsap.set(wordEls, { opacity: startOp });
+
+            gsap.to(wordEls, {
+              opacity: 1,
+              stagger: {
+                each: config.stagger || 0.03,
+                from: "start"
+              },
+              ease: "none",
+              scrollTrigger: {
+                trigger: triggerEl,
+                start: config.start || "top 82%",
+                end: config.end || "bottom 48%",
+                scrub: config.scrub !== undefined ? config.scrub : 0.35,
+                invalidateOnRefresh: true
               }
-            );
+            });
           });
         }
 
         // 1. Manifesto
         applyScrub(document.querySelectorAll(".scrub-text"), {
-          start: "top 82%",
-          end: "bottom 52%",
-          stagger: 0.05,
-          startOpacity: 0.14
+          trigger: ".manifesto",
+          start: "top 78%",
+          end: "bottom 42%",
+          stagger: 0.035,
+          startOpacity: 0.18
         });
 
         // 2. Section Headers & Eyebrows (.section-head h2, .pan-head-content h2, .eyebrow)
@@ -1021,7 +1032,19 @@
       });
     }
 
-    window.addEventListener("load", function () { ScrollTrigger.refresh(); });
+    /* Refresh ScrollTrigger when web fonts are loaded */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        ScrollTrigger.refresh();
+      });
+    }
+
+    window.addEventListener("load", function () {
+      ScrollTrigger.refresh();
+      setTimeout(function () {
+        ScrollTrigger.refresh();
+      }, 300);
+    });
 
   } catch (err) {
     killLoader();
