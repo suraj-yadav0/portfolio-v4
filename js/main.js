@@ -726,6 +726,37 @@
           stagger: 0.06,
           startOpacity: 0.16
         });
+
+        // 9. Footer Sitemap Headers (.footer-col-title) & Descriptions (.footer-desc)
+        applyScrub(document.querySelectorAll(".footer-desc"), {
+          trigger: ".contact",
+          start: "top 75%",
+          end: "top 45%",
+          stagger: 0.03,
+          startOpacity: 0.18
+        });
+      })();
+
+      /* Big Footer Name subtle reveal */
+      (function () {
+        var bigNames = document.querySelectorAll(".footer-big-name");
+        bigNames.forEach(function (nameEl) {
+          gsap.fromTo(
+            nameEl,
+            { y: 35, opacity: 0.2 },
+            {
+              y: 0,
+              opacity: 1,
+              ease: "none",
+              scrollTrigger: {
+                trigger: nameEl.closest(".contact") || nameEl,
+                start: "top 65%",
+                end: "bottom bottom",
+                scrub: 0.4
+              }
+            }
+          );
+        });
       })();
 
       /* Proof bento entrance + number roll-up */
