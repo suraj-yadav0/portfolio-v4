@@ -325,7 +325,8 @@ html.lenis, html.lenis body { height: auto; }
 /* ---------- Section headers ---------- */
 
 section { padding-block: clamp(96px, 13vh, 160px) 0; }
-.work, .manifesto, .stats, .activity, .journey, .morebuilds, .writing { padding-bottom: 0; }
+.manifesto, .stats, .activity, .journey, .morebuilds, .writing { padding-bottom: 0; }
+.work { padding-bottom: clamp(64px, 9vh, 120px); position: relative; z-index: 1; }
 
 .section-head { margin-bottom: 64px; display: grid; gap: 18px; }
 .section-head h2 {
@@ -970,9 +971,18 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 .tl-progress { stroke: var(--accent) !important; }
 
 /* ---------- More builds horizontal pan ---------- */
-
-.morebuilds { overflow: hidden; }
-.pan-pin { padding-top: clamp(96px, 13vh, 160px); }
+ 
+.morebuilds {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+  overflow: hidden;
+  padding-top: 0;
+}
+.pan-pin {
+  padding-top: clamp(64px, 10vh, 120px);
+  background: var(--bg);
+}
 .pan-head {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
   gap: 24px; margin-bottom: 56px;

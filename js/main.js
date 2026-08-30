@@ -988,34 +988,6 @@
 
     mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", function () {
 
-      /* Flagship sticky-stack: 100% bright in focus, subtle depth dimming only when superseded */
-      var cards = gsap.utils.toArray(".stack-card");
-      cards.forEach(function (card, i) {
-        if (i === cards.length - 1) return;
-        ScrollTrigger.create({
-          trigger: card,
-          start: "top top",
-          endTrigger: cards[cards.length - 1],
-          end: "top top",
-          pin: true,
-          pinSpacing: false
-        });
-
-        gsap.to(card, {
-          scale: 0.95,
-          opacity: 0.72,
-          filter: "brightness(0.75)",
-          ease: "none",
-          transformOrigin: "50% 0%",
-          scrollTrigger: {
-            trigger: cards[i + 1],
-            start: "top 45%",
-            end: "top top",
-            scrub: true
-          }
-        });
-      });
-
       /* More builds: horizontal pan + live progress tracking & velocity skew */
       var wrap = document.querySelector(".morebuilds");
       var track = document.querySelector(".pan-track");
@@ -1024,7 +996,7 @@
       var panCards = document.querySelectorAll(".pan-card");
 
       if (wrap && track) {
-        var distance = function () { return Math.max(0, track.scrollWidth - window.innerWidth); };
+        var distance = function () { return Math.max(0, track.scrollWidth - window.innerWidth + 80); };
 
         gsap.to(track, {
           x: function () { return -distance(); },
@@ -1034,7 +1006,8 @@
             start: "top top",
             end: function () { return "+=" + distance(); },
             pin: true,
-            scrub: 0.8,
+            anticipatePin: 1,
+            scrub: 0.6,
             invalidateOnRefresh: true,
             onUpdate: function (self) {
               if (progressBar) {
