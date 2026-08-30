@@ -982,66 +982,119 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
 .tl-body { margin-top: 16px; color: var(--text-2); font-size: 15.5px; line-height: 1.7; max-width: 62ch; }
 .tl-progress { stroke: var(--accent) !important; }
 
-/* ---------- More builds horizontal pan ---------- */
+/* ---------- More builds horizontal carousel ---------- */
  
 .morebuilds {
   position: relative;
   z-index: 2;
   background: var(--bg);
   overflow: hidden;
-  padding-top: 0;
+  padding-block: clamp(64px, 10vh, 120px) clamp(80px, 12vh, 140px);
 }
 .pan-pin {
-  padding-top: clamp(64px, 10vh, 120px);
-  background: var(--bg);
+  padding-top: 0;
+  background: transparent;
 }
 .pan-head {
   display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
-  gap: 24px; margin-bottom: 56px;
+  gap: 24px; margin-bottom: 40px;
 }
 .pan-head-content h2 {
   font-size: clamp(2rem, 4.4vw, 3.3rem);
   font-weight: 600; letter-spacing: -0.02em;
 }
 .pan-head-content p { color: var(--text-2); max-width: 46ch; margin-top: 8px; }
+
+.pan-controls {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 .pan-progress-wrap {
   display: flex; align-items: center; gap: 14px;
   font-family: var(--font-m); font-size: 12px; letter-spacing: 0.1em;
   color: var(--text-2);
 }
 .pan-progress-track {
-  width: 140px; height: 2px; background: var(--line-strong);
+  width: 120px; height: 2px; background: var(--line-strong);
   overflow: hidden; position: relative;
 }
 .pan-progress-bar {
   height: 100%; width: 100%; background: var(--accent);
   transform-origin: left center; transform: scaleX(0.09);
-  transition: transform 0.1s linear;
+  transition: transform 0.15s ease-out;
 }
+
+.pan-nav-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.pan-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: var(--bg-2);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 0;
+  transition: all 0.2s ease;
+}
+.pan-nav-btn:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0E1013;
+  transform: translateY(-2px);
+}
+.pan-nav-btn:active {
+  transform: scale(0.96);
+}
+
 .pan-track-wrap {
   overflow-x: auto;
+  overflow-y: hidden;
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
   scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding-block: 8px 16px;
+  cursor: grab;
 }
-@media (min-width: 900px) {
-  .pan-track-wrap { overflow: visible; scroll-snap-type: none; }
+.pan-track-wrap:active {
+  cursor: grabbing;
 }
 .pan-track-wrap::-webkit-scrollbar { display: none; }
-.pan-track { display: flex; gap: 24px; width: max-content; padding-inline: 24px; padding-right: 48px; }
+.pan-track {
+  display: flex;
+  gap: 24px;
+  width: max-content;
+  padding-inline: 24px;
+  padding-right: 48px;
+  list-style: none;
+  margin: 0;
+}
 @media (min-width: 1248px) {
   .pan-track { padding-inline: max(calc((100vw - 1200px) / 2), 24px); }
 }
 .pan-card {
-  width: clamp(280px, 30vw, 400px); flex-shrink: 0;
-  border: 1px solid var(--line-strong); background: var(--bg-2);
-  scroll-snap-align: center;
+  width: clamp(280px, 30vw, 380px);
+  flex-shrink: 0;
+  border: 1px solid var(--line-strong);
+  background: var(--bg-2);
+  scroll-snap-align: start;
   position: relative;
   box-shadow: var(--pan-shadow);
   will-change: transform;
   --mouse-x: 50%;
   --mouse-y: 50%;
-  transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, transform 0.3s var(--ease-out);
+}
+.pan-card:hover {
+  border-color: var(--accent);
 }
 .pan-card figure { overflow: hidden; aspect-ratio: 720 / 520; border-bottom: 1px solid var(--line-strong); background: var(--card-media-bg); }
 .pan-card figure img {

@@ -986,48 +986,71 @@
       return function () { killLoader(); };
     });
 
-    /* ---------- Desktop-only choreography (min-width: 900px) ---------- */
+    /* ---------- More Builds Horizontal Carousel Controller ---------- */
+    var trackWrap = document.querySelector(".pan-track-wrap");
+    var prevBtn = document.querySelector(".pan-prev");
+    var nextBtn = document.querySelector(".pan-next");
+    var progressBar = document.querySelector(".pan-progress-bar");
+    var countCurr = document.querySelector(".pan-curr");
+    var panCards = document.querySelectorAll(".pan-card");
 
-    mm.add("(min-width: 900px) and (prefers-reduced-motion: no-preference)", function () {
+    if (trackWrap) {
+      function getScrollStep() {
+        var firstCard = document.querySelector(".pan-card");
+        return firstCard ? firstCard.offsetWidth + 24 : 360;
+      }
 
-      /* More builds: horizontal pan + live progress tracking & velocity skew */
-      var wrap = document.querySelector(".morebuilds");
-      var track = document.querySelector(".pan-track");
-      var progressBar = document.querySelector(".pan-progress-bar");
-      var countCurr = document.querySelector(".pan-curr");
-      var panCards = document.querySelectorAll(".pan-card");
-
-      if (wrap && track) {
-        var distance = function () { return Math.max(0, track.scrollWidth - window.innerWidth + 80); };
-
-        gsap.to(track, {
-          x: function () { return -distance(); },
-          ease: "none",
-          scrollTrigger: {
-            trigger: wrap,
-            start: "top top",
-            end: function () { return "+=" + distance(); },
-            pin: true,
-            anticipatePin: 1,
-            scrub: 0.6,
-            invalidateOnRefresh: true,
-            onUpdate: function (self) {
-              if (progressBar) {
-                var p = Math.max(0.09, self.progress);
-                progressBar.style.transform = "scaleX(" + p + ")";
-              }
-              if (countCurr && panCards.length > 0) {
-                var idx = Math.min(panCards.length, Math.floor(self.progress * panCards.length) + 1);
-                var str = idx < 10 ? "0" + idx : "" + idx;
-                if (countCurr.textContent !== str) {
-                  countCurr.textContent = str;
-                }
-              }
-            }
-          }
+      if (prevBtn) {
+        prevBtn.addEventListener("click", function () {
+          trackWrap.scrollBy({ left: -getScrollStep(), behavior: "smooth" });
         });
       }
-    });
+
+      if (nextBtn) {
+        nextBtn.addEventListener("click", function () {
+          trackWrap.scrollBy({ left: getScrollStep(), behavior: "smooth" });
+        });
+      }
+
+      /* Update progress bar and counter on track scroll */
+      trackWrap.addEventListener("scroll", function () {
+        var maxScroll = trackWrap.scrollWidth - trackWrap.clientWidth;
+        if (maxScroll > 0) {
+          var progress = trackWrap.scrollLeft / maxScroll;
+          if (progressBar) {
+            progressBar.style.transform = "scaleX(" + Math.max(0.09, progress) + ")";
+          }
+          if (countCurr && panCards.length > 0) {
+            var idx = Math.min(panCards.length, Math.floor(progress * (panCards.length - 1)) + 1);
+            var str = idx < 10 ? "0" + idx : "" + idx;
+            if (countCurr.textContent !== str) {
+              countCurr.textContent = str;
+            }
+          }
+        }
+      }, { passive: true });
+
+      /* Drag to scroll support */
+      var isDown = false;
+      var startX = 0;
+      var scrollLeftStart = 0;
+
+      trackWrap.addEventListener("mousedown", function (e) {
+        isDown = true;
+        startX = e.pageX - trackWrap.offsetLeft;
+        scrollLeftStart = trackWrap.scrollLeft;
+      });
+
+      trackWrap.addEventListener("mouseleave", function () { isDown = false; });
+      trackWrap.addEventListener("mouseup", function () { isDown = false; });
+      trackWrap.addEventListener("mousemove", function (e) {
+        if (!isDown) return;
+        e.preventDefault();
+        var x = e.pageX - trackWrap.offsetLeft;
+        var walk = (x - startX) * 1.5;
+        trackWrap.scrollLeft = scrollLeftStart - walk;
+      });
+    }
 
     /* Back to top button */
     var topBtn = document.querySelector(".to-top");
