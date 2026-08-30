@@ -739,11 +739,11 @@
 
       /* Big Footer Name subtle reveal */
       (function () {
-        var bigNames = document.querySelectorAll(".footer-big-name");
+        var bigNames = document.querySelectorAll(".footer-name-svg, .footer-big-name");
         bigNames.forEach(function (nameEl) {
           gsap.fromTo(
             nameEl,
-            { y: 35, opacity: 0.2 },
+            { y: 30, opacity: 0.25 },
             {
               y: 0,
               opacity: 1,
