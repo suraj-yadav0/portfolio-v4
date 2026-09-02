@@ -4,6 +4,93 @@
 (function () {
   "use strict";
 
+  var lenis = null;
+  var audioCtx = null;
+
+  function getAudioContext() {
+    try {
+      var AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return null;
+      if (!audioCtx) audioCtx = new AudioCtor();
+      return audioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Pre-unlock audio context on first user interaction anywhere
+  function unlockAudio() {
+    var ctx = getAudioContext();
+    if (ctx && ctx.state === "suspended") {
+      ctx.resume().catch(function () {});
+    }
+  }
+  ["pointerdown", "keydown", "touchstart", "click"].forEach(function (evtName) {
+    window.addEventListener(evtName, unlockAudio, { passive: true, once: true });
+  });
+
+  function playUiSound(soundType) {
+    var ctx = getAudioContext();
+    if (!ctx) return;
+
+    function renderTone() {
+      try {
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (soundType === "nav") {
+          // Snappy high mechanical tick
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.03);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+          osc.start(now);
+          osc.stop(now + 0.035);
+        } else if (soundType === "action") {
+          // Punchy affirmative mechanical pop
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(480, now);
+          osc.frequency.exponentialRampToValueAtTime(960, now + 0.045);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+          osc.start(now);
+          osc.stop(now + 0.055);
+        } else if (soundType === "open") {
+          // Upward sliding chirp
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(850, now + 0.05);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (soundType === "close") {
+          // Downward sliding chirp
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.045);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      } catch (err) {}
+    }
+
+    if (ctx.state === "suspended") {
+      ctx.resume().then(renderTone).catch(function () {});
+    } else {
+      renderTone();
+    }
+  }
+
+  window.__playUiSound = playUiSound;
+
   /* ---------- Theme Toggle System ---------- */
   (function () {
     var toggleBtn = document.querySelector(".theme-toggle");
@@ -24,6 +111,7 @@
       var current = getTheme();
       var next = current === "light" ? "dark" : "light";
       setTheme(next);
+      playUiSound("action");
     });
 
     if (window.matchMedia) {
@@ -66,6 +154,7 @@
           var originalText = btnText ? btnText.textContent : "";
           if (btnText) btnText.textContent = "Copied!";
           showToast("Copied " + textToCopy + " to clipboard", "✓");
+          playUiSound("action");
 
           setTimeout(function () {
             btn.classList.remove("copied");
@@ -1141,94 +1230,6 @@
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- Lenis Smooth Scroll Setup ---------- */
-  var lenis = null;
-  var audioCtx = null;
-
-  function getAudioContext() {
-    try {
-      var AudioCtor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtor) return null;
-      if (!audioCtx) audioCtx = new AudioCtor();
-      return audioCtx;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // Pre-unlock audio context on first user interaction anywhere
-  function unlockAudio() {
-    var ctx = getAudioContext();
-    if (ctx && ctx.state === "suspended") {
-      ctx.resume().catch(function () {});
-    }
-  }
-  ["pointerdown", "keydown", "touchstart", "click"].forEach(function (evtName) {
-    window.addEventListener(evtName, unlockAudio, { passive: true, once: true });
-  });
-
-  function playUiSound(soundType) {
-    var ctx = getAudioContext();
-    if (!ctx) return;
-
-    function renderTone() {
-      try {
-        var now = ctx.currentTime;
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (soundType === "nav") {
-          // Snappy high mechanical tick
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(800, now);
-          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.03);
-          gain.gain.setValueAtTime(0.14, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
-          osc.start(now);
-          osc.stop(now + 0.035);
-        } else if (soundType === "action") {
-          // Punchy affirmative mechanical pop
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(480, now);
-          osc.frequency.exponentialRampToValueAtTime(960, now + 0.045);
-          gain.gain.setValueAtTime(0.22, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
-          osc.start(now);
-          osc.stop(now + 0.055);
-        } else if (soundType === "open") {
-          // Upward sliding chirp
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(450, now);
-          osc.frequency.exponentialRampToValueAtTime(850, now + 0.05);
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
-          osc.start(now);
-          osc.stop(now + 0.06);
-        } else if (soundType === "close") {
-          // Downward sliding chirp
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(800, now);
-          osc.frequency.exponentialRampToValueAtTime(400, now + 0.045);
-          gain.gain.setValueAtTime(0.16, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
-          osc.start(now);
-          osc.stop(now + 0.05);
-        }
-      } catch (err) {}
-    }
-
-    if (ctx.state === "suspended") {
-      ctx.resume().then(renderTone).catch(function () {});
-    } else {
-      renderTone();
-    }
-  }
-
-  window.__playUiSound = playUiSound;
-
-
   if (!reduce && window.Lenis) {
     try {
       lenis = new Lenis({
@@ -1908,6 +1909,165 @@
         }
         document.body.removeChild(ta);
       }
+    })();
+
+    /* ---------- Editorial Reading Progress & Sticky TOC ScrollSpy ---------- */
+    (function () {
+      var progressSpan = document.querySelector(".scroll-progress span");
+      var tocPill = document.getElementById("toc-progress-pill");
+      var tocLinks = document.querySelectorAll(".toc-nav a[href^='#']");
+      var articleSections = [];
+
+      tocLinks.forEach(function (link) {
+        var id = link.getAttribute("href").slice(1);
+        var sec = document.getElementById(id);
+        if (sec) articleSections.push({ id: id, element: sec, link: link });
+
+        link.addEventListener("click", function (e) {
+          e.preventDefault();
+          playUiSound("nav");
+          if (sec) {
+            if (lenis) {
+              lenis.scrollTo(sec, { offset: -70, duration: 1.1 });
+            } else {
+              sec.scrollIntoView({ behavior: "smooth" });
+            }
+          }
+        });
+      });
+
+      function updateReadingProgress() {
+        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (docHeight <= 0) return;
+        var progress = Math.min(1, Math.max(0, window.scrollY / docHeight));
+
+        if (progressSpan && !window.gsap) {
+          progressSpan.style.transform = "scaleX(" + progress + ")";
+        }
+
+        if (tocPill) {
+          var pct = Math.round(progress * 100);
+          tocPill.textContent = pct >= 98 ? "COMPLETED" : pct + "% READ";
+        }
+
+        // Active heading spy
+        if (articleSections.length) {
+          var scrollPos = window.scrollY + 140;
+          var activeId = articleSections[0].id;
+          for (var i = 0; i < articleSections.length; i++) {
+            var top = articleSections[i].element.offsetTop;
+            if (scrollPos >= top) {
+              activeId = articleSections[i].id;
+            }
+          }
+
+          articleSections.forEach(function (entry) {
+            entry.link.classList.toggle("active", entry.id === activeId);
+          });
+        }
+      }
+
+      window.addEventListener("scroll", updateReadingProgress, { passive: true });
+      updateReadingProgress();
+    })();
+
+    /* ---------- Article Action Utilities (Share & Copy Link) ---------- */
+    (function () {
+      var shareBtn = document.getElementById("share-article-btn");
+      var copyLinkBtn = document.getElementById("copy-article-link-btn");
+
+      if (shareBtn) {
+        shareBtn.addEventListener("click", function () {
+          playUiSound("action");
+          if (navigator.share) {
+            navigator.share({
+              title: document.title,
+              url: window.location.href
+            }).catch(function () {});
+          } else {
+            copyUrlToClipboard();
+          }
+        });
+      }
+
+      if (copyLinkBtn) {
+        copyLinkBtn.addEventListener("click", function () {
+          playUiSound("action");
+          copyUrlToClipboard();
+        });
+      }
+
+      function copyUrlToClipboard() {
+        var url = window.location.href;
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(url).then(function () {
+            showToast("Article link copied to clipboard", "OK");
+          }).catch(function () {
+            showToast("Link: " + url, "Info");
+          });
+        } else {
+          showToast("Article link copied to clipboard", "OK");
+        }
+      }
+    })();
+
+    /* ---------- Article Code Blocks One-Click Copy ---------- */
+    (function () {
+      var copyButtons = document.querySelectorAll(".code-copy-trigger");
+      copyButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var block = btn.closest(".article-code-block");
+          if (!block) return;
+          var codeEl = block.querySelector("code");
+          if (!codeEl) return;
+
+          var text = codeEl.innerText || codeEl.textContent;
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function () {
+              handleCodeCopySuccess(btn);
+            }).catch(function () {
+              handleCodeCopySuccess(btn);
+            });
+          } else {
+            handleCodeCopySuccess(btn);
+          }
+        });
+      });
+
+      function handleCodeCopySuccess(btn) {
+        var origText = btn.textContent;
+        btn.textContent = "Copied!";
+        playUiSound("action");
+        showToast("Code snippet copied to clipboard", "OK");
+        setTimeout(function () {
+          btn.textContent = origText;
+        }, 2000);
+      }
+    })();
+
+    /* ---------- Blog Listing Topic Filter Controller ---------- */
+    (function () {
+      var filterPills = document.querySelectorAll(".blog-filter-pill");
+      var postCards = document.querySelectorAll(".featured-post-card");
+      if (!filterPills.length) return;
+
+      filterPills.forEach(function (pill) {
+        pill.addEventListener("click", function () {
+          var filter = pill.getAttribute("data-filter") || "all";
+
+          filterPills.forEach(function (p) {
+            p.classList.toggle("active", p === pill);
+          });
+
+          postCards.forEach(function (card) {
+            var cat = card.getAttribute("data-category") || "";
+            var isMatch = filter === "all" || cat === filter;
+            card.style.display = isMatch ? "" : "none";
+          });
+
+          playUiSound("nav");
+        });
+      });
     })();
 
     /* Back to top button */

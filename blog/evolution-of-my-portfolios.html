@@ -95,6 +95,35 @@
               <span class="author-role">Software Engineer · CALIN Global Services India</span>
             </div>
           </div>
+
+          <div class="article-actions-bar">
+            <div class="article-metrics-badge">
+              <span class="metric-item"><span class="pulse-dot"></span> 14 MIN READ</span>
+              <span class="metric-divider">·</span>
+              <span class="metric-item">5 BUILDS EXPLORED</span>
+              <span class="metric-divider">·</span>
+              <span class="metric-item">TECHNICAL RETROSPECTIVE</span>
+            </div>
+            <div class="article-share-group">
+              <button class="article-share-btn" type="button" id="share-article-btn" title="Share article">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span>Share</span>
+              </button>
+              <button class="article-share-btn" type="button" id="copy-article-link-btn" title="Copy article link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Copy Link</span>
+              </button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -104,7 +133,10 @@
           <!-- TABLE OF CONTENTS (STICKY SIDEBAR) -->
           <aside class="article-toc">
             <div class="toc-inner">
-              <p class="toc-title">Table of Contents</p>
+              <div class="toc-title-row">
+                <span class="toc-title">Table of Contents</span>
+                <span class="toc-progress-pill" id="toc-progress-pill">0% READ</span>
+              </div>
               <nav class="toc-nav">
                 <a href="#intro">1. The Philosophy of Building</a>
                 <a href="#portfolio-v4">2. Portfolio v4 (Current)</a>
@@ -140,7 +172,7 @@
                     <span class="mockup-dot green"></span>
                   </div>
                   <div class="mockup-url-bar">
-                    <span class="url-lock">🔒</span> https://suraj-yadav0.github.io/portfolio-v4/
+                    <svg class="url-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> https://suraj-yadav0.github.io/portfolio-v4/
                   </div>
                   <a class="mockup-btn" href="https://suraj-yadav0.github.io/portfolio-v4/" target="_blank" rel="noopener">Visit Live Site ↗</a>
                 </div>
@@ -165,6 +197,39 @@
                 <li><strong>Universal Word-by-Word Scroll Illumination:</strong> Text starts dimmed at <code>opacity: 0.16</code> and illuminates as the reader scrolls down, functioning as an ambient eye guide.</li>
                 <li><strong>Interactive 53-Week GitHub Heatmap:</strong> Real-time SVG calendar with daily commit tooltips, all-time totals (4,506+ contributions), and multi-year filter tabs.</li>
               </ul>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">main.js · Word-by-Word Scroll Scrub Illumination</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">JavaScript</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>function scrubTokenize(el) {
+  var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, null, false);
+  var textNodes = [], node;
+  while ((node = walker.nextNode())) {
+    if (node.nodeValue.trim()) textNodes.push(node);
+  }
+  textNodes.forEach(function (tNode) {
+    var words = tNode.nodeValue.trim().split(/\s+/);
+    var group = document.createElement("span");
+    group.className = "w-group";
+    words.forEach(function (w, i) {
+      var span = document.createElement("span");
+      span.className = "w";
+      span.textContent = w;
+      group.appendChild(span);
+      if (i &lt; words.length - 1) group.appendChild(document.createTextNode(" "));
+    });
+    tNode.parentNode.replaceChild(group, tNode);
+  });
+}</code></pre>
+              </div>
             </section>
 
             <!-- 2. TERMINAL PORTFOLIO -->
@@ -180,7 +245,7 @@
                     <span class="mockup-dot green"></span>
                   </div>
                   <div class="mockup-url-bar">
-                    <span class="url-lock">💻</span> https://suraj-yadav0.github.io/terminal-portfolio/
+                    <svg class="url-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> https://suraj-yadav0.github.io/terminal-portfolio/
                   </div>
                   <a class="mockup-btn" href="https://suraj-yadav0.github.io/terminal-portfolio/" target="_blank" rel="noopener">Visit Live Site ↗</a>
                 </div>
@@ -204,6 +269,36 @@
                 <li><strong>Custom Command Parser:</strong> Supports commands like <code>help</code>, <code>whoami</code>, <code>projects</code>, <code>skills</code>, <code>sudo</code>, <code>clear</code>, <code>history</code>, and interactive easter eggs.</li>
                 <li><strong>Tab-Autocompletion &amp; History:</strong> Features bash-like <kbd>Tab</kbd> autocompletion and <kbd>↑</kbd>/<kbd>↓</kbd> command history navigation.</li>
               </ul>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">commands.js · Interactive Shell Command Dispatcher</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">JavaScript</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>const COMMANDS = {
+  whoami: () => "Suraj Yadav — Native Linux & Mobile Software Engineer",
+  skills: () => "Qt/QML, Python, Flutter, C++, Lomiri, Linux Kernel Tooling",
+  projects: () => "utgpt (On-device AI), Quantro (Finance), clockApp (GNOME)",
+  sudo: () => "Permission denied: user 'suraj' is not in the sudoers file.",
+  clear: () => null
+};
+
+function handleCommand(cmd, stdout) {
+  const [name, ...args] = cmd.trim().toLowerCase().split(/\s+/);
+  if (name in COMMANDS) {
+    const res = COMMANDS[name](args);
+    if (res !== null) stdout.push({ type: "output", text: res });
+  } else {
+    stdout.push({ type: "error", text: `command not found: ${name}. Try 'help'.` });
+  }
+}</code></pre>
+              </div>
             </section>
 
             <!-- 3. SANSKRITI PORTFOLIO -->
@@ -219,7 +314,7 @@
                     <span class="mockup-dot green"></span>
                   </div>
                   <div class="mockup-url-bar">
-                    <span class="url-lock">🎨</span> https://sanskriti-portfolio-two.vercel.app/
+                    <svg class="url-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> https://sanskriti-portfolio-two.vercel.app/
                   </div>
                   <a class="mockup-btn" href="https://sanskriti-portfolio-two.vercel.app/" target="_blank" rel="noopener">Visit Live Site ↗</a>
                 </div>
@@ -242,6 +337,33 @@
                 <li><strong>Inline SVG Symbol Library:</strong> 40+ custom vector doodle symbols (butterflies, sunrays, notebook tape, polaroid frames) injected with zero HTTP overhead.</li>
                 <li><strong>Typography &amp; Warm Color Palette:</strong> Warm cream, terracotta, and ochre color tokens paired with expressive editorial typography.</li>
               </ul>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">scrapbook.css · Warm Paper Grain &amp; Dynamic Polaroid Tilt</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">CSS3</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>/* Warm paper grain filter applied to article backdrop */
+.scrapbook-container {
+  background-color: #FAF6EF;
+  background-image: radial-gradient(#E6DFD3 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Hand-drawn SVG doodle rotation & paper tape accent */
+.polaroid-frame {
+  transform: rotate(calc(var(--tilt, 0) * 1deg));
+  box-shadow: 0 10px 24px rgba(110, 80, 50, 0.14);
+  border: 12px solid #FFFFFF;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}</code></pre>
+              </div>
             </section>
 
             <!-- 4. PORTFOLIO V3 -->
@@ -257,7 +379,7 @@
                     <span class="mockup-dot green"></span>
                   </div>
                   <div class="mockup-url-bar">
-                    <span class="url-lock">📱</span> https://suraj-yadav0.github.io/portfolio-v3/
+                    <svg class="url-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> https://suraj-yadav0.github.io/portfolio-v3/
                   </div>
                   <a class="mockup-btn" href="https://suraj-yadav0.github.io/portfolio-v3/" target="_blank" rel="noopener">Visit Live Site ↗</a>
                 </div>
@@ -280,6 +402,35 @@
                 <li><strong>Upstream Open Source Badges:</strong> Showcased 5 merged merge requests to Ubuntu Touch's convergent Dekko 2 email client.</li>
                 <li><strong>Quantitative Work Metrics:</strong> Highlighted a 70% decrease in wait time and 30% speed improvement during my Flutter development internship.</li>
               </ul>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">Main.qml · Lomiri Convergent Header Layout</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">QML / Lomiri</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>import QtQuick 2.9
+import Lomiri.Components 1.3
+
+Page {
+  id: projectShowcasePage
+  header: PageHeader {
+    title: i18n.tr("Suraj Yadav · Projects")
+    trailingActionBar.actions: [
+      Action {
+        iconName: "external-link"
+        text: i18n.tr("OpenStore")
+        onTriggered: Qt.openUrlExternally("https://open-store.io/app/ubtms")
+      }
+    ]
+  }
+}</code></pre>
+              </div>
             </section>
 
             <!-- 5. PORTFOLIO V2 -->
@@ -295,7 +446,7 @@
                     <span class="mockup-dot green"></span>
                   </div>
                   <div class="mockup-url-bar">
-                    <span class="url-lock">⚡</span> https://suraj-yadav-second-portfolio.vercel.app/
+                    <svg class="url-lock" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> https://suraj-yadav-second-portfolio.vercel.app/
                   </div>
                   <a class="mockup-btn" href="https://suraj-yadav-second-portfolio.vercel.app/" target="_blank" rel="noopener">Visit Live Site ↗</a>
                 </div>
@@ -318,6 +469,36 @@
                 <li><strong>DSA Track Proof:</strong> Structured problem-solving stats demonstrating algorithmic discipline.</li>
                 <li><strong>The Foundation for Future Versions:</strong> Established the structured bento patterns and typography foundations that evolved into Portfolio v4.</li>
               </ul>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">grid.css · Bento Grid &amp; Theme Variable Engine</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">CSS3</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>:root {
+  --bg-main: #0E1013;
+  --text-primary: #F0F2F5;
+  --accent-line: #E95420;
+}
+
+[data-theme="light"] {
+  --bg-main: #FFFFFF;
+  --text-primary: #0E1013;
+  --accent-line: #D84315;
+}
+
+.portfolio-v2-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}</code></pre>
+              </div>
             </section>
 
             <!-- COMPARISON MATRIX -->
@@ -530,11 +711,6 @@
       </div>
     </footer>
   </main>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
-    <span class="toast-icon">✓</span>
-    <span class="toast-msg">Copied to clipboard</span>
-  </div>
 
   <!-- COMMAND PALETTE MODAL -->
   <div class="cmd-backdrop" id="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" hidden>

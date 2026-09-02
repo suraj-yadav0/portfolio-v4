@@ -90,6 +90,14 @@
     <section class="blog-posts-section">
       <div class="shell">
 
+        <!-- TOPIC FILTER PILLS -->
+        <div class="blog-filter-bar" role="tablist" aria-label="Filter blog topics">
+          <button class="blog-filter-pill active" type="button" data-filter="all">All Topics (1)</button>
+          <button class="blog-filter-pill" type="button" data-filter="portfolios">Portfolio Systems (1)</button>
+          <button class="blog-filter-pill" type="button" data-filter="linux">Linux &amp; QML (0)</button>
+          <button class="blog-filter-pill" type="button" data-filter="flutter">Flutter &amp; Dart (0)</button>
+        </div>
+
         <!-- SINGLE COMPREHENSIVE SPOTLIGHT ARTICLE -->
         <article class="featured-post-card" data-category="portfolios">
           <div class="featured-post-badge">
@@ -221,11 +229,6 @@
       </div>
     </footer>
   </main>
-
-  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
-    <span class="toast-icon">✓</span>
-    <span class="toast-msg">Copied to clipboard</span>
-  </div>
 
   <!-- COMMAND PALETTE MODAL -->
   <div class="cmd-backdrop" id="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
