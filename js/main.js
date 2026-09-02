@@ -102,6 +102,674 @@
     }
   })();
 
+  /* ---------- Command Palette (Ctrl+K) & Spotlight Search Engine ---------- */
+  (function () {
+    var palette = document.getElementById("cmd-palette");
+    var triggers = document.querySelectorAll(".cmd-trigger");
+    if (!palette) return;
+
+    var input = palette.querySelector(".cmd-input");
+    var listWrap = palette.querySelector(".cmd-list-wrap");
+    var closeBtn = palette.querySelector(".cmd-close");
+    var lastFocusedEl = null;
+    var isOpen = false;
+    var activeIndex = 0;
+    var currentMatches = [];
+
+    var isMac = false;
+    try {
+      isMac = /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform || navigator.userAgent || "");
+    } catch (e) {}
+
+    if (isMac) {
+      document.querySelectorAll(".cmd-kbd-mod").forEach(function (mod) {
+        mod.textContent = "Cmd";
+      });
+      triggers.forEach(function (trig) {
+        trig.setAttribute("title", "Open command palette (Cmd+K)");
+        trig.setAttribute("aria-label", "Open command palette (Cmd+K)");
+      });
+    }
+
+    var isArticle = window.location.pathname.indexOf("/blog/") !== -1;
+    var isBlogIndex = window.location.pathname.endsWith("blog.html") || window.location.pathname.endsWith("/blog");
+    var homePrefix = isArticle ? "../index.html" : (isBlogIndex ? "index.html" : "");
+    var blogPrefix = isArticle ? "../blog.html" : "blog.html";
+    var caseStudyUrl = isArticle ? "#" : (isBlogIndex ? "blog/evolution-of-my-portfolios.html" : "blog/evolution-of-my-portfolios.html");
+
+    var catalog = [
+      {
+        id: "nav-work",
+        title: "Selected Work",
+        subtitle: "Five flagship builds owned end-to-end",
+        category: "Navigation",
+        icon: "layers",
+        url: homePrefix ? homePrefix + "#work" : "#work",
+        keywords: ["projects", "flagship", "apps", "portfolio", "code"]
+      },
+      {
+        id: "nav-activity",
+        title: "Open Source Activity",
+        subtitle: "GitHub contribution heatmap and achievements",
+        category: "Navigation",
+        icon: "activity",
+        url: homePrefix ? homePrefix + "#activity" : "#activity",
+        keywords: ["github", "heatmap", "commits", "trophies", "stats"]
+      },
+      {
+        id: "nav-proof",
+        title: "Achievements in Numbers",
+        subtitle: "1,100+ DSA problems, 112+ repositories",
+        category: "Navigation",
+        icon: "award",
+        url: homePrefix ? homePrefix + "#proof" : "#proof",
+        keywords: ["dsa", "leetcode", "proof", "stats", "metrics"]
+      },
+      {
+        id: "nav-journey",
+        title: "Journey Timeline",
+        subtitle: "Career history: CALIN, NotAtMrp, CEC",
+        category: "Navigation",
+        icon: "git-branch",
+        url: homePrefix ? homePrefix + "#journey" : "#journey",
+        keywords: ["experience", "career", "jobs", "timeline", "resume"]
+      },
+      {
+        id: "nav-builds",
+        title: "More Builds",
+        subtitle: "Side projects, QML tools, and open source explorations",
+        category: "Navigation",
+        icon: "grid",
+        url: homePrefix ? homePrefix + "#builds" : "#builds",
+        keywords: ["projects", "more", "tools", "utilities", "open source"]
+      },
+      {
+        id: "nav-writing",
+        title: "Engineering Blog",
+        subtitle: "Case studies, portfolio retrospectives, and deep dives",
+        category: "Navigation",
+        icon: "book-open",
+        url: isBlogIndex ? "#" : blogPrefix,
+        keywords: ["blog", "writing", "articles", "case study", "portfolios"]
+      },
+      {
+        id: "nav-about",
+        title: "About / Manifesto",
+        subtitle: "Engineering philosophy for native and open platforms",
+        category: "Navigation",
+        icon: "user",
+        url: homePrefix ? homePrefix + "#about" : "#about",
+        keywords: ["about", "bio", "philosophy", "manifesto", "linux"]
+      },
+      {
+        id: "nav-contact",
+        title: "Contact & Connect",
+        subtitle: "Email address, social channels, and sitemap",
+        category: "Navigation",
+        icon: "mail",
+        url: homePrefix ? homePrefix + "#contact" : "#contact",
+        keywords: ["contact", "email", "hire", "collaborate", "social"]
+      },
+      {
+        id: "proj-quantro",
+        title: "Quantro",
+        subtitle: "Local-first personal finance suite with SQLite & Flutter",
+        category: "Projects",
+        icon: "external",
+        url: "https://money-manager-eight-nu.vercel.app",
+        external: true,
+        tag: "Live App",
+        keywords: ["flutter", "sqlite", "drift", "finance", "money", "android", "web"]
+      },
+      {
+        id: "proj-utgpt",
+        title: "utgpt",
+        subtitle: "Private on-device AI client for Ubuntu Touch and Lomiri",
+        category: "Projects",
+        icon: "external",
+        url: "https://open-store.io/app/utgpt.surajyadav",
+        external: true,
+        tag: "OpenStore",
+        keywords: ["ai", "llm", "qml", "python", "ubuntu touch", "lomiri", "openstore", "gguf"]
+      },
+      {
+        id: "proj-timemanagement",
+        title: "Time Management",
+        subtitle: "Timesheet logger and multi-server Odoo ERP synchronizer",
+        category: "Projects",
+        icon: "external",
+        url: "https://open-store.io/app/ubtms",
+        external: true,
+        tag: "OpenStore",
+        keywords: ["odoo", "erp", "qml", "python", "lomiri", "openstore", "tracking"]
+      },
+      {
+        id: "proj-wishgift",
+        title: "WishGift",
+        subtitle: "Social wishlist platform with item reservation locking",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/wishgift",
+        external: true,
+        tag: "GitHub",
+        keywords: ["next.js", "react", "prisma", "postgresql", "tailwind", "gifting"]
+      },
+      {
+        id: "proj-clockapp",
+        title: "clockApp",
+        subtitle: "Geometric background clock for GNOME Desktop",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/clockApp",
+        external: true,
+        tag: "GitHub",
+        keywords: ["gnome", "shell", "linux", "desktop", "javascript", "css"]
+      },
+      {
+        id: "proj-dekko",
+        title: "Dekko 2",
+        subtitle: "5 merged MRs for convergent email client on Ubuntu Touch",
+        category: "Projects",
+        icon: "external",
+        url: "https://gitlab.com/dekko/dekko",
+        external: true,
+        tag: "GitLab",
+        keywords: ["email", "qml", "c++", "ubuntu touch", "lomiri"]
+      },
+      {
+        id: "proj-whatsweb",
+        title: "WhatsWeb",
+        subtitle: "WhatsApp Web client for Ubuntu Touch with push daemon",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/whatsweb",
+        external: true,
+        tag: "GitHub",
+        keywords: ["whatsapp", "ubuntu touch", "qml", "push notifications"]
+      },
+      {
+        id: "proj-harmony",
+        title: "Document Harmony",
+        subtitle: "Official identity document anomaly and verification engine",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/harmony_docs",
+        external: true,
+        tag: "GitHub",
+        keywords: ["aadhaar", "pan", "verification", "python", "security"]
+      },
+      {
+        id: "proj-reddit",
+        title: "Reddit Client",
+        subtitle: "Native gesture-driven Reddit browser for Linux phones",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/redditclient",
+        external: true,
+        tag: "GitHub",
+        keywords: ["reddit", "linux", "qml", "mobile", "social"]
+      },
+      {
+        id: "proj-invoice",
+        title: "Invoice Generator",
+        subtitle: "Cross-platform billing and tax calculation suite",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/invoice_generator",
+        external: true,
+        tag: "GitHub",
+        keywords: ["invoice", "flutter", "dart", "pdf", "billing"]
+      },
+      {
+        id: "proj-nimbus",
+        title: "Nimbus Weather",
+        subtitle: "Clean weather forecast client using Open-Meteo",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/nimbus_weather",
+        external: true,
+        tag: "GitHub",
+        keywords: ["weather", "forecast", "open-meteo", "qml", "qt"]
+      },
+      {
+        id: "proj-lomiri-docker",
+        title: "Lomiri SDK Docker CLI",
+        subtitle: "Reproducible containerized build environment for Lomiri",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/lomiri-sdk-docker",
+        external: true,
+        tag: "GitHub",
+        keywords: ["docker", "sdk", "lomiri", "ubuntu touch", "cli"]
+      },
+      {
+        id: "study-portfolios",
+        title: "Case Study: Evolution of My Portfolios",
+        subtitle: "Technical analysis of 5 distinct portfolio systems built",
+        category: "Articles",
+        icon: "book-open",
+        url: caseStudyUrl,
+        tag: "Article",
+        keywords: ["case study", "retrospective", "portfolios", "terminal", "scrapbook", "architecture"]
+      },
+      {
+        id: "act-theme",
+        title: "Switch Theme",
+        subtitle: "Toggle between Dark and Light mode",
+        category: "Actions",
+        icon: "sun-moon",
+        action: "toggle-theme",
+        tag: "Command",
+        keywords: ["theme", "dark", "light", "mode", "color", "palette"]
+      },
+      {
+        id: "act-copy-email",
+        title: "Copy Email Address",
+        subtitle: "surajyadav200701@gmail.com",
+        category: "Actions",
+        icon: "copy",
+        action: "copy-email",
+        tag: "Action",
+        keywords: ["email", "contact", "copy", "mail", "hire"]
+      },
+      {
+        id: "act-cv",
+        title: "Download Curriculum Vitae",
+        subtitle: "Suraj Yadav Software Engineer CV (PDF)",
+        category: "Actions",
+        icon: "file-text",
+        url: "https://suraj-yadav0.github.io/SurajYadav-sCV/cv.pdf",
+        external: true,
+        tag: "PDF",
+        keywords: ["cv", "resume", "pdf", "hire", "download"]
+      },
+      {
+        id: "act-github",
+        title: "GitHub Profile",
+        subtitle: "@suraj-yadav0 with 112+ repositories",
+        category: "Actions",
+        icon: "github",
+        url: "https://github.com/suraj-yadav0",
+        external: true,
+        tag: "Profile",
+        keywords: ["github", "git", "repositories", "code"]
+      },
+      {
+        id: "act-leetcode",
+        title: "LeetCode Profile",
+        subtitle: "@suraj_yadav07 in the Top 6% worldwide",
+        category: "Actions",
+        icon: "code",
+        url: "https://www.leetcode.com/suraj_yadav07",
+        external: true,
+        tag: "Profile",
+        keywords: ["leetcode", "dsa", "algorithms", "problem solving"]
+      },
+      {
+        id: "act-linkedin",
+        title: "LinkedIn Profile",
+        subtitle: "Connect and network with Suraj Yadav",
+        category: "Actions",
+        icon: "user-check",
+        url: "https://www.linkedin.com/in/suraj-yadav-a63b3b220",
+        external: true,
+        tag: "Profile",
+        keywords: ["linkedin", "network", "connect", "social"]
+      },
+      {
+        id: "act-scroll-top",
+        title: "Scroll to Top",
+        subtitle: "Return to the top of the page",
+        category: "Actions",
+        icon: "arrow-up",
+        action: "scroll-top",
+        tag: "Jump",
+        keywords: ["top", "up", "header", "hero"]
+      }
+    ];
+
+    function getIconSvg(type) {
+      switch (type) {
+        case "layers":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>';
+        case "activity":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>';
+        case "award":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>';
+        case "git-branch":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="3" x2="6" y2="15"></line><circle cx="18" cy="6" r="3"></circle><circle cx="6" cy="18" r="3"></circle><path d="M18 9a9 9 0 0 1-9 9"></path></svg>';
+        case "grid":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>';
+        case "book-open":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>';
+        case "user":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+        case "mail":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>';
+        case "external":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>';
+        case "sun-moon":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>';
+        case "copy":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="0" ry="0"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>';
+        case "file-text":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>';
+        case "github":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>';
+        case "code":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>';
+        case "user-check":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><polyline points="17 11 19 13 23 9"></polyline></svg>';
+        case "arrow-up":
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>';
+        default:
+          return '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>';
+      }
+    }
+
+    function filterCatalog(query) {
+      var q = (query || "").trim().toLowerCase();
+      if (!q) return catalog.slice();
+
+      return catalog.filter(function (item) {
+        if (item.title.toLowerCase().indexOf(q) !== -1) return true;
+        if (item.subtitle.toLowerCase().indexOf(q) !== -1) return true;
+        if (item.category.toLowerCase().indexOf(q) !== -1) return true;
+        if (item.keywords && item.keywords.some(function (k) { return k.toLowerCase().indexOf(q) !== -1; })) return true;
+        return false;
+      }).sort(function (a, b) {
+        var aTitle = a.title.toLowerCase();
+        var bTitle = b.title.toLowerCase();
+        var aExact = aTitle === q;
+        var bExact = bTitle === q;
+        if (aExact && !bExact) return -1;
+        if (!aExact && bExact) return 1;
+        var aStarts = aTitle.startsWith(q);
+        var bStarts = bTitle.startsWith(q);
+        if (aStarts && !bStarts) return -1;
+        if (!aStarts && bStarts) return 1;
+        return 0;
+      });
+    }
+
+    function renderList(query) {
+      currentMatches = filterCatalog(query);
+      listWrap.innerHTML = "";
+
+      if (!currentMatches.length) {
+        var empty = document.createElement("div");
+        empty.className = "cmd-empty";
+        var safeQuery = (query || "").replace(/[<>&"]/g, "");
+        empty.innerHTML = '<p class="cmd-empty-title">No matches found for "' + safeQuery + '"</p><p class="cmd-empty-desc">Try searching for projects, sections, or commands like "theme", "cv", or "qml".</p>';
+        listWrap.appendChild(empty);
+        activeIndex = -1;
+        return;
+      }
+
+      var groups = {};
+      currentMatches.forEach(function (item, idx) {
+        if (!groups[item.category]) groups[item.category] = [];
+        groups[item.category].push({ item: item, flatIndex: idx });
+      });
+
+      for (var cat in groups) {
+        var groupEl = document.createElement("div");
+        groupEl.className = "cmd-group";
+
+        var groupTitle = document.createElement("div");
+        groupTitle.className = "cmd-group-title";
+        groupTitle.textContent = cat;
+        groupEl.appendChild(groupTitle);
+
+        groups[cat].forEach(function (entry) {
+          var item = entry.item;
+          var itemIdx = entry.flatIndex;
+
+          var itemEl = document.createElement("div");
+          itemEl.className = "cmd-item" + (itemIdx === activeIndex ? " is-active" : "");
+          itemEl.setAttribute("role", "option");
+          itemEl.setAttribute("data-index", itemIdx);
+          itemEl.setAttribute("id", "cmd-item-" + item.id);
+
+          var tagText = item.tag || (item.category === "Navigation" ? "Jump" : (item.external ? "External" : ""));
+
+          itemEl.innerHTML =
+            '<div class="cmd-item-left">' +
+              '<span class="cmd-item-icon">' + getIconSvg(item.icon) + '</span>' +
+              '<div class="cmd-item-info">' +
+                '<p class="cmd-item-title">' + item.title + '</p>' +
+                '<p class="cmd-item-desc">' + item.subtitle + '</p>' +
+              '</div>' +
+            '</div>' +
+            '<div class="cmd-item-meta">' +
+              (tagText ? '<span class="cmd-item-tag">' + tagText + '</span>' : '') +
+              '<span class="cmd-item-hint"><kbd class="cmd-key">Enter</kbd></span>' +
+            '</div>';
+
+          itemEl.addEventListener("mouseenter", function () {
+            setActiveIndex(itemIdx, false);
+          });
+
+          itemEl.addEventListener("click", function () {
+            executeItem(item);
+          });
+
+          groupEl.appendChild(itemEl);
+        });
+
+        listWrap.appendChild(groupEl);
+      }
+
+      if (activeIndex >= currentMatches.length || activeIndex < 0) {
+        activeIndex = 0;
+      }
+      updateActiveVisual(false);
+    }
+
+    function setActiveIndex(idx, scrollIntoView) {
+      if (!currentMatches.length) return;
+      activeIndex = Math.max(0, Math.min(idx, currentMatches.length - 1));
+      updateActiveVisual(scrollIntoView);
+      playUiSound("nav");
+    }
+
+    function updateActiveVisual(scrollIntoView) {
+      var allItems = listWrap.querySelectorAll(".cmd-item");
+      allItems.forEach(function (el) {
+        var isCurr = parseInt(el.getAttribute("data-index"), 10) === activeIndex;
+        if (isCurr) {
+          el.classList.add("is-active");
+          if (scrollIntoView) {
+            el.scrollIntoView({ block: "nearest" });
+          }
+        } else {
+          el.classList.remove("is-active");
+        }
+      });
+    }
+
+    function executeItem(item) {
+      if (!item) return;
+      playUiSound("action");
+
+      if (item.action === "toggle-theme") {
+        closePalette();
+        var toggleBtn = document.querySelector(".theme-toggle");
+        if (toggleBtn) {
+          toggleBtn.click();
+          var curr = document.documentElement.getAttribute("data-theme") || "dark";
+          showToast("Switched to " + curr + " theme", "✓");
+        }
+        return;
+      }
+
+      if (item.action === "copy-email") {
+        closePalette();
+        var email = "surajyadav200701@gmail.com";
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(email).then(function () {
+            showToast("Copied " + email + " to clipboard", "✓");
+          }).catch(function () {
+            showToast("Email: " + email, "i");
+          });
+        } else {
+          showToast("Email: " + email, "i");
+        }
+        return;
+      }
+
+      if (item.action === "scroll-top") {
+        closePalette();
+        if (lenis) {
+          lenis.scrollTo(0, { duration: 1.1 });
+        } else {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+        return;
+      }
+
+      if (item.external) {
+        closePalette();
+        window.open(item.url, "_blank", "noopener");
+        return;
+      }
+
+      if (item.url) {
+        closePalette();
+        if (item.url.startsWith("#")) {
+          var targetEl = document.querySelector(item.url);
+          if (targetEl) {
+            if (lenis) {
+              lenis.scrollTo(targetEl, { offset: -60, duration: 1.1 });
+            } else {
+              targetEl.scrollIntoView({ behavior: "smooth" });
+            }
+          }
+        } else {
+          window.location.href = item.url;
+        }
+      }
+    }
+
+    function openPalette() {
+      if (isOpen) return;
+      isOpen = true;
+      lastFocusedEl = document.activeElement;
+      palette.removeAttribute("hidden");
+      document.body.classList.add("cmd-open");
+
+      if (lenis) lenis.stop();
+
+      requestAnimationFrame(function () {
+        palette.classList.add("is-open");
+        input.value = "";
+        activeIndex = 0;
+        renderList("");
+        input.focus();
+      });
+
+      playUiSound("open");
+    }
+
+    function closePalette() {
+      if (!isOpen) return;
+      isOpen = false;
+      palette.classList.remove("is-open");
+      document.body.classList.remove("cmd-open");
+
+      if (lenis) lenis.start();
+
+      setTimeout(function () {
+        if (!isOpen) {
+          palette.setAttribute("hidden", "true");
+          if (lastFocusedEl && typeof lastFocusedEl.focus === "function") {
+            lastFocusedEl.focus();
+          }
+        }
+      }, 200);
+
+      playUiSound("close");
+    }
+
+    triggers.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (isOpen) closePalette();
+        else openPalette();
+      });
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener("click", function () {
+        closePalette();
+      });
+    }
+
+    palette.addEventListener("click", function (e) {
+      if (e.target === palette) {
+        closePalette();
+      }
+    });
+
+    input.addEventListener("input", function () {
+      activeIndex = 0;
+      renderList(input.value);
+    });
+
+    window.addEventListener("keydown", function (e) {
+      var isModifierK = (e.metaKey || e.ctrlKey) && (e.key === "k" || e.key === "K");
+      if (isModifierK) {
+        e.preventDefault();
+        if (isOpen) closePalette();
+        else openPalette();
+        return;
+      }
+
+      if (!isOpen) {
+        if (e.key === "/" && document.activeElement !== input) {
+          var tag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+          if (tag !== "input" && tag !== "textarea") {
+            e.preventDefault();
+            openPalette();
+          }
+        }
+        return;
+      }
+
+      if (e.key === "Escape") {
+        e.preventDefault();
+        closePalette();
+        return;
+      }
+
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (!currentMatches.length) return;
+        var nextIdx = activeIndex + 1;
+        if (nextIdx >= currentMatches.length) nextIdx = 0;
+        setActiveIndex(nextIdx, true);
+        return;
+      }
+
+      if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (!currentMatches.length) return;
+        var prevIdx = activeIndex - 1;
+        if (prevIdx < 0) prevIdx = currentMatches.length - 1;
+        setActiveIndex(prevIdx, true);
+        return;
+      }
+
+      if (e.key === "Enter") {
+        e.preventDefault();
+        if (currentMatches.length && activeIndex >= 0 && activeIndex < currentMatches.length) {
+          executeItem(currentMatches[activeIndex]);
+        }
+        return;
+      }
+    });
+  })();
+
   /* ---------- Live Metrics API Sync (GitHub & LeetCode) ---------- */
   (function () {
     // 1. Fetch GitHub live statistics
@@ -474,6 +1142,93 @@
 
   /* ---------- Lenis Smooth Scroll Setup ---------- */
   var lenis = null;
+  var audioCtx = null;
+
+  function getAudioContext() {
+    try {
+      var AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return null;
+      if (!audioCtx) audioCtx = new AudioCtor();
+      return audioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Pre-unlock audio context on first user interaction anywhere
+  function unlockAudio() {
+    var ctx = getAudioContext();
+    if (ctx && ctx.state === "suspended") {
+      ctx.resume().catch(function () {});
+    }
+  }
+  ["pointerdown", "keydown", "touchstart", "click"].forEach(function (evtName) {
+    window.addEventListener(evtName, unlockAudio, { passive: true, once: true });
+  });
+
+  function playUiSound(soundType) {
+    var ctx = getAudioContext();
+    if (!ctx) return;
+
+    function renderTone() {
+      try {
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (soundType === "nav") {
+          // Snappy high mechanical tick
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.03);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+          osc.start(now);
+          osc.stop(now + 0.035);
+        } else if (soundType === "action") {
+          // Punchy affirmative mechanical pop
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(480, now);
+          osc.frequency.exponentialRampToValueAtTime(960, now + 0.045);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+          osc.start(now);
+          osc.stop(now + 0.055);
+        } else if (soundType === "open") {
+          // Upward sliding chirp
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(850, now + 0.05);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (soundType === "close") {
+          // Downward sliding chirp
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.045);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      } catch (err) {}
+    }
+
+    if (ctx.state === "suspended") {
+      ctx.resume().then(renderTone).catch(function () {});
+    } else {
+      renderTone();
+    }
+  }
+
+  window.__playUiSound = playUiSound;
+
+
   if (!reduce && window.Lenis) {
     try {
       lenis = new Lenis({

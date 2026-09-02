@@ -50,6 +50,14 @@
       <a href="../index.html#contact">Contact</a>
     </nav>
     <div class="nav-actions">
+      <button class="cmd-trigger" type="button" aria-label="Open command palette (Ctrl+K)" title="Open command palette (Ctrl+K)">
+        <svg class="cmd-trigger-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span class="cmd-trigger-text">Search</span>
+        <kbd class="cmd-trigger-kbd"><span class="cmd-kbd-mod">Ctrl</span> K</kbd>
+      </button>
       <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
         <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>
@@ -522,6 +530,36 @@
       </div>
     </footer>
   </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg">Copied to clipboard</span>
+  </div>
+
+  <!-- COMMAND PALETTE MODAL -->
+  <div class="cmd-backdrop" id="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
+    <div class="cmd-modal">
+      <div class="cmd-search-wrap">
+        <svg class="cmd-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="cmd-input" placeholder="Search commands, projects, sections..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-autocomplete="list" aria-controls="cmd-list">
+        <button class="cmd-close" type="button" aria-label="Close command palette">
+          <kbd>Esc</kbd>
+        </button>
+      </div>
+      <div class="cmd-list-wrap" id="cmd-list" role="listbox" aria-label="Commands and projects"></div>
+      <footer class="cmd-foot">
+        <div class="cmd-foot-hints">
+          <span class="cmd-hint-item"><kbd class="cmd-key">↑</kbd><kbd class="cmd-key">↓</kbd> Navigate</span>
+          <span class="cmd-hint-item"><kbd class="cmd-key">Enter</kbd> Select</span>
+          <span class="cmd-hint-item"><kbd class="cmd-key">Esc</kbd> Close</span>
+        </div>
+        <span class="cmd-foot-tag">SY·OS v4</span>
+      </footer>
+    </div>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
     <span class="toast-icon">✓</span>
