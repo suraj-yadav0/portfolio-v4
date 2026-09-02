@@ -160,6 +160,22 @@
 
     <!-- PROOF BENTO -->
     <section class="stats" id="proof" aria-label="Achievements in numbers">
+      <div class="shell focus-strip-wrap">
+        <div class="focus-strip">
+          <div class="focus-strip-main">
+            <span class="live-pill"><span class="pulse-dot"></span> CURRENT SPRINT</span>
+            <span class="focus-strip-title">Lomiri 24.04 Convergence &amp; On-Device AI</span>
+            <span class="focus-strip-sep">/</span>
+            <span class="focus-strip-desc">Optimizing 4-bit local LLMs &amp; Drift SQLite offline state engines</span>
+          </div>
+          <div class="focus-strip-tags">
+            <span class="focus-strip-tag">Ubuntu 24.04</span>
+            <span class="focus-strip-tag">Lomiri QML</span>
+            <span class="focus-strip-tag">Flutter Drift</span>
+            <span class="focus-strip-tag">Local GGUF</span>
+          </div>
+        </div>
+      </div>
       <div class="shell stats-grid">
         <div class="cell cell-num span6" id="dsa-cell">
           <div class="cell-top-row">
@@ -592,6 +608,53 @@
                 <span>View Source</span>
                 <img class="ext-ico" src="https://cdn.simpleicons.org/github/9BA0A6" width="14" height="14" alt="" loading="lazy">
               </a>
+              <button class="btn btn-inspect" type="button" aria-expanded="false" data-target="inspect-quantro">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Deep Dive</span>
+              </button>
+            </div>
+          </div>
+          <div class="project-inspector" id="inspect-quantro">
+            <div class="inspector-header">
+              <div class="inspector-tabs" role="tablist">
+                <button class="inspector-tab-btn is-active" type="button" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+                <button class="inspector-tab-btn" type="button" role="tab" aria-selected="false" data-tab="code">Core Code</button>
+              </div>
+            </div>
+            <div class="inspector-panel is-active" data-panel="arch">
+              <div class="inspector-arch-grid">
+                <div class="arch-card">
+                  <h4>Local-First Drift SQLite</h4>
+                  <p>Type-safe compiled DAOs with compound indexes on transaction timestamps, providing sub-5ms queries and reactive Dart UI streams.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Isolated SMS Parser</h4>
+                  <p>Background isolate scanning 200+ Indian banking formats (UPI, NEFT, IMPS) via regex tokenization without stuttering 120Hz display refresh.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Delta Cloud Sync</h4>
+                  <p>Firestore delta sync with vector clock conflict resolution, allowing seamless offline CRUD with automatic cloud reconciliation.</p>
+                </div>
+              </div>
+            </div>
+            <div class="inspector-panel" data-panel="code">
+              <div class="inspector-code-box">
+                <div class="code-box-header">
+                  <span class="code-box-lang">Dart · Drift SQLite DAO</span>
+                  <button class="code-copy-btn" type="button">Copy Snippet</button>
+                </div>
+                <pre><code>Stream&lt;List&lt;TransactionWithCategory&gt;&gt; watchMonthlyExpenses(DateTime month) {
+  final start = DateTime(month.year, month.month, 1);
+  final end = DateTime(month.year, month.month + 1, 0, 23, 59, 59);
+  return (select(transactions).join([
+    innerJoin(categories, categories.id.equalsExp(transactions.categoryId))
+  ])
+    ..where(transactions.timestamp.isBetweenValues(start, end))
+    ..orderBy([OrderingTerm.desc(transactions.timestamp)]))
+    .watch()
+    .map((rows) =&gt; rows.map(_mapToTransactionWithCategory).toList());
+}</code></pre>
+              </div>
             </div>
           </div>
         </article>
@@ -628,6 +691,55 @@
                 <span>View Source</span>
                 <img class="ext-ico" src="https://cdn.simpleicons.org/github/9BA0A6" width="14" height="14" alt="" loading="lazy">
               </a>
+              <button class="btn btn-inspect" type="button" aria-expanded="false" data-target="inspect-utgpt">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Deep Dive</span>
+              </button>
+            </div>
+          </div>
+          <div class="project-inspector" id="inspect-utgpt">
+            <div class="inspector-header">
+              <div class="inspector-tabs" role="tablist">
+                <button class="inspector-tab-btn is-active" type="button" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+                <button class="inspector-tab-btn" type="button" role="tab" aria-selected="false" data-tab="code">Core Code</button>
+              </div>
+            </div>
+            <div class="inspector-panel is-active" data-panel="arch">
+              <div class="inspector-arch-grid">
+                <div class="arch-card">
+                  <h4>Zero-Network GGUF Runtime</h4>
+                  <p>Executes 4-bit quantized LLMs (Qwen 2.5, SmolLM2, TinyLlama) locally on device RAM through optimized C++ llama.cpp bindings.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Async Socket IPC</h4>
+                  <p>Python inference worker communicates via UNIX domain sockets with QML main thread, preventing UI lockup during token generation.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>AppArmor Sandbox</h4>
+                  <p>Strict security confinement enforcing zero internet permission in Ubuntu Touch manifest, guaranteeing complete conversational privacy.</p>
+                </div>
+              </div>
+            </div>
+            <div class="inspector-panel" data-panel="code">
+              <div class="inspector-code-box">
+                <div class="code-box-header">
+                  <span class="code-box-lang">QML · Lomiri Token Streamer</span>
+                  <button class="code-copy-btn" type="button">Copy Snippet</button>
+                </div>
+                <pre><code>Connections {
+  target: aiWorker
+  function onTokenReceived(chunk) {
+    messageModel.appendToken(currentStreamIndex, chunk)
+    if (chatView.atYEnd) {
+      chatView.positionViewAtEnd()
+    }
+  }
+  function onInferenceFinished(totalTokens, tokensPerSec) {
+    metricsBar.text = i18n.tr("%1 t/s · %2 tokens").arg(tokensPerSec.toFixed(1)).arg(totalTokens)
+    promptField.enabled = true
+  }
+}</code></pre>
+              </div>
             </div>
           </div>
         </article>
@@ -664,6 +776,53 @@
                 <span>View Source</span>
                 <img class="ext-ico" src="https://cdn.simpleicons.org/github/9BA0A6" width="14" height="14" alt="" loading="lazy">
               </a>
+              <button class="btn btn-inspect" type="button" aria-expanded="false" data-target="inspect-timemanagement">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Deep Dive</span>
+              </button>
+            </div>
+          </div>
+          <div class="project-inspector" id="inspect-timemanagement">
+            <div class="inspector-header">
+              <div class="inspector-tabs" role="tablist">
+                <button class="inspector-tab-btn is-active" type="button" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+                <button class="inspector-tab-btn" type="button" role="tab" aria-selected="false" data-tab="code">Core Code</button>
+              </div>
+            </div>
+            <div class="inspector-panel is-active" data-panel="arch">
+              <div class="inspector-arch-grid">
+                <div class="arch-card">
+                  <h4>Multi-Tenant Odoo Gateway</h4>
+                  <p>Supports switching between multiple corporate Odoo instances with secure token lifecycle management and SSL certificate verification.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Idempotent Offline Ledger</h4>
+                  <p>Timesheet entries are committed locally with UUID keys; retry synchronization prevents double-billing on intermittent mobile networks.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Adaptive QML Convergence</h4>
+                  <p>Single codebase dynamically restructures UI layout between compact phone screen and external 4K desktop monitor via Lomiri shell.</p>
+                </div>
+              </div>
+            </div>
+            <div class="inspector-panel" data-panel="code">
+              <div class="inspector-code-box">
+                <div class="code-box-header">
+                  <span class="code-box-lang">Python · Odoo Sync Gateway</span>
+                  <button class="code-copy-btn" type="button">Copy Snippet</button>
+                </div>
+                <pre><code>def sync_timesheet_entry(entry):
+    headers = {"Authorization": f"Bearer {get_valid_token()}", "X-Idempotency-Key": entry["uuid"]}
+    payload = {
+        "project_id": entry["project_id"],
+        "task_id": entry["task_id"],
+        "unit_amount": entry["duration_hours"],
+        "name": entry["description"]
+    }
+    res = requests.post(f"{odoo_url}/api/timesheet/create", json=payload, headers=headers, timeout=10)
+    if res.status_code in (200, 201):
+        db.mark_synced(entry["id"], remote_id=res.json()["result"]["id"])</code></pre>
+              </div>
             </div>
           </div>
         </article>
@@ -696,6 +855,54 @@
                 <span>View Repository</span>
                 <img class="ext-ico" src="https://cdn.simpleicons.org/github/FFFFFF" width="14" height="14" alt="" loading="lazy">
               </a>
+              <button class="btn btn-inspect" type="button" aria-expanded="false" data-target="inspect-wishgift">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Deep Dive</span>
+              </button>
+            </div>
+          </div>
+          <div class="project-inspector" id="inspect-wishgift">
+            <div class="inspector-header">
+              <div class="inspector-tabs" role="tablist">
+                <button class="inspector-tab-btn is-active" type="button" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+                <button class="inspector-tab-btn" type="button" role="tab" aria-selected="false" data-tab="code">Core Code</button>
+              </div>
+            </div>
+            <div class="inspector-panel is-active" data-panel="arch">
+              <div class="inspector-arch-grid">
+                <div class="arch-card">
+                  <h4>Atomic Reservation Locks</h4>
+                  <p>PostgreSQL conditional update transactions guarantee no two users can claim the same wishlist item simultaneously.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Next.js 16 Server Actions</h4>
+                  <p>Server components eliminate client bundle weight for public viewing, with optimistic UI updates handled through Zustand store.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Serverless Prisma ORM</h4>
+                  <p>Connection pooled database architecture with relational constraints, indexed search, and automated migration versioning.</p>
+                </div>
+              </div>
+            </div>
+            <div class="inspector-panel" data-panel="code">
+              <div class="inspector-code-box">
+                <div class="code-box-header">
+                  <span class="code-box-lang">TypeScript · Prisma Transaction</span>
+                  <button class="code-copy-btn" type="button">Copy Snippet</button>
+                </div>
+                <pre><code>export async function claimItem(itemId: string, claimantId: string) {
+  return await prisma.$transaction(async (tx) =&gt; {
+    const item = await tx.wishlistItem.findUnique({ where: { id: itemId } });
+    if (!item || item.claimedById) {
+      throw new Error("Item already claimed or unavailable");
+    }
+    return tx.wishlistItem.update({
+      where: { id: itemId },
+      data: { claimedById: claimantId, claimedAt: new Date() }
+    });
+  });
+}</code></pre>
+              </div>
             </div>
           </div>
         </article>
@@ -728,6 +935,55 @@
                 <span>View Repository</span>
                 <img class="ext-ico" src="https://cdn.simpleicons.org/github/FFFFFF" width="14" height="14" alt="" loading="lazy">
               </a>
+              <button class="btn btn-inspect" type="button" aria-expanded="false" data-target="inspect-clockapp">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                <span>Deep Dive</span>
+              </button>
+            </div>
+          </div>
+          <div class="project-inspector" id="inspect-clockapp">
+            <div class="inspector-header">
+              <div class="inspector-tabs" role="tablist">
+                <button class="inspector-tab-btn is-active" type="button" role="tab" aria-selected="true" data-tab="arch">Architecture</button>
+                <button class="inspector-tab-btn" type="button" role="tab" aria-selected="false" data-tab="code">Core Code</button>
+              </div>
+            </div>
+            <div class="inspector-panel is-active" data-panel="arch">
+              <div class="inspector-arch-grid">
+                <div class="arch-card">
+                  <h4>Clutter / St Scene Graph</h4>
+                  <p>Injected directly into Mutter compositor window manager via GNOME Shell St toolkit, requiring zero external web runtimes.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Reactive GSettings Schema</h4>
+                  <p>Listens to dconf change signals for instant desktop theme adaptation, screen positioning, and font scaling without restarting shell.</p>
+                </div>
+                <div class="arch-card">
+                  <h4>Cairo Vector Geometry</h4>
+                  <p>Hardware accelerated clock dial rendering with exact anti-aliased geometry and zero CPU rendering overhead on battery power.</p>
+                </div>
+              </div>
+            </div>
+            <div class="inspector-panel" data-panel="code">
+              <div class="inspector-code-box">
+                <div class="code-box-header">
+                  <span class="code-box-lang">JavaScript · GNOME St Actor</span>
+                  <button class="code-copy-btn" type="button">Copy Snippet</button>
+                </div>
+                <pre><code>const ClockActor = GObject.registerClass(
+  class ClockActor extends St.Widget {
+    _init(settings) {
+      super._init({ style_class: 'anurati-clock-actor', reactive: false });
+      this._settings = settings;
+      this._settings.connect('changed::clock-position', () =&gt; this._relayout());
+      this._timerId = GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 1, () =&gt; {
+        this._updateTime();
+        return GLib.SOURCE_CONTINUE;
+      });
+    }
+  }
+);</code></pre>
+              </div>
             </div>
           </div>
         </article>
@@ -758,11 +1014,28 @@
               </button>
             </div>
           </div>
+        <div class="shell pan-filter-bar" role="tablist" aria-label="Filter builds by technology">
+          <button class="pan-filter-btn active" type="button" data-filter="all" role="tab" aria-selected="true">
+            <span>All Builds</span>
+            <span class="filter-count">11</span>
+          </button>
+          <button class="pan-filter-btn" type="button" data-filter="flutter" role="tab" aria-selected="false">
+            <span>Flutter &amp; Dart</span>
+            <span class="filter-count">5</span>
+          </button>
+          <button class="pan-filter-btn" type="button" data-filter="linux" role="tab" aria-selected="false">
+            <span>Ubuntu Touch &amp; Linux</span>
+            <span class="filter-count">3</span>
+          </button>
+          <button class="pan-filter-btn" type="button" data-filter="web-ml" role="tab" aria-selected="false">
+            <span>Web &amp; Python ML</span>
+            <span class="filter-count">3</span>
+          </button>
         </div>
         <div class="pan-track-wrap">
           <div class="pan-marquee-inner">
             <ul class="pan-track">
-              <li class="pan-card">
+              <li class="pan-card" data-category="linux">
                 <figure><img src="assets/projects/whatsweb.webp" width="720" height="520" alt="WhatsWeb client running on Ubuntu Touch with push notifications" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>WhatsWeb</h3>
@@ -772,7 +1045,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="web-ml">
                 <figure><img src="assets/projects/harmonydocs.webp" width="720" height="520" alt="Document Harmony Indian official record consistency verification engine" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Document Harmony</h3>
@@ -782,7 +1055,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="linux">
                 <figure><img src="assets/projects/redditclient.webp" width="720" height="520" alt="Native Reddit client interface for Ubuntu Touch Linux phone" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Reddit Client</h3>
@@ -792,7 +1065,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/invoice_generator.webp" width="720" height="520" alt="Invoice Generator Flutter cross-platform billing suite" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Invoice Generator</h3>
@@ -802,7 +1075,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="linux">
                 <figure><img src="assets/projects/money_ut.webp" width="720" height="520" alt="Money UT Ubuntu Touch native expense tracker" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Money UT</h3>
@@ -812,7 +1085,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="web-ml">
                 <figure><img src="assets/projects/churn_ml.webp" width="720" height="520" alt="Customer Churn ML prediction analytics dashboard" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Customer Churn ML</h3>
@@ -822,7 +1095,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/vyakhya.webp" width="720" height="520" alt="Vyakhya AI ML Kit OCR image to text translation mobile app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Vyakhya AI</h3>
@@ -833,7 +1106,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/wallter.webp" width="720" height="520" alt="Wallter Flutter wallpaper app with curated Pexels photo gallery" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Wallter</h3>
@@ -844,7 +1117,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/apna_dukan.webp" width="720" height="520" alt="Apna Dukan Flutter e-commerce grocery shopping mobile app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Apni Dukan</h3>
@@ -854,7 +1127,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="web-ml">
                 <figure><img src="assets/projects/captionit.webp" width="720" height="520" alt="CaptionIt AI photo caption and hashtag generator mobile app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>CaptionIt</h3>
@@ -865,7 +1138,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/nimbus.webp" width="720" height="520" alt="Nimbus real-time weather forecasting and meteorology app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Nimbus</h3>
@@ -879,7 +1152,7 @@
 
             <!-- Duplicated track for seamless infinite scroll -->
             <ul class="pan-track" aria-hidden="true">
-              <li class="pan-card">
+              <li class="pan-card" data-category="linux">
                 <figure><img src="assets/projects/whatsweb.webp" width="720" height="520" alt="WhatsWeb client running on Ubuntu Touch with push notifications" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>WhatsWeb</h3>
@@ -889,7 +1162,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="web-ml">
                 <figure><img src="assets/projects/harmonydocs.webp" width="720" height="520" alt="Document Harmony Indian official record consistency verification engine" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Document Harmony</h3>
@@ -899,7 +1172,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="linux">
                 <figure><img src="assets/projects/redditclient.webp" width="720" height="520" alt="Native Reddit client interface for Ubuntu Touch Linux phone" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Reddit Client</h3>
@@ -909,7 +1182,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/invoice_generator.webp" width="720" height="520" alt="Invoice Generator Flutter cross-platform billing suite" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Invoice Generator</h3>
@@ -919,7 +1192,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="linux">
                 <figure><img src="assets/projects/money_ut.webp" width="720" height="520" alt="Money UT Ubuntu Touch native expense tracker" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Money UT</h3>
@@ -929,7 +1202,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="web-ml">
                 <figure><img src="assets/projects/churn_ml.webp" width="720" height="520" alt="Customer Churn ML prediction analytics dashboard" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Customer Churn ML</h3>
@@ -939,7 +1212,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/vyakhya.webp" width="720" height="520" alt="Vyakhya AI ML Kit OCR image to text translation mobile app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Vyakhya AI</h3>
@@ -950,7 +1223,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/wallter.webp" width="720" height="520" alt="Wallter Flutter wallpaper app with curated Pexels photo gallery" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Wallter</h3>
@@ -961,7 +1234,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/apna_dukan.webp" width="720" height="520" alt="Apna Dukan Flutter e-commerce grocery shopping mobile app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Apni Dukan</h3>
@@ -971,7 +1244,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="web-ml">
                 <figure><img src="assets/projects/captionit.webp" width="720" height="520" alt="CaptionIt AI photo caption and hashtag generator mobile app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>CaptionIt</h3>
@@ -982,7 +1255,7 @@
                   </div>
                 </div>
               </li>
-              <li class="pan-card">
+              <li class="pan-card" data-category="flutter">
                 <figure><img src="assets/projects/nimbus.webp" width="720" height="520" alt="Nimbus real-time weather forecasting and meteorology app" loading="lazy"></figure>
                 <div class="pan-meta">
                   <h3>Nimbus</h3>
@@ -1138,6 +1411,31 @@
     </footer>
 
   </main>
+
+  <!-- COMMAND PALETTE MODAL -->
+  <div class="cmd-backdrop" id="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
+    <div class="cmd-modal">
+      <div class="cmd-search-wrap">
+        <svg class="cmd-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="cmd-input" placeholder="Search commands, projects, sections..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-autocomplete="list" aria-controls="cmd-list">
+        <button class="cmd-close" type="button" aria-label="Close command palette">
+          <kbd>Esc</kbd>
+        </button>
+      </div>
+      <div class="cmd-list-wrap" id="cmd-list" role="listbox" aria-label="Commands and projects"></div>
+      <footer class="cmd-foot">
+        <div class="cmd-foot-hints">
+          <span class="cmd-hint-item"><kbd class="cmd-key">↑</kbd><kbd class="cmd-key">↓</kbd> Navigate</span>
+          <span class="cmd-hint-item"><kbd class="cmd-key">Enter</kbd> Select</span>
+          <span class="cmd-hint-item"><kbd class="cmd-key">Esc</kbd> Close</span>
+        </div>
+        <span class="cmd-foot-tag">SY·OS v4</span>
+      </footer>
+    </div>
+  </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
     <span class="toast-icon">✓</span>

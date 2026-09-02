@@ -1762,6 +1762,154 @@
       }
     }
 
+    /* ---------- More Builds Category Filter Controller ---------- */
+    (function () {
+      var filterButtons = document.querySelectorAll(".pan-filter-btn");
+      var cards = document.querySelectorAll(".pan-marquee-inner .pan-card");
+      var totalCounter = document.querySelector(".pan-total");
+      if (!filterButtons.length || !cards.length) return;
+
+      filterButtons.forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var filter = btn.getAttribute("data-filter") || "all";
+
+          filterButtons.forEach(function (b) {
+            var isCurr = b === btn;
+            b.classList.toggle("active", isCurr);
+            b.setAttribute("aria-selected", isCurr ? "true" : "false");
+          });
+
+          var matchCount = 0;
+          cards.forEach(function (card) {
+            var cat = card.getAttribute("data-category") || "";
+            var isMatch = filter === "all" || cat === filter;
+            card.classList.toggle("is-dimmed", !isMatch);
+            if (isMatch) matchCount++;
+          });
+
+          // Half count because marquee track is duplicated for seamless looping
+          var uniqueMatches = Math.round(matchCount / 2);
+          if (totalCounter) {
+            totalCounter.textContent = uniqueMatches < 10 ? "0" + uniqueMatches : String(uniqueMatches);
+          }
+
+          playUiSound("nav");
+        });
+      });
+    })();
+
+    /* ---------- Flagship Technical Deep Dive & Code Inspector Controller ---------- */
+    (function () {
+      var inspectButtons = document.querySelectorAll(".btn-inspect");
+      if (!inspectButtons.length) return;
+
+      inspectButtons.forEach(function (btn) {
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          var targetId = btn.getAttribute("data-target");
+          if (!targetId) return;
+
+          var drawer = document.getElementById(targetId);
+          if (!drawer) return;
+
+          var isExpanded = drawer.classList.contains("is-expanded");
+          if (isExpanded) {
+            drawer.classList.remove("is-expanded");
+            btn.classList.remove("is-active");
+            btn.setAttribute("aria-expanded", "false");
+            playUiSound("close");
+          } else {
+            drawer.classList.add("is-expanded");
+            btn.classList.add("is-active");
+            btn.setAttribute("aria-expanded", "true");
+            playUiSound("open");
+          }
+
+          if (window.ScrollTrigger) {
+            ScrollTrigger.refresh();
+          }
+        });
+      });
+
+      // Tab navigation inside inspectors
+      var tabButtons = document.querySelectorAll(".inspector-tab-btn");
+      tabButtons.forEach(function (tab) {
+        tab.addEventListener("click", function () {
+          var parent = tab.closest(".project-inspector");
+          if (!parent) return;
+
+          var tabName = tab.getAttribute("data-tab");
+          var allTabs = parent.querySelectorAll(".inspector-tab-btn");
+          var allPanels = parent.querySelectorAll(".inspector-panel");
+
+          allTabs.forEach(function (t) {
+            var isCurr = t === tab;
+            t.classList.toggle("is-active", isCurr);
+            t.setAttribute("aria-selected", isCurr ? "true" : "false");
+          });
+
+          allPanels.forEach(function (panel) {
+            panel.classList.toggle("is-active", panel.getAttribute("data-panel") === tabName);
+          });
+
+          playUiSound("nav");
+
+          if (window.ScrollTrigger) {
+            ScrollTrigger.refresh();
+          }
+        });
+      });
+
+      // Copy snippet buttons
+      var copyButtons = document.querySelectorAll(".code-copy-btn");
+      copyButtons.forEach(function (copyBtn) {
+        copyBtn.addEventListener("click", function () {
+          var codeBox = copyBtn.closest(".inspector-code-box");
+          if (!codeBox) return;
+
+          var codeEl = codeBox.querySelector("code");
+          if (!codeEl) return;
+
+          var text = codeEl.innerText || codeEl.textContent;
+          if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).then(function () {
+              handleCopySuccess(copyBtn);
+            }).catch(function () {
+              fallbackCopy(text, copyBtn);
+            });
+          } else {
+            fallbackCopy(text, copyBtn);
+          }
+        });
+      });
+
+      function handleCopySuccess(btn) {
+        var origText = btn.textContent;
+        btn.textContent = "Copied!";
+        playUiSound("action");
+        showToast("Code snippet copied to clipboard", "OK");
+        setTimeout(function () {
+          btn.textContent = origText;
+        }, 2000);
+      }
+
+      function fallbackCopy(text, btn) {
+        var ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.opacity = "0";
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          document.execCommand("copy");
+          handleCopySuccess(btn);
+        } catch (err) {
+          showToast("Failed to copy code", "Error");
+        }
+        document.body.removeChild(ta);
+      }
+    })();
+
     /* Back to top button */
     var topBtn = document.querySelector(".to-top");
     if (topBtn) {
