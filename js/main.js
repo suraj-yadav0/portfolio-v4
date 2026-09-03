@@ -1250,6 +1250,7 @@
         });
         gsap.ticker.lagSmoothing(0);
       }
+      window.__lenis = lenis;
     } catch (e) {
       console.warn("Lenis init fallback:", e);
     }
@@ -1257,12 +1258,10 @@
 
   if (reduce || !window.gsap || !window.ScrollTrigger) {
     killLoader();
-    return;
-  }
-
-  try {
-    gsap.registerPlugin(ScrollTrigger);
-    var mm = gsap.matchMedia();
+  } else {
+    try {
+      gsap.registerPlugin(ScrollTrigger);
+      var mm = gsap.matchMedia();
 
     /* ---------- Global motion (all viewports) ---------- */
 
@@ -1300,13 +1299,6 @@
         yPercent: 12,
         ease: "none",
         scrollTrigger: { trigger: ".hero", start: "top top", end: "bottom top", scrub: true }
-      });
-
-      /* Page scroll progress hairline */
-      gsap.to(".scroll-progress span", {
-        scaleX: 1,
-        ease: "none",
-        scrollTrigger: { trigger: document.body, start: "top top", end: "bottom bottom", scrub: 0.25 }
       });
 
       /* Universal Word-by-Word Scroll Scrub Illumination */
@@ -1690,30 +1682,6 @@
           });
       });
 
-      /* Nav ScrollSpy */
-      var sections = document.querySelectorAll("section[id], footer[id]");
-      var navLinks = document.querySelectorAll(".nav-links a");
-      sections.forEach(function (sec) {
-        ScrollTrigger.create({
-          trigger: sec,
-          start: "top center",
-          end: "bottom center",
-          onToggle: function (self) {
-            if (self.isActive) {
-              var id = sec.getAttribute("id");
-              navLinks.forEach(function (link) {
-                var href = link.getAttribute("href");
-                if (href === "#" + id) {
-                  link.classList.add("active");
-                } else {
-                  link.classList.remove("active");
-                }
-              });
-            }
-          }
-        });
-      });
-
       /* Smooth internal link scrolling with Lenis */
       document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
         anchor.addEventListener("click", function (e) {
@@ -1741,6 +1709,28 @@
 
       return function () { killLoader(); };
     });
+
+    /* Refresh ScrollTrigger when web fonts are loaded */
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        ScrollTrigger.refresh();
+      });
+    }
+
+    window.addEventListener("load", function () {
+      ScrollTrigger.refresh();
+      setTimeout(function () {
+        ScrollTrigger.refresh();
+      }, 300);
+    });
+
+  } catch (err) {
+    killLoader();
+    if (window.gsap) {
+      gsap.set([".loader", ".hero-title .line-inner", ".hero-status", ".hero-sub", ".hero-ctas .btn", ".contact-title .line-inner", ".nav"], { clearProps: "all" });
+    }
+  }
+}
 
     /* ---------- More Builds Infinite Auto-Scrolling Marquee Controller ---------- */
     var marqueeInner = document.querySelector(".pan-marquee-inner");
@@ -1911,13 +1901,25 @@
       }
     })();
 
-    /* ---------- Editorial Reading Progress & Sticky TOC ScrollSpy ---------- */
+    /* ---------- Unified Scroll Progress & Navigation ScrollSpy Controller ---------- */
     (function () {
       var progressSpan = document.querySelector(".scroll-progress span");
+      var navLinks = document.querySelectorAll(".nav-links a");
       var tocPill = document.getElementById("toc-progress-pill");
       var tocLinks = document.querySelectorAll(".toc-nav a[href^='#']");
-      var articleSections = [];
 
+      // Cache primary navigation sections
+      var linkSections = [];
+      navLinks.forEach(function (link) {
+        var href = link.getAttribute("href");
+        if (href && href.startsWith("#") && href.length > 1) {
+          var el = document.querySelector(href);
+          if (el) linkSections.push({ id: href, el: el, link: link });
+        }
+      });
+
+      // Cache editorial blog sections if present
+      var articleSections = [];
       tocLinks.forEach(function (link) {
         var id = link.getAttribute("href").slice(1);
         var sec = document.getElementById(id);
@@ -1936,39 +1938,101 @@
         });
       });
 
-      function updateReadingProgress() {
-        var docHeight = document.documentElement.scrollHeight - window.innerHeight;
-        if (docHeight <= 0) return;
-        var progress = Math.min(1, Math.max(0, window.scrollY / docHeight));
+      function updateScrollState() {
+        var scrollY = Math.max(0, window.pageYOffset || document.documentElement.scrollTop || 0);
+        var docHeight = document.documentElement.scrollHeight;
+        var winHeight = window.innerHeight;
+        var maxScroll = Math.max(1, docHeight - winHeight);
+        var progress = Math.min(1, Math.max(0, scrollY / maxScroll));
 
-        if (progressSpan && !window.gsap) {
+        // 1. Rock-solid Scroll Progress Hairline
+        if (progressSpan) {
           progressSpan.style.transform = "scaleX(" + progress + ")";
         }
 
+        // 2. Editorial TOC pill
         if (tocPill) {
           var pct = Math.round(progress * 100);
           tocPill.textContent = pct >= 98 ? "COMPLETED" : pct + "% READ";
         }
 
-        // Active heading spy
-        if (articleSections.length) {
-          var scrollPos = window.scrollY + 140;
-          var activeId = articleSections[0].id;
-          for (var i = 0; i < articleSections.length; i++) {
-            var top = articleSections[i].element.offsetTop;
-            if (scrollPos >= top) {
-              activeId = articleSections[i].id;
+        // 3. Primary Nav ScrollSpy
+        if (linkSections.length) {
+          var navLinksContainer = document.querySelector(".nav-links");
+
+          // If near top of page (Hero section), clear active state from all nav links
+          if (scrollY < 120) {
+            navLinks.forEach(function (link) { link.classList.remove("active"); });
+            if (navLinksContainer && navLinksContainer.scrollLeft > 0) {
+              navLinksContainer.scrollTo({ left: 0, behavior: "smooth" });
+            }
+          } else if (scrollY + winHeight >= docHeight - 50) {
+            // At bottom of page, activate Contact
+            navLinks.forEach(function (link) {
+              var href = link.getAttribute("href");
+              var isContact = href === "#contact";
+              link.classList.toggle("active", isContact);
+              if (isContact && navLinksContainer && navLinksContainer.scrollWidth > navLinksContainer.clientWidth) {
+                navLinksContainer.scrollTo({
+                  left: navLinksContainer.scrollWidth,
+                  behavior: "smooth"
+                });
+              }
+            });
+          } else {
+            // Mid page: activate section currently passing top threshold
+            var triggerPoint = scrollY + 160;
+            var activeLink = null;
+            for (var i = linkSections.length - 1; i >= 0; i--) {
+              if (triggerPoint >= linkSections[i].el.offsetTop) {
+                activeLink = linkSections[i].link;
+                break;
+              }
+            }
+            navLinks.forEach(function (link) {
+              link.classList.toggle("active", link === activeLink);
+            });
+
+            // Keep active link visible in mobile horizontal nav bar
+            if (activeLink && navLinksContainer && navLinksContainer.scrollWidth > navLinksContainer.clientWidth) {
+              var linkLeft = activeLink.offsetLeft;
+              var linkWidth = activeLink.offsetWidth;
+              var containerWidth = navLinksContainer.clientWidth;
+              var targetScroll = linkLeft - (containerWidth / 2) + (linkWidth / 2);
+              navLinksContainer.scrollTo({
+                left: Math.max(0, targetScroll),
+                behavior: "smooth"
+              });
             }
           }
+        }
 
+        // 4. Editorial TOC active heading spy
+        if (articleSections.length) {
+          var articleTrigger = scrollY + 140;
+          var activeId = articleSections[0].id;
+          for (var j = 0; j < articleSections.length; j++) {
+            if (articleTrigger >= articleSections[j].element.offsetTop) {
+              activeId = articleSections[j].id;
+            }
+          }
           articleSections.forEach(function (entry) {
             entry.link.classList.toggle("active", entry.id === activeId);
           });
         }
       }
 
-      window.addEventListener("scroll", updateReadingProgress, { passive: true });
-      updateReadingProgress();
+      window.addEventListener("scroll", updateScrollState, { passive: true });
+      window.addEventListener("resize", updateScrollState, { passive: true });
+
+      if (window.__lenis) {
+        window.__lenis.on("scroll", updateScrollState);
+      } else if (lenis) {
+        lenis.on("scroll", updateScrollState);
+      }
+
+      // Initial execution
+      updateScrollState();
     })();
 
     /* ---------- Article Action Utilities (Share & Copy Link) ---------- */
@@ -2081,25 +2145,4 @@
         }
       });
     }
-
-    /* Refresh ScrollTrigger when web fonts are loaded */
-    if (document.fonts && document.fonts.ready) {
-      document.fonts.ready.then(function () {
-        ScrollTrigger.refresh();
-      });
-    }
-
-    window.addEventListener("load", function () {
-      ScrollTrigger.refresh();
-      setTimeout(function () {
-        ScrollTrigger.refresh();
-      }, 300);
-    });
-
-  } catch (err) {
-    killLoader();
-    if (window.gsap) {
-      gsap.set([".loader", ".hero-title .line-inner", ".hero-status", ".hero-sub", ".hero-ctas .btn", ".contact-title .line-inner", ".nav"], { clearProps: "all" });
-    }
-  }
-})();
+  })();
