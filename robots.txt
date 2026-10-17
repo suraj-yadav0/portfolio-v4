@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://suraj-yadav0.github.io/portfolio-v4/sitemap.xml
