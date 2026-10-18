@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ubuntu Touch App Development with QML &amp; Python: Zero to OpenStore · Suraj Yadav</title>
+  <meta name="description" content="A complete walkthrough of native Ubuntu Touch development: install Clickable, build a QML interface, wire a Python backend with PyOtherSide, handle AppArmor permissions, and publish to the OpenStore.">
+  <link rel="canonical" href="https://suraj-yadav0.github.io/portfolio-v4/blog/ubuntu-touch-app-development.html">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://suraj-yadav0.github.io/portfolio-v4/blog/ubuntu-touch-app-development.html">
+  <meta property="og:site_name" content="Suraj Yadav · Engineering Blog">
+  <meta property="og:title" content="Ubuntu Touch App Development with QML &amp; Python: Zero to OpenStore">
+  <meta property="og:description" content="Install Clickable, build a QML interface, wire a Python backend with PyOtherSide, handle AppArmor, and publish to the OpenStore.">
+  <meta property="og:image" content="https://suraj-yadav0.github.io/portfolio-v4/assets/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Ubuntu Touch App Development with QML and Python — Suraj Yadav Engineering Blog">
+  <meta property="article:published_time" content="2026-10-18">
+  <meta property="article:modified_time" content="2026-10-18">
+  <meta property="article:author" content="Suraj Yadav">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://suraj-yadav0.github.io/portfolio-v4/blog/ubuntu-touch-app-development.html">
+  <meta name="twitter:title" content="Ubuntu Touch App Development with QML &amp; Python: Zero to OpenStore">
+  <meta name="twitter:description" content="Install Clickable, build a QML interface, wire a Python backend with PyOtherSide, handle AppArmor, and publish to the OpenStore.">
+  <meta name="twitter:image" content="https://suraj-yadav0.github.io/portfolio-v4/assets/og-image.png">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "headline": "Ubuntu Touch App Development with QML and Python: From Zero to the OpenStore",
+    "description": "A complete walkthrough of native Ubuntu Touch development: install Clickable, build a QML interface, wire a Python backend with PyOtherSide, handle AppArmor permissions, and publish to the OpenStore.",
+    "image": "https://suraj-yadav0.github.io/portfolio-v4/assets/og-image.png",
+    "url": "https://suraj-yadav0.github.io/portfolio-v4/blog/ubuntu-touch-app-development.html",
+    "mainEntityOfPage": "https://suraj-yadav0.github.io/portfolio-v4/blog/ubuntu-touch-app-development.html",
+    "datePublished": "2026-10-18",
+    "dateModified": "2026-10-18",
+    "author": {
+      "@type": "Person",
+      "name": "Suraj Yadav",
+      "url": "https://suraj-yadav0.github.io/portfolio-v4/"
+    },
+    "publisher": {
+      "@type": "Person",
+      "name": "Suraj Yadav"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://suraj-yadav0.github.io/portfolio-v4/" },
+      { "@type": "ListItem", "position": 2, "name": "Blog", "item": "https://suraj-yadav0.github.io/portfolio-v4/blog.html" },
+      { "@type": "ListItem", "position": 3, "name": "Ubuntu Touch App Development with QML and Python", "item": "https://suraj-yadav0.github.io/portfolio-v4/blog/ubuntu-touch-app-development.html" }
+    ]
+  }
+  </script>
+
+  <!-- Favicon & PWA Manifest -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E95420'/%3E%3Ctext x='32' y='43' font-family='ui-monospace,monospace' font-size='27' font-weight='700' text-anchor='middle' fill='%230B0C0E'%3ESY%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#0B0C0E" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#F6F7F9" media="(prefers-color-scheme: light)">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <script>
+    (function () {
+      var saved = localStorage.getItem("theme");
+      var theme = saved || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+</head>
+<body class="article-body">
+  <div class="scroll-progress" aria-hidden="true"><span></span></div>
+  <div class="cursor-glow" aria-hidden="true"></div>
+
+  <!-- SITE NAV -->
+  <header class="nav">
+    <a class="nav-logo" href="../index.html" aria-label="Back to home">suraj<span aria-hidden="true">.</span>yadav</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#about">About</a>
+      <a href="../index.html#activity">Activity</a>
+      <a href="../index.html#journey">Journey</a>
+      <a href="../index.html#work">Work</a>
+      <a href="../index.html#builds">Builds</a>
+      <a class="active" href="../blog.html">Blog</a>
+      <a href="../index.html#contact">Contact</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="cmd-trigger" type="button" aria-label="Open command palette (Ctrl+K)" title="Open command palette (Ctrl+K)">
+        <svg class="cmd-trigger-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <span class="cmd-trigger-text">Search</span>
+        <kbd class="cmd-trigger-kbd"><span class="cmd-kbd-mod">Ctrl</span> K</kbd>
+      </button>
+      <button class="theme-toggle" type="button" aria-label="Toggle light or dark theme" title="Toggle theme">
+        <svg class="theme-icon sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="theme-icon moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+        </svg>
+      </button>
+      <a class="nav-icon" href="https://github.com/suraj-yadav0" target="_blank" rel="noopener" aria-label="GitHub profile">
+        <img class="icon-adaptive" src="https://cdn.simpleicons.org/github/E8E9EB" width="20" height="20" alt="" loading="lazy">
+      </a>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="article-container">
+      <header class="article-header">
+        <div class="shell article-shell">
+          <div class="article-breadcrumb">
+            <a class="back-link" href="../blog.html">← Back to Blog</a>
+          </div>
+          <div class="post-meta-row">
+            <span class="post-tag">Linux &amp; QML</span>
+            <span class="post-date">October 2026</span>
+            <span class="post-readtime">15 min read</span>
+          </div>
+          <h1 class="article-main-title">Ubuntu Touch App Development with QML &amp; Python: From Zero to the OpenStore</h1>
+          <p class="article-lead">Ubuntu Touch is the Linux phone platform the rest of the industry walked away from, and that is exactly why it is a great place to build. This guide takes you from an empty folder to a published app on the OpenStore: Clickable setup, a QML interface, a Python backend over PyOtherSide, AppArmor permissions explained, and the exact commands I use to ship my own apps.</p>
+
+          <div class="author-bar">
+            <img class="author-avatar" src="https://avatars.githubusercontent.com/u/90672206?v=4&s=96" width="44" height="44" alt="Suraj Yadav">
+            <div class="author-info">
+              <span class="author-name">Suraj Yadav</span>
+              <span class="author-role">Software Engineer · CALIN Global Services India</span>
+            </div>
+          </div>
+
+          <div class="article-actions-bar">
+            <div class="article-metrics-badge">
+              <span class="metric-item"><span class="pulse-dot"></span> 15 MIN READ</span>
+              <span class="metric-divider">·</span>
+              <span class="metric-item">QML + PYTHON</span>
+              <span class="metric-divider">·</span>
+              <span class="metric-item">STEP-BY-STEP GUIDE</span>
+            </div>
+            <div class="article-share-group">
+              <button class="article-share-btn" type="button" id="share-article-btn" title="Share article">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                  <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                </svg>
+                <span>Share</span>
+              </button>
+              <button class="article-share-btn" type="button" id="copy-article-link-btn" title="Copy article link">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Copy Link</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="shell article-shell">
+        <div class="article-layout">
+
+          <!-- TABLE OF CONTENTS (STICKY SIDEBAR) -->
+          <aside class="article-toc">
+            <div class="toc-inner">
+              <div class="toc-title-row">
+                <span class="toc-title">Table of Contents</span>
+                <span class="toc-progress-pill" id="toc-progress-pill">0% READ</span>
+              </div>
+              <nav class="toc-nav">
+                <a href="#why">1. Why Build for Ubuntu Touch</a>
+                <a href="#toolbox">2. What You Need</a>
+                <a href="#scaffold">3. Scaffolding with Clickable</a>
+                <a href="#anatomy">4. Anatomy of a Click App</a>
+                <a href="#qml-ui">5. The QML Frontend</a>
+                <a href="#python">6. The Python Backend</a>
+                <a href="#running">7. Desktop and Device Testing</a>
+                <a href="#apparmor">8. AppArmor Permissions</a>
+                <a href="#openstore">9. Publishing to the OpenStore</a>
+                <a href="#pitfalls">10. Pitfalls I Hit</a>
+                <a href="#next">11. Where to Go Next</a>
+              </nav>
+            </div>
+          </aside>
+
+          <!-- MAIN EDITORIAL CONTENT -->
+          <div class="article-content">
+
+            <section id="why">
+              <h2>1. Why Build for Ubuntu Touch</h2>
+              <p>Ubuntu Touch is a mobile operating system maintained by the <a href="https://ubports.com" target="_blank" rel="noopener">UBports Foundation</a> and its community. It runs <strong>Lomiri</strong>, the convergent desktop-and-phone shell that descended from Unity 8, on top of a standard Ubuntu base. No Android layer, no vendor lock-in, real Qt underneath.</p>
+              <p>Three things make it a genuinely good platform to develop for:</p>
+              <ul>
+                <li><strong>Convergence is real.</strong> The same QML app runs on a phone, a tablet, and a desktop monitor. You write the UI once and adapt with the same components.</li>
+                <li><strong>The ecosystem is small enough that you matter.</strong> Every quality app gets noticed. The OpenStore curates by default and the community actually reports bugs back to you.</li>
+                <li><strong>The stack is honest.</strong> Qt Quick, Python, C++, SQLite, real Linux APIs. The skills transfer directly to desktop Qt and embedded work.</li>
+              </ul>
+              <p>This is the workflow I use for my own published apps: <a href="https://open-store.io/app/utgpt.surajyadav" target="_blank" rel="noopener">utgpt</a> (on-device AI chat) and <a href="https://open-store.io/app/ubtms" target="_blank" rel="noopener">Time Management</a> (Odoo-integrated timesheets). Everything in this guide is from real shipping code, not theory.</p>
+            </section>
+
+            <section id="toolbox">
+              <h2>2. What You Need</h2>
+              <p>The whole toolchain is one command-line tool called <strong><a href="https://clickable-ut.dev" target="_blank" rel="noopener">Clickable</a></strong>. It compiles, packages, deploys, and debugs your app, and it does all the heavy lifting inside Docker, so your host system stays clean.</p>
+
+              <h3>Hardware and OS</h3>
+              <ul>
+                <li>A Linux desktop. Ubuntu is the smoothest path, but any distro works since the build runs in a container.</li>
+                <li><em>Optional but recommended:</em> an actual Ubuntu Touch device. The community maintains ports for the Nexus 5, OnePlus 6/6T, Pixel 3a, Fairphone 4, PinePhone, Volla phones, and more. You can develop entirely on the desktop, but nothing beats testing edge swipes and gestures on real hardware.</li>
+              </ul>
+
+              <h3>Installing Clickable</h3>
+              <p>The pipx route is the one the Clickable docs recommend today:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">terminal · Installing Clickable</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">Bash</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>sudo apt install docker.io adb git python3 pipx python3-setuptools
+pipx install clickable-ut
+
+# Make sure pipx-installed binaries are on your PATH
+echo 'export PATH="$PATH:$HOME/.local/bin"' &gt;&gt; ~/.bashrc
+
+# Let Clickable set up Docker and shell completion (asks for root)
+clickable setup</code></pre>
+              </div>
+
+              <p>There are <a href="https://clickable-ut.dev/en/latest/install.html" target="_blank" rel="noopener">alternative install methods</a> if you prefer them: <code>snap install clickable</code>, the PPA <code>ppa:bhdouglass/clickable</code>, or NixOS packages. The tool and the project layout are identical either way.</p>
+            </section>
+
+            <section id="scaffold">
+              <h2>3. Scaffolding with Clickable</h2>
+              <p>Create a new app with a single command. Clickable will ask for a name, title, author details, and which template to use:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">terminal · Generating a new project</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">Bash</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>clickable create</code></pre>
+              </div>
+
+              <p>Pick the <strong>Python</strong> template (QML interface, Python logic over PyOtherSide). The other <a href="https://clickable-ut.dev/en/latest/app-templates.html" target="_blank" rel="noopener">templates</a> are QML Only, C++, Go, Rust, HTML, SDL, and Godot, and you can migrate between them later by hand if your needs change. For this walkthrough we will use the app ID <code>hello.surajyadav</code> with the short name <code>hello</code>.</p>
+
+              <p>Enter the new directory and run Clickable with no arguments. The default chain is <code>build install launch</code>, so it compiles, packages a click, installs it on a connected device, and starts it. The first build downloads a Docker image of roughly 1GB, so fetch a coffee. Subsequent builds are fast.</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">terminal · First build</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">Bash</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>cd hello.surajyadav
+clickable</code></pre>
+              </div>
+            </section>
+
+            <section id="anatomy">
+              <h2>4. Anatomy of a Click App</h2>
+              <p>Everything Clickable generated has a purpose. Here is the layout:</p>
+              <ul>
+                <li><code>manifest.json</code> — the metadata of your app: ID, version, framework, maintainer, and the hooks that link the apparmor profile and desktop file.</li>
+                <li><code>clickable.yaml</code> — build configuration for Clickable itself: minimum version, builder, and any extra build steps.</li>
+                <li><code>qml/</code> — all QML files. <code>Main.qml</code> is the entry point.</li>
+                <li><code>backend/</code> — the Python package that QML talks to. In my utgpt app this holds model discovery, downloads, and the inference bridge.</li>
+                <li><code>hello.apparmor</code> — the security policy (covered in section 8).</li>
+                <li><code>assets/</code> — icons and static files.</li>
+                <li><code>po/</code> — translation catalogues, wired through <code>i18n.tr()</code> in QML.</li>
+              </ul>
+              <p>The manifest is the file you will touch most often. Yours looks roughly like this, with Clickable substituting the architecture and framework at build time:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">manifest.json</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">JSON</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>{
+  "name": "hello.surajyadav",
+  "title": "Hello",
+  "description": "Tiny demo app built for the Ubuntu Touch tutorial",
+  "version": "1.0.0",
+  "maintainer": "Suraj Yadav &lt;surajyadav200701@gmail.com&gt;",
+  "architecture": "@CLICK_ARCH@",
+  "framework": "@CLICK_FRAMEWORK@",
+  "hooks": {
+    "hello": {
+      "apparmor": "hello.apparmor",
+      "desktop": "hello.desktop"
+    }
+  }
+}</code></pre>
+              </div>
+
+              <p>The <code>@CLICK_ARCH@</code> and <code>@CLICK_FRAMEWORK@</code> placeholders get replaced by Clickable at build time, which means your app builds for both <code>arm64</code> phones and <code>amd64</code> desktops without editing. Set the framework to match the Ubuntu Touch release you target; 20.04 is the long-standing stable one on devices today, with 24.04 rolling out.</p>
+            </section>
+
+            <section id="qml-ui">
+              <h2>5. The QML Frontend</h2>
+              <p>QML is a declarative UI language: you describe what the interface is, not how to draw it. The <strong><a href="https://api-docs.ubports.com/sdk/apps/qml/index.html" target="_blank" rel="noopener">Lomiri Components</a></strong> module gives you the platform widgets, so your app automatically follows the system theme, greets the user in their language, and scales across phone and desktop.</p>
+
+              <p>Here is a complete, working <code>Main.qml</code> for our demo app. It draws a page header, a status label, and a button that calls into Python:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">qml/Main.qml</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">QML / Lomiri</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>import QtQuick 2.7
+import Lomiri.Components 1.3
+import io.thp.pyotherside 1.4
+
+MainView {
+    id: root
+    applicationName: "hello.surajyadav"
+    width: units.gu(45)
+    height: units.gu(75)
+
+    Page {
+        header: PageHeader {
+            id: pageHeader
+            title: i18n.tr("Hello")
+        }
+
+        Column {
+            anchors {
+                top: pageHeader.bottom
+                left: parent.left
+                right: parent.right
+                margins: units.gu(2)
+            }
+            spacing: units.gu(2)
+
+            Label {
+                id: greeting
+                width: parent.width
+                wrapMode: Text.WordWrap
+                text: i18n.tr("Press the button to call into Python.")
+            }
+
+            Button {
+                text: i18n.tr("Greet me")
+                onClicked: py.call("greeter.hello", ["Ubuntu Toucher"], function(result) {
+                    greeting.text = result
+                })
+            }
+        }
+    }
+
+    Python {
+        id: py
+        Component.onCompleted: {
+            addImportPath(Qt.resolvedUrl("../backend/"))
+            importModule("greeter", function () {})
+        }
+        onError: console.log("PyOtherSide error: " + traceback)
+    }
+}</code></pre>
+              </div>
+
+              <p>Three details worth understanding:</p>
+              <ul>
+                <li><code>units.gu()</code> is the grid unit system. Screen sizes vary wildly across Lomiri devices, so spacings and sizes in grid units scale automatically. Hardcoded pixels break convergence.</li>
+                <li><code>i18n.tr()</code> wraps every user-visible string. Even if you do not plan translations on day one, doing this from the start saves a painful refactor later. My apps get community translations through this exact mechanism.</li>
+                <li>The <code>Python</code> element from <code>io.thp.pyotherside</code> is your bridge. <code>addImportPath</code> points it at the <code>backend/</code> folder inside the click package, and <code>importModule</code> loads it.</li>
+              </ul>
+            </section>
+
+            <section id="python">
+              <h2>6. The Python Backend with PyOtherSide</h2>
+              <p><a href="https://pyotherside.readthedocs.io/en/latest/" target="_blank" rel="noopener">PyOtherSide</a> runs a real Python interpreter inside your app process. QML calls Python functions with <code>py.call()</code>, and Python can push events back to QML with <code>pyotherside.send()</code>. This is the same bridge my on-device AI app uses to stream LLM tokens into the UI without blocking it.</p>
+
+              <p>Create <code>backend/greeter.py</code>:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">backend/greeter.py</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">Python</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>import platform
+
+import pyotherside
+
+
+def hello(name):
+    """Called from QML with py.call(). Returns a string."""
+    release = platform.release()
+    return "Hello {0}! This string was built in Python on {1}.".format(name, release)
+
+
+# Tell the QML side we finished loading
+pyotherside.send("ready")</code></pre>
+              </div>
+
+              <p>And on the QML side, react to the <code>ready</code> event with a <code>Connections</code> element:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">qml/Main.qml · Reacting to Python events</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">QML / Lomiri</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>Connections {
+    target: py
+
+    function onReady() {
+        console.log("Python backend is loaded")
+    }
+}</code></pre>
+              </div>
+
+              <p>The mental model that keeps me out of trouble: <strong>all Python runs on its own thread</strong>. Results come back to QML asynchronously through callbacks, and <code>pyotherside.send()</code> events arrive on the event loop. Never spin a blocking loop in a QML-called function if you want a responsive UI; for long jobs, run the work in a Python thread and emit progress events, exactly like a model download in utgpt reports its bytes-per-second.</p>
+
+              <p>One packaging note: the generated project already installs the <code>backend/</code> directory into the click. If you add new top-level folders (data files, helper binaries), check the CMake install rules in the generated project so those files actually ship.</p>
+            </section>
+
+            <section id="running">
+              <h2>7. Desktop and Device Testing</h2>
+              <p>You have two run targets, and you should use both.</p>
+
+              <h3>Desktop</h3>
+              <p><code>clickable desktop</code> compiles your app and runs it as a window on your desktop. It is the fastest iteration loop, and for QML-only apps <code>clickable desktop --qmllive</code> reloads the UI on every file save without restarting Python. You can also force the system theme with <code>--dark-mode</code> or fake a language with <code>--lang fr_FR</code> to test translations.</p>
+
+              <h3>Device</h3>
+              <p>On the phone, enable <strong>Developer Mode</strong> in System Settings, connect the USB cable, and confirm the device shows up:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">terminal · Device workflow</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">Bash</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>clickable devices   # list attached devices and serials
+clickable           # build, install and launch (the default chain)
+clickable logs      # follow the app log on the device
+clickable log       # print the log once
+clickable shell     # open a terminal on the phone over ADB</code></pre>
+              </div>
+
+              <p>Testing on hardware is not optional, in my experience. Edge-swipe gestures, the on-screen keyboard resizing your layout, landscape rotation, and suspend/resume behavior are exactly where mobile apps break, and none of them reproduce faithfully on the desktop.</p>
+            </section>
+
+            <section id="apparmor">
+              <h2>8. AppArmor Permissions</h2>
+              <p>Every Ubuntu Touch app runs inside an <a href="https://docs.ubports.com/en/latest/appdev" target="_blank" rel="noopener">AppArmor</a> sandbox. By default your app has <strong>no special access</strong>: no network, no user files, no system APIs. This is a feature. When I shipped utgpt, the "zero network permission" line in its profile was a selling point: the app physically cannot phone home.</p>
+
+              <p>You grant permissions in the apparmor file as JSON. A network-capable app looks like this:</p>
+
+              <div class="article-code-block">
+                <div class="code-block-bar">
+                  <div class="code-file-meta">
+                    <span class="code-file-dot"></span>
+                    <span class="code-file-title">hello.apparmor</span>
+                  </div>
+                  <div class="code-block-actions">
+                    <span class="code-badge">JSON / AppArmor</span>
+                    <button class="code-copy-trigger" type="button" aria-label="Copy code">Copy</button>
+                  </div>
+                </div>
+                <pre class="code-content"><code>{
+    "policy_groups": [
+        "networking",
+        "content_exchange",
+        "content_exchange_source"
+    ],
+    "policy_version": 20.04
+}</code></pre>
+              </div>
+
+              <p>Common policy groups: <code>networking</code> for internet and sockets, <code>audio</code> for playback and recording, <code>content_exchange</code> to receive files shared from other apps, and <code>content_exchange_source</code> to share files outward. My Odoo timesheet app uses networking; the AI chat app uses none.</p>
+
+              <p>The rule of thumb: request the smallest set you need. Users and the OpenStore reviewers both notice over-permissioned apps, and unused permissions are the fastest way to lose trust on a platform where privacy is the whole point.</p>
+            </section>
+
+            <section id="openstore">
+              <h2>9. Publishing to the OpenStore</h2>
+              <p>Time to ship. The <a href="https://open-store.io" target="_blank" rel="noopener">OpenStore</a> is the community app store for Ubuntu Touch. The flow is refreshingly simple compared to the walled gardens.</p>
+
+              <h3>Before you submit</h3>
+              <ul>
+                <li>Bump <code>version</code> in <code>manifest.json</code> (semantic versioning, e.g. 1.0.0).</li>
+                <li>Run <code>clickable review</code>. It checks your click package against the same rules the OpenStore's automatic review uses, before you upload anything. This catches missing icons, bad manifests, and permission problems early.</li>
+                <li>Make sure your app has a proper square icon. Include a PNG of at least 256px; it becomes the listing artwork.</li>
+                <li>Write a real description. One or two honest paragraphs about what the app does and what permissions it needs.</li>
+              </ul>
+
+              <h3>Submit</h3>
+              <p>Two paths, both fine:</p>
+              <ul>
+                <li><strong>Web:</strong> log in at <code>open-store.io</code>, use the <a href="https://open-store.io/submit/" target="_blank" rel="noopener">Submit form</a> with your app ID and your source repository URL. The OpenStore's build infrastructure compiles your click from the repo, so releases are reproducible.</li>
+                <li><strong>Command line:</strong> <code>clickable publish "First release"</code> builds and pushes the click for you once your app is registered.</li>
+              </ul>
+              <p>Apps that fit the standard sandbox profile are reviewed automatically and typically go live within a day. If you need extra privileges (a background daemon, for example), the OpenStore admins review it manually through their community channels.</p>
+            </section>
+
+            <section id="pitfalls">
+              <h2>10. Pitfalls I Hit</h2>
+              <div class="takeaways-list">
+                <div class="takeaway-item">
+                  <div class="takeaway-num">01</div>
+                  <div class="takeaway-text">
+                    <h4>Import versions are strict</h4>
+                    <p>Importing <code>io.thp.pyotherside 1.5</code> fails on devices that ship 1.4, but importing 1.4 works everywhere that has 1.4 or newer. Import the lowest version that has the features you use. Same rule for Lomiri Components: <code>1.3</code> is the safe floor.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">02</div>
+                  <div class="takeaway-text">
+                    <h4>AppArmor denials look like mysterious crashes</h4>
+                    <p>If a Python call that touches the network or files silently dies, it is almost always a sandbox denial. Check the device syslog through <code>clickable shell</code> and add the missing policy group instead of guessing.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">03</div>
+                  <div class="takeaway-text">
+                    <h4>Desktop is not a phone</h4>
+                    <p>Layouts that look perfect in <code>clickable desktop</code> can overflow on a small phone screen once the keyboard opens. Use grid units, wrap labels with <code>Text.WordWrap</code>, and test on the target resolution with the on-screen keyboard up.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">04</div>
+                  <div class="takeaway-text">
+                    <h4>Do not fight the theme</h4>
+                    <p>Hardcoding colors breaks the moment a user runs SuruDark or a light theme. Pull colors from the theme or define both variants, like the dark/light palette pairs in my apps.</p>
+                  </div>
+                </div>
+                <div class="takeaway-item">
+                  <div class="takeaway-num">05</div>
+                  <div class="takeaway-text">
+                    <h4>Ship small, then iterate</h4>
+                    <p>The best OpenStore apps I have seen started as one-screen utilities. Get version 1.0.0 published, collect real feedback from the community, then grow. The whole toolchain is built for fast iterations.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <section id="next">
+              <h2>11. Where to Go Next</h2>
+              <ul>
+                <li><strong>Clickable docs:</strong> <a href="https://clickable-ut.dev" target="_blank" rel="noopener">clickable-ut.dev</a> covers every command, builder, and project config option.</li>
+                <li><strong>Ubuntu Touch developer docs:</strong> <a href="https://docs.ubports.com/en/latest/appdev" target="_blank" rel="noopener">docs.ubports.com</a> has the platform guides, and the official <strong>Lomiri App Development Level 1 &amp; Level 2</strong> courses walk through the same material in video form. I co-authored those courses, so if this article helped, the courses are the natural next step.</li>
+                <li><strong>Community:</strong> the <a href="https://forums.ubports.com" target="_blank" rel="noopener">UBports forum</a>, the Telegram/Matrix groups, and the OpenStore's issue trackers. Questions get answered fast because the maintainers actually use the platform daily.</li>
+                <li><strong>My apps:</strong> browse <a href="https://github.com/suraj-yadav0/utgpt" target="_blank" rel="noopener">utgpt's source</a>, the <a href="https://github.com/CITOpenRep/timemanagement" target="_blank" rel="noopener">Time Management repo</a>, or the <a href="https://github.com/suraj-yadav0/tower-crash" target="_blank" rel="noopener">Tower Crash game</a> as working references for everything covered here.</li>
+              </ul>
+              <p>Ubuntu Touch rewards people who build. You will ship faster here than on any of the big platforms, your users will actually talk to you, and you will learn the Qt stack properly instead of gluing together vendor SDKs. Go make something.</p>
+            </section>
+
+            <!-- AUTHOR BIO BOX -->
+            <div class="article-author-box">
+              <img class="author-box-avatar" src="https://avatars.githubusercontent.com/u/90672206?v=4&s=96" width="60" height="60" alt="Suraj Yadav">
+              <div class="author-box-content">
+                <h3>Written by Suraj Yadav</h3>
+                <p>Junior Software Engineer at CALIN Global Services India. Author of native Ubuntu Touch applications (utgpt, Time Management, Tower Crash) and co-author of the official Lomiri App Development curriculum.</p>
+                <div class="author-box-links">
+                  <a href="https://github.com/suraj-yadav0" target="_blank" rel="noopener">GitHub</a>
+                  <a href="https://www.linkedin.com/in/suraj-yadav-a63b3b220" target="_blank" rel="noopener">LinkedIn</a>
+                  <a href="mailto:surajyadav200701@gmail.com">Email</a>
+                </div>
+              </div>
+            </div>
+
+            <!-- PREV / NEXT NAV -->
+            <div class="article-pager">
+              <a class="pager-btn prev" href="../blog.html">
+                <span class="pager-label">← Back to Blog</span>
+                <span class="pager-title">Blog Hub &amp; Case Studies</span>
+              </a>
+              <a class="pager-btn next" href="evolution-of-my-portfolios.html">
+                <span class="pager-label">Read Next →</span>
+                <span class="pager-title">The Evolution of My Portfolios: 5 Builds</span>
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- FOOTER -->
+    <footer class="contact" id="contact">
+      <div class="shell">
+        <div class="footer-top-grid">
+          <div class="footer-contact-block">
+            <h2 class="contact-title"><span class="line"><span class="line-inner">Got something worth</span></span><span class="line"><span class="line-inner">building?</span></span></h2>
+            <p class="footer-desc">Open for high-impact software engineering roles, native Linux phone and desktop systems, Flutter applications, and open source collaboration.</p>
+            <div class="email-row">
+              <a class="email-link" href="mailto:surajyadav200701@gmail.com" title="Send email to surajyadav200701@gmail.com">surajyadav200701@gmail.com</a>
+              <button class="copy-email-btn magnetic" type="button" aria-label="Copy email address to clipboard" data-copy="surajyadav200701@gmail.com" title="Copy email address">
+                <svg class="copy-icon icon-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <rect x="9" y="9" width="13" height="13" rx="0" ry="0"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <svg class="copy-icon icon-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span class="copy-btn-text">Copy</span>
+              </button>
+            </div>
+            <ul class="social-row">
+              <li><a href="https://github.com/suraj-yadav0" target="_blank" rel="noopener" aria-label="GitHub"><img src="https://cdn.simpleicons.org/github/E8E9EB" width="22" height="22" alt="" loading="lazy"></a></li>
+              <li><a href="https://www.linkedin.com/in/suraj-yadav-a63b3b220" target="_blank" rel="noopener" aria-label="LinkedIn"><span class="social-txt">in</span></a></li>
+              <li><a href="https://open-store.io/app/utgpt.surajyadav" target="_blank" rel="noopener" aria-label="OpenStore"><img src="../assets/icons/openstore.svg" width="22" height="22" alt="" loading="lazy"></a></li>
+            </ul>
+          </div>
+
+          <div class="footer-nav-grid">
+            <div class="footer-nav-col">
+              <span class="footer-col-title">Navigation</span>
+              <ul>
+                <li><a href="../index.html">Main Portfolio</a></li>
+                <li><a href="../index.html#work">Selected Work</a></li>
+                <li><a href="../index.html#builds">More Builds</a></li>
+                <li><a href="../blog.html">Blog Overview</a></li>
+              </ul>
+            </div>
+            <div class="footer-nav-col">
+              <span class="footer-col-title">Ecosystem</span>
+              <ul>
+                <li><a href="https://open-store.io/app/utgpt.surajyadav" target="_blank" rel="noopener">utgpt (AI)</a></li>
+                <li><a href="https://open-store.io/app/ubtms" target="_blank" rel="noopener">Time Management</a></li>
+                <li><a href="https://money-manager-eight-nu.vercel.app" target="_blank" rel="noopener">Quantro Finance</a></li>
+                <li><a href="https://github.com/CITOpenRep/timemanagement" target="_blank" rel="noopener">CITOpenRep</a></li>
+              </ul>
+            </div>
+            <div class="footer-nav-col">
+              <span class="footer-col-title">Connect</span>
+              <ul>
+                <li><a href="https://github.com/suraj-yadav0" target="_blank" rel="noopener">GitHub @suraj-yadav0</a></li>
+                <li><a href="https://www.linkedin.com/in/suraj-yadav-a63b3b220" target="_blank" rel="noopener">LinkedIn Profile</a></li>
+                <li><a href="https://www.leetcode.com/suraj_yadav07" target="_blank" rel="noopener">LeetCode Profile</a></li>
+                <li><a href="https://suraj-yadav0.github.io/SurajYadav-sCV/cv.pdf" target="_blank" rel="noopener">Curriculum Vitae ↗</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Monumental Name Display spanning full width -->
+      <div class="footer-big-name-wrap" aria-label="Suraj Yadav">
+        <svg class="footer-name-svg" viewBox="0 0 960 220" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+          <text x="50%" y="152" text-anchor="middle" class="footer-svg-text">Suraj Yadav</text>
+        </svg>
+      </div>
+
+      <div class="foot-bottom">
+        <div class="foot-row">
+          <div class="foot-brand">
+            <a class="foot-logo" href="../index.html" aria-label="Back to main portfolio">suraj<span class="accent-dot">.</span>yadav</a>
+            <span class="foot-role">Software Engineer</span>
+          </div>
+          <div class="foot-copy">
+            <p>© 2026 Suraj Yadav · Built with zero-framework engineering &amp; GSAP</p>
+          </div>
+          <a class="to-top" href="../index.html">Main Portfolio ↑</a>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- COMMAND PALETTE MODAL -->
+  <div class="cmd-backdrop" id="cmd-palette" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
+    <div class="cmd-modal">
+      <div class="cmd-search-wrap">
+        <svg class="cmd-search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" class="cmd-input" placeholder="Search commands, projects, sections..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-autocomplete="list" aria-controls="cmd-list">
+        <button class="cmd-close" type="button" aria-label="Close command palette">
+          <kbd>Esc</kbd>
+        </button>
+      </div>
+      <div class="cmd-list-wrap" id="cmd-list" role="listbox" aria-label="Commands and projects"></div>
+      <footer class="cmd-foot">
+        <div class="cmd-foot-hints">
+          <span class="cmd-hint-item"><kbd class="cmd-key">↑</kbd><kbd class="cmd-key">↓</kbd> Navigate</span>
+          <span class="cmd-hint-item"><kbd>Enter</kbd> Select</span>
+          <span class="cmd-hint-item"><kbd class="cmd-key">Esc</kbd> Close</span>
+        </div>
+        <span class="cmd-foot-tag">SY·OS v4</span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite" aria-hidden="true">
+    <span class="toast-icon">✓</span>
+    <span class="toast-msg">Copied to clipboard</span>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.18/dist/lenis.min.js" defer></script>
+  <script src="../js/main.js" defer></script>
+</body>
+</html>
