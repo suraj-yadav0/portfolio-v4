@@ -34,7 +34,7 @@ Live Site: [https://suraj-yadav0.github.io/](https://suraj-yadav0.github.io/port
 2. **UTGPT:** Native AI client for Lomiri and Linux desktops with streaming responses (QML, Python).
 3. **Time Management:** Native Pomodoro and interval productivity application on the OpenStore (QML, JavaScript).
 4. **WishGift:** Crowdsourced gift-registry and pledge platform (Flutter, Dart, Firebase).
-5. **clockApp:** Modernized stopwatch, world clock, and alarm utility for Ubuntu Touch (QML, JavaScript).
+5. **clockApp:** Geometric background clock face for GNOME Shell with layered typography and visual effects (JavaScript, GSettings).
 
 ### Additional Builds & Contributions
 - **Dekko 2:** Upstream open-source contributions (5 merged MRs) to Ubuntu Touch's convergent email client.
