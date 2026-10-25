@@ -338,10 +338,32 @@
         subtitle: "Social wishlist platform with item reservation locking",
         category: "Projects",
         icon: "external",
-        url: "https://github.com/suraj-yadav0/wishgift",
+        url: "https://wishgift-lemon.vercel.app",
+        external: true,
+        tag: "Live App",
+        keywords: ["next.js", "react", "prisma", "postgresql", "tailwind", "gifting"]
+      },
+      {
+        id: "proj-towercrash",
+        title: "Tower Crash",
+        subtitle: "Helix-jump arcade game for Ubuntu Touch on OpenStore",
+        category: "Projects",
+        icon: "external",
+        url: "https://open-store.io/app/tower-crash.surajyadav/",
+        external: true,
+        tag: "OpenStore",
+        keywords: ["game", "arcade", "helix", "ubuntu touch", "lomiri", "qml", "openstore", "sqlite"]
+      },
+      {
+        id: "proj-depthclock",
+        title: "Depth Clock",
+        subtitle: "Automatic iOS-style 3D depth clock for GNOME desktop via on-device AI",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/depth-clock",
         external: true,
         tag: "GitHub",
-        keywords: ["next.js", "react", "prisma", "postgresql", "tailwind", "gifting"]
+        keywords: ["gnome", "shell", "depth", "clock", "onnx", "ai", "segmentation", "cairo"]
       },
       {
         id: "proj-clockapp",
@@ -353,6 +375,39 @@
         external: true,
         tag: "GitHub",
         keywords: ["gnome", "shell", "linux", "desktop", "javascript", "css"]
+      },
+      {
+        id: "proj-sarkariscript",
+        title: "SarkariScript",
+        subtitle: "AI government form paperwork copilot & auto-filler",
+        category: "Projects",
+        icon: "external",
+        url: "https://sarkariscript-ruby.vercel.app",
+        external: true,
+        tag: "Live App",
+        keywords: ["govtech", "ai", "digilocker", "next.js", "gemini", "python", "india"]
+      },
+      {
+        id: "proj-ut-academy",
+        title: "UT Dev Academy",
+        subtitle: "Ubuntu Touch development curriculum and OS architecture handbook",
+        category: "Projects",
+        icon: "external",
+        url: "https://github.com/suraj-yadav0/ubuntu-touch-dev-academy",
+        external: true,
+        tag: "GitHub",
+        keywords: ["ubuntu touch", "curriculum", "lomiri", "clickable", "halium", "linux"]
+      },
+      {
+        id: "proj-shoppinglist",
+        title: "Shopping List",
+        subtitle: "Native Ubuntu Touch shopping list app on OpenStore",
+        category: "Projects",
+        icon: "external",
+        url: "https://open-store.io/app/shoppinglist.surajyadav",
+        external: true,
+        tag: "OpenStore",
+        keywords: ["shopping list", "ubuntu touch", "qml", "openstore", "sqlite"]
       },
       {
         id: "proj-dekko",
@@ -382,9 +437,9 @@
         subtitle: "Official identity document anomaly and verification engine",
         category: "Projects",
         icon: "external",
-        url: "https://github.com/suraj-yadav0/harmony_docs",
+        url: "https://suraj-yadav0.github.io/harmony_docs/",
         external: true,
-        tag: "GitHub",
+        tag: "Live App",
         keywords: ["aadhaar", "pan", "verification", "python", "security"]
       },
       {

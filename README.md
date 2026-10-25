@@ -30,16 +30,22 @@ Live Site: [https://suraj-yadav0.github.io/](https://suraj-yadav0.github.io/port
 ## Featured Projects
 
 ### Flagship Builds
-1. **Quantro:** Adaptive numerical computing, unit conversion, and matrix calculation tool for Linux & Ubuntu Touch (QML, C++, Python).
-2. **UTGPT:** Native AI client for Lomiri and Linux desktops with streaming responses (QML, Python).
-3. **Time Management:** Native Pomodoro and interval productivity application on the OpenStore (QML, JavaScript).
-4. **WishGift:** Crowdsourced gift-registry and pledge platform (Flutter, Dart, Firebase).
-5. **clockApp:** Geometric background clock face for GNOME Shell with layered typography and visual effects (JavaScript, GSettings).
+1. **Quantro:** Local-first personal finance suite with automatic SMS expense tracking and instant SQLite queries (Flutter, Drift SQLite, Firebase).
+2. **utgpt:** Native on-device AI chat application for Ubuntu Touch and Lomiri with streaming GGUF responses (QML, Python).
+3. **Time Management:** Enterprise timesheet tracking and multi-server Odoo ERP synchronizer on OpenStore (QML, Python, Lomiri).
+4. **WishGift:** Collaborative wishlist and social gifting platform with atomic reservation locks (Next.js 16, React 19, Prisma, PostgreSQL).
+5. **Tower Crash:** Fast-paced helix-jump arcade game for Ubuntu Touch and Lomiri on OpenStore (QML, Qt Quick, JavaScript, SQLite).
+6. **Depth Clock:** Automatic iOS-style 3D depth effect clock for GNOME desktop wallpapers using on-device neural segmentation (JavaScript, ONNX Runtime, Cairo, Clutter).
 
 ### Additional Builds & Contributions
+- **SarkariScript:** AI-powered government paperwork copilot and auto-filler for Indian citizens across 8 regional languages.
+- **Ubuntu Touch Developer Academy:** Educational website, OS architecture handbook, and practical student lab materials for mobile Linux.
+- **Shopping List:** Native Ubuntu Touch shopping checklist application with local SQLite storage on OpenStore.
+- **clockApp:** Geometric background clock face for GNOME Shell with layered typography and visual effects.
+- **Document Harmony:** Indian official record consistency verification engine with automated anomaly detection.
 - **Dekko 2:** Upstream open-source contributions (5 merged MRs) to Ubuntu Touch's convergent email client.
 - **Lomiri Courses:** Co-authored Lomiri App Development Level 1 & Level 2 engineering curricula.
-- **Money Manager UT, WhatsWeb, HarmonyDocs, Churn Prediction ML, Reddit Client, Invoice Generator, Nimbus Weather, Lomiri SDK Docker CLI.**
+- **WhatsWeb, Money UT, Churn Prediction ML, Reddit Client, Invoice Generator, Nimbus Weather, Lomiri SDK Docker CLI.**
 
 ---
 
