@@ -412,7 +412,7 @@
       {
         id: "proj-dekko",
         title: "Dekko 2",
-        subtitle: "5 merged MRs for convergent email client on Ubuntu Touch",
+        subtitle: "10 merged MRs for convergent email client on Ubuntu Touch",
         category: "Projects",
         icon: "external",
         url: "https://gitlab.com/dekko/dekko",

@@ -43,7 +43,7 @@ Live Site: [https://suraj-yadav0.github.io/](https://suraj-yadav0.github.io/port
 - **Shopping List:** Native Ubuntu Touch shopping checklist application with local SQLite storage on OpenStore.
 - **clockApp:** Geometric background clock face for GNOME Shell with layered typography and visual effects.
 - **Document Harmony:** Indian official record consistency verification engine with automated anomaly detection.
-- **Dekko 2:** Upstream open-source contributions (5 merged MRs) to Ubuntu Touch's convergent email client.
+- **Dekko 2:** Upstream open-source contributions (10 merged MRs) to Ubuntu Touch's convergent email client.
 - **Lomiri Courses:** Co-authored Lomiri App Development Level 1 & Level 2 engineering curricula.
 - **WhatsWeb, Money UT, Churn Prediction ML, Reddit Client, Invoice Generator, Nimbus Weather, Lomiri SDK Docker CLI.**
 
