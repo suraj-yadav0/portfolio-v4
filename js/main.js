@@ -5,91 +5,7 @@
   "use strict";
 
   var lenis = null;
-  var audioCtx = null;
 
-  function getAudioContext() {
-    try {
-      var AudioCtor = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtor) return null;
-      if (!audioCtx) audioCtx = new AudioCtor();
-      return audioCtx;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  // Pre-unlock audio context on first user interaction anywhere
-  function unlockAudio() {
-    var ctx = getAudioContext();
-    if (ctx && ctx.state === "suspended") {
-      ctx.resume().catch(function () {});
-    }
-  }
-  ["pointerdown", "keydown", "touchstart", "click"].forEach(function (evtName) {
-    window.addEventListener(evtName, unlockAudio, { passive: true, once: true });
-  });
-
-  function playUiSound(soundType) {
-    var ctx = getAudioContext();
-    if (!ctx) return;
-
-    function renderTone() {
-      try {
-        var now = ctx.currentTime;
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-
-        if (soundType === "nav") {
-          // Snappy high mechanical tick
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(800, now);
-          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.03);
-          gain.gain.setValueAtTime(0.14, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
-          osc.start(now);
-          osc.stop(now + 0.035);
-        } else if (soundType === "action") {
-          // Punchy affirmative mechanical pop
-          osc.type = "triangle";
-          osc.frequency.setValueAtTime(480, now);
-          osc.frequency.exponentialRampToValueAtTime(960, now + 0.045);
-          gain.gain.setValueAtTime(0.22, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
-          osc.start(now);
-          osc.stop(now + 0.055);
-        } else if (soundType === "open") {
-          // Upward sliding chirp
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(450, now);
-          osc.frequency.exponentialRampToValueAtTime(850, now + 0.05);
-          gain.gain.setValueAtTime(0.18, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
-          osc.start(now);
-          osc.stop(now + 0.06);
-        } else if (soundType === "close") {
-          // Downward sliding chirp
-          osc.type = "sine";
-          osc.frequency.setValueAtTime(800, now);
-          osc.frequency.exponentialRampToValueAtTime(400, now + 0.045);
-          gain.gain.setValueAtTime(0.16, now);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
-          osc.start(now);
-          osc.stop(now + 0.05);
-        }
-      } catch (err) {}
-    }
-
-    if (ctx.state === "suspended") {
-      ctx.resume().then(renderTone).catch(function () {});
-    } else {
-      renderTone();
-    }
-  }
-
-  window.__playUiSound = playUiSound;
 
   /* ---------- Theme Toggle System ---------- */
   (function () {
@@ -111,7 +27,6 @@
       var current = getTheme();
       var next = current === "light" ? "dark" : "light";
       setTheme(next);
-      playUiSound("action");
     });
 
     if (window.matchMedia) {
@@ -139,57 +54,39 @@
     }, 2800);
   }
 
-  /* ---------- Quick-Copy to Clipboard System ---------- */
-  (function () {
-    var copyButtons = document.querySelectorAll(".copy-email-btn, [data-copy]");
-    copyButtons.forEach(function (btn) {
-      btn.addEventListener("click", function (e) {
-        e.preventDefault();
-        var textToCopy = btn.getAttribute("data-copy") || btn.textContent.trim();
-        if (!textToCopy) return;
-
-        function onSuccess() {
-          btn.classList.add("copied");
-          var btnText = btn.querySelector(".copy-btn-text");
-          var originalText = btnText ? btnText.textContent : "";
-          if (btnText) btnText.textContent = "Copied!";
-          showToast("Copied " + textToCopy + " to clipboard", "✓");
-          playUiSound("action");
-
-          setTimeout(function () {
-            btn.classList.remove("copied");
-            if (btnText) btnText.textContent = originalText;
-          }, 2200);
-        }
-
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(textToCopy).then(onSuccess).catch(function () {
-            fallbackCopy(textToCopy, onSuccess);
-          });
-        } else {
-          fallbackCopy(textToCopy, onSuccess);
-        }
-      });
-    });
-
-    function fallbackCopy(text, cb) {
-      try {
-        var textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.top = "-9999px";
-        textArea.style.left = "-9999px";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        var successful = document.execCommand("copy");
-        document.body.removeChild(textArea);
-        if (successful && cb) cb();
-      } catch (err) {
-        showToast("Press Ctrl+C to copy: " + text, "i");
+  /* ---------- Unified Clipboard Copy Utility ---------- */
+  function copyToClipboard(text, btn, toastMessage) {
+    if (!text) return;
+    function finish() {
+      if (btn) {
+        btn.classList.add("copied");
+        var btnText = btn.querySelector(".copy-btn-text") || btn;
+        var originalText = btnText.textContent;
+        btnText.textContent = "Copied!";
+        setTimeout(function () {
+          btn.classList.remove("copied");
+          btnText.textContent = originalText;
+        }, 2200);
       }
+      showToast(toastMessage || "Copied to clipboard", "✓");
     }
-  })();
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(finish).catch(function () {
+        showToast("Press Ctrl+C to copy: " + text, "i");
+      });
+    } else {
+      showToast("Press Ctrl+C to copy: " + text, "i");
+    }
+  }
+
+  document.querySelectorAll(".copy-email-btn, [data-copy]").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.preventDefault();
+      var text = btn.getAttribute("data-copy") || btn.textContent.trim();
+      copyToClipboard(text, btn, "Copied " + text + " to clipboard");
+    });
+  });
 
   /* ---------- Command Palette (Ctrl+K) & Spotlight Search Engine ---------- */
   (function () {
@@ -703,7 +600,6 @@
       if (!currentMatches.length) return;
       activeIndex = Math.max(0, Math.min(idx, currentMatches.length - 1));
       updateActiveVisual(scrollIntoView);
-      playUiSound("nav");
     }
 
     function updateActiveVisual(scrollIntoView) {
@@ -723,7 +619,6 @@
 
     function executeItem(item) {
       if (!item) return;
-      playUiSound("action");
 
       if (item.action === "toggle-theme") {
         closePalette();
@@ -800,8 +695,6 @@
         renderList("");
         input.focus();
       });
-
-      playUiSound("open");
     }
 
     function closePalette() {
@@ -820,8 +713,6 @@
           }
         }
       }, 200);
-
-      playUiSound("close");
     }
 
     triggers.forEach(function (btn) {
@@ -980,19 +871,12 @@
     var currentYear = "last";
 
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    var monthFull = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     function formatDate(dateStr) {
       var parts = dateStr.split("-");
       if (parts.length !== 3) return dateStr;
-      var y = parseInt(parts[0], 10);
-      var m = parseInt(parts[1], 10) - 1;
-      var d = parseInt(parts[2], 10);
-      var dt = new Date(y, m, d);
-      var dayName = dayNames[dt.getDay()];
-      var monName = monthFull[m];
-      return dayName + ", " + monName + " " + d + ", " + y;
+      var dt = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+      return dt.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
     }
 
     function renderHeatmap(data, selectedYear) {
@@ -1827,8 +1711,6 @@
           if (totalCounter) {
             totalCounter.textContent = uniqueMatches < 10 ? "0" + uniqueMatches : String(uniqueMatches);
           }
-
-          playUiSound("nav");
         });
       });
     })();
@@ -1852,12 +1734,10 @@
             drawer.classList.remove("is-expanded");
             btn.classList.remove("is-active");
             btn.setAttribute("aria-expanded", "false");
-            playUiSound("close");
           } else {
             drawer.classList.add("is-expanded");
             btn.classList.add("is-active");
             btn.setAttribute("aria-expanded", "true");
-            playUiSound("open");
           }
 
           if (window.ScrollTrigger) {
@@ -1887,8 +1767,6 @@
             panel.classList.toggle("is-active", panel.getAttribute("data-panel") === tabName);
           });
 
-          playUiSound("nav");
-
           if (window.ScrollTrigger) {
             ScrollTrigger.refresh();
           }
@@ -1896,53 +1774,15 @@
       });
 
       // Copy snippet buttons
-      var copyButtons = document.querySelectorAll(".code-copy-btn");
-      copyButtons.forEach(function (copyBtn) {
+      document.querySelectorAll(".code-copy-btn").forEach(function (copyBtn) {
         copyBtn.addEventListener("click", function () {
           var codeBox = copyBtn.closest(".inspector-code-box");
-          if (!codeBox) return;
-
-          var codeEl = codeBox.querySelector("code");
-          if (!codeEl) return;
-
-          var text = codeEl.innerText || codeEl.textContent;
-          if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(function () {
-              handleCopySuccess(copyBtn);
-            }).catch(function () {
-              fallbackCopy(text, copyBtn);
-            });
-          } else {
-            fallbackCopy(text, copyBtn);
+          var codeEl = codeBox ? codeBox.querySelector("code") : null;
+          if (codeEl) {
+            copyToClipboard(codeEl.innerText || codeEl.textContent, copyBtn, "Code snippet copied to clipboard");
           }
         });
       });
-
-      function handleCopySuccess(btn) {
-        var origText = btn.textContent;
-        btn.textContent = "Copied!";
-        playUiSound("action");
-        showToast("Code snippet copied to clipboard", "OK");
-        setTimeout(function () {
-          btn.textContent = origText;
-        }, 2000);
-      }
-
-      function fallbackCopy(text, btn) {
-        var ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.opacity = "0";
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-          document.execCommand("copy");
-          handleCopySuccess(btn);
-        } catch (err) {
-          showToast("Failed to copy code", "Error");
-        }
-        document.body.removeChild(ta);
-      }
     })();
 
     /* ---------- Unified Scroll Progress & Navigation ScrollSpy Controller ---------- */
@@ -1971,7 +1811,6 @@
 
         link.addEventListener("click", function (e) {
           e.preventDefault();
-          playUiSound("nav");
           if (sec) {
             if (lenis) {
               lenis.scrollTo(sec, { offset: -70, duration: 1.1 });
@@ -2086,72 +1925,34 @@
 
       if (shareBtn) {
         shareBtn.addEventListener("click", function () {
-          playUiSound("action");
           if (navigator.share) {
             navigator.share({
               title: document.title,
               url: window.location.href
             }).catch(function () {});
           } else {
-            copyUrlToClipboard();
+            copyToClipboard(window.location.href, shareBtn, "Article link copied to clipboard");
           }
         });
       }
 
       if (copyLinkBtn) {
         copyLinkBtn.addEventListener("click", function () {
-          playUiSound("action");
-          copyUrlToClipboard();
+          copyToClipboard(window.location.href, copyLinkBtn, "Article link copied to clipboard");
         });
-      }
-
-      function copyUrlToClipboard() {
-        var url = window.location.href;
-        if (navigator.clipboard && window.isSecureContext) {
-          navigator.clipboard.writeText(url).then(function () {
-            showToast("Article link copied to clipboard", "OK");
-          }).catch(function () {
-            showToast("Link: " + url, "Info");
-          });
-        } else {
-          showToast("Article link copied to clipboard", "OK");
-        }
       }
     })();
 
     /* ---------- Article Code Blocks One-Click Copy ---------- */
-    (function () {
-      var copyButtons = document.querySelectorAll(".code-copy-trigger");
-      copyButtons.forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var block = btn.closest(".article-code-block");
-          if (!block) return;
-          var codeEl = block.querySelector("code");
-          if (!codeEl) return;
-
-          var text = codeEl.innerText || codeEl.textContent;
-          if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(function () {
-              handleCodeCopySuccess(btn);
-            }).catch(function () {
-              handleCodeCopySuccess(btn);
-            });
-          } else {
-            handleCodeCopySuccess(btn);
-          }
-        });
+    document.querySelectorAll(".code-copy-trigger").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var block = btn.closest(".article-code-block");
+        var codeEl = block ? block.querySelector("code") : null;
+        if (codeEl) {
+          copyToClipboard(codeEl.innerText || codeEl.textContent, btn, "Code snippet copied to clipboard");
+        }
       });
-
-      function handleCodeCopySuccess(btn) {
-        var origText = btn.textContent;
-        btn.textContent = "Copied!";
-        playUiSound("action");
-        showToast("Code snippet copied to clipboard", "OK");
-        setTimeout(function () {
-          btn.textContent = origText;
-        }, 2000);
-      }
-    })();
+    });
 
     /* ---------- Blog Listing Topic Filter Controller ---------- */
     (function () {
@@ -2172,8 +1973,6 @@
             var isMatch = filter === "all" || cat === filter;
             card.style.display = isMatch ? "" : "none";
           });
-
-          playUiSound("nav");
         });
       });
     })();

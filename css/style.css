@@ -951,25 +951,6 @@ section { padding-block: clamp(96px, 13vh, 160px) 0; }
   padding: 2px 8px;
   white-space: nowrap;
 }
-@media (max-width: 1024px) {
-  .focus-strip-desc {
-    display: none;
-  }
-  .focus-strip-sep {
-    display: none;
-  }
-}
-@media (max-width: 768px) {
-  .focus-strip {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 8px;
-    padding: 10px 14px;
-  }
-  .focus-strip-tags {
-    flex-wrap: wrap;
-  }
-}
 
 
 .cell-num { background: transparent; }
@@ -2230,6 +2211,7 @@ html, body {
   .card-media { min-height: 260px; aspect-ratio: 16 / 10; }
   .tl-item { grid-template-columns: 140px 1fr; }
   .article-layout { grid-template-columns: 220px 1fr; gap: 36px; }
+  .focus-strip-desc, .focus-strip-sep { display: none; }
 }
 
 @media (max-width: 1180px) {
@@ -3101,6 +3083,15 @@ body.cmd-open {
 }
 
 @media (max-width: 768px) {
+  .focus-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 14px;
+  }
+  .focus-strip-tags {
+    flex-wrap: wrap;
+  }
   .cmd-backdrop {
     padding: 16px 12px;
     align-items: flex-start;
