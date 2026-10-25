@@ -40,7 +40,6 @@ Live Site: [https://suraj-yadav0.github.io/](https://suraj-yadav0.github.io/port
 ### Additional Builds & Contributions
 - **SarkariScript:** AI-powered government paperwork copilot and auto-filler for Indian citizens across 8 regional languages.
 - **Ubuntu Touch Developer Academy:** Educational website, OS architecture handbook, and practical student lab materials for mobile Linux.
-- **Shopping List:** Native Ubuntu Touch shopping checklist application with local SQLite storage on OpenStore.
 - **clockApp:** Geometric background clock face for GNOME Shell with layered typography and visual effects.
 - **Document Harmony:** Indian official record consistency verification engine with automated anomaly detection.
 - **Dekko 2:** Upstream open-source contributions (10 merged MRs) to Ubuntu Touch's convergent email client.

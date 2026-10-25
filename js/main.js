@@ -399,17 +399,6 @@
         keywords: ["ubuntu touch", "curriculum", "lomiri", "clickable", "halium", "linux"]
       },
       {
-        id: "proj-shoppinglist",
-        title: "Shopping List",
-        subtitle: "Native Ubuntu Touch shopping list app on OpenStore",
-        category: "Projects",
-        icon: "external",
-        url: "https://open-store.io/app/shoppinglist.surajyadav",
-        external: true,
-        tag: "OpenStore",
-        keywords: ["shopping list", "ubuntu touch", "qml", "openstore", "sqlite"]
-      },
-      {
         id: "proj-dekko",
         title: "Dekko 2",
         subtitle: "10 merged MRs for convergent email client on Ubuntu Touch",
