@@ -5,7 +5,92 @@
   "use strict";
 
   var lenis = null;
+  var audioCtx = null;
 
+  /* ---------- Tactile UI Sound Synthesis Engine (Web Audio) ---------- */
+  function getAudioContext() {
+    try {
+      var AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return null;
+      if (!audioCtx) audioCtx = new AudioCtor();
+      return audioCtx;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // Pre-unlock audio context on first user interaction anywhere
+  function unlockAudio() {
+    var ctx = getAudioContext();
+    if (ctx && ctx.state === "suspended") {
+      ctx.resume().catch(function () {});
+    }
+  }
+  ["pointerdown", "keydown", "touchstart", "click"].forEach(function (evtName) {
+    window.addEventListener(evtName, unlockAudio, { passive: true, once: true });
+  });
+
+  function playUiSound(soundType) {
+    var ctx = getAudioContext();
+    if (!ctx) return;
+
+    function renderTone() {
+      try {
+        var now = ctx.currentTime;
+        var osc = ctx.createOscillator();
+        var gain = ctx.createGain();
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (soundType === "nav") {
+          // Snappy high mechanical tick
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(1100, now + 0.03);
+          gain.gain.setValueAtTime(0.14, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.035);
+          osc.start(now);
+          osc.stop(now + 0.035);
+        } else if (soundType === "action") {
+          // Punchy affirmative mechanical pop
+          osc.type = "triangle";
+          osc.frequency.setValueAtTime(480, now);
+          osc.frequency.exponentialRampToValueAtTime(960, now + 0.045);
+          gain.gain.setValueAtTime(0.22, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.055);
+          osc.start(now);
+          osc.stop(now + 0.055);
+        } else if (soundType === "open") {
+          // Upward sliding chirp
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(850, now + 0.05);
+          gain.gain.setValueAtTime(0.18, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.06);
+          osc.start(now);
+          osc.stop(now + 0.06);
+        } else if (soundType === "close") {
+          // Downward sliding chirp
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(800, now);
+          osc.frequency.exponentialRampToValueAtTime(400, now + 0.045);
+          gain.gain.setValueAtTime(0.16, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.05);
+          osc.start(now);
+          osc.stop(now + 0.05);
+        }
+      } catch (err) {}
+    }
+
+    if (ctx.state === "suspended") {
+      ctx.resume().then(renderTone).catch(function () {});
+    } else {
+      renderTone();
+    }
+  }
+
+  window.__playUiSound = playUiSound;
 
   /* ---------- Theme Toggle System ---------- */
   (function () {
@@ -27,6 +112,7 @@
       var current = getTheme();
       var next = current === "light" ? "dark" : "light";
       setTheme(next);
+      playUiSound("action");
     });
 
     if (window.matchMedia) {
@@ -68,6 +154,7 @@
           btnText.textContent = originalText;
         }, 2200);
       }
+      playUiSound("action");
       showToast(toastMessage || "Copied to clipboard", "✓");
     }
 
@@ -598,8 +685,14 @@
 
     function setActiveIndex(idx, scrollIntoView) {
       if (!currentMatches.length) return;
-      activeIndex = Math.max(0, Math.min(idx, currentMatches.length - 1));
-      updateActiveVisual(scrollIntoView);
+      var newIndex = Math.max(0, Math.min(idx, currentMatches.length - 1));
+      if (newIndex !== activeIndex) {
+        activeIndex = newIndex;
+        updateActiveVisual(scrollIntoView);
+        playUiSound("nav");
+      } else {
+        updateActiveVisual(scrollIntoView);
+      }
     }
 
     function updateActiveVisual(scrollIntoView) {
@@ -619,6 +712,7 @@
 
     function executeItem(item) {
       if (!item) return;
+      playUiSound("action");
 
       if (item.action === "toggle-theme") {
         closePalette();
@@ -695,6 +789,8 @@
         renderList("");
         input.focus();
       });
+
+      playUiSound("open");
     }
 
     function closePalette() {
@@ -713,6 +809,8 @@
           }
         }
       }, 200);
+
+      playUiSound("close");
     }
 
     triggers.forEach(function (btn) {
@@ -1070,6 +1168,7 @@
 
     yearButtons.forEach(function (btn) {
       btn.addEventListener("click", function () {
+        playUiSound("nav");
         yearButtons.forEach(function (b) {
           b.classList.remove("active");
           b.setAttribute("aria-selected", "false");
@@ -1616,6 +1715,7 @@
           var targetId = this.getAttribute("href");
           if (targetId === "#" || targetId === "#top") {
             e.preventDefault();
+            playUiSound("nav");
             if (lenis) {
               lenis.scrollTo(0, { duration: 1.1 });
             } else {
@@ -1625,6 +1725,7 @@
             var targetEl = document.querySelector(targetId);
             if (targetEl) {
               e.preventDefault();
+              playUiSound("nav");
               if (lenis) {
                 lenis.scrollTo(targetEl, { offset: -60, duration: 1.1 });
               } else {
@@ -1668,6 +1769,7 @@
     if (marqueeInner) {
       if (prevBtn) {
         prevBtn.addEventListener("click", function () {
+          playUiSound("nav");
           marqueeInner.style.animationDirection = "reverse";
           marqueeInner.classList.remove("is-paused");
         });
@@ -1675,6 +1777,7 @@
 
       if (nextBtn) {
         nextBtn.addEventListener("click", function () {
+          playUiSound("nav");
           marqueeInner.style.animationDirection = "normal";
           marqueeInner.classList.remove("is-paused");
         });
@@ -1711,6 +1814,8 @@
           if (totalCounter) {
             totalCounter.textContent = uniqueMatches < 10 ? "0" + uniqueMatches : String(uniqueMatches);
           }
+
+          playUiSound("nav");
         });
       });
     })();
@@ -1734,10 +1839,12 @@
             drawer.classList.remove("is-expanded");
             btn.classList.remove("is-active");
             btn.setAttribute("aria-expanded", "false");
+            playUiSound("close");
           } else {
             drawer.classList.add("is-expanded");
             btn.classList.add("is-active");
             btn.setAttribute("aria-expanded", "true");
+            playUiSound("open");
           }
 
           if (window.ScrollTrigger) {
@@ -1766,6 +1873,8 @@
           allPanels.forEach(function (panel) {
             panel.classList.toggle("is-active", panel.getAttribute("data-panel") === tabName);
           });
+
+          playUiSound("nav");
 
           if (window.ScrollTrigger) {
             ScrollTrigger.refresh();
@@ -1811,6 +1920,7 @@
 
         link.addEventListener("click", function (e) {
           e.preventDefault();
+          playUiSound("nav");
           if (sec) {
             if (lenis) {
               lenis.scrollTo(sec, { offset: -70, duration: 1.1 });
@@ -1925,6 +2035,7 @@
 
       if (shareBtn) {
         shareBtn.addEventListener("click", function () {
+          playUiSound("action");
           if (navigator.share) {
             navigator.share({
               title: document.title,
@@ -1938,6 +2049,7 @@
 
       if (copyLinkBtn) {
         copyLinkBtn.addEventListener("click", function () {
+          playUiSound("action");
           copyToClipboard(window.location.href, copyLinkBtn, "Article link copied to clipboard");
         });
       }
@@ -1973,6 +2085,8 @@
             var isMatch = filter === "all" || cat === filter;
             card.style.display = isMatch ? "" : "none";
           });
+
+          playUiSound("nav");
         });
       });
     })();
@@ -1981,6 +2095,7 @@
     var topBtn = document.querySelector(".to-top");
     if (topBtn) {
       topBtn.addEventListener("click", function () {
+        playUiSound("nav");
         if (lenis) {
           lenis.scrollTo(0, { duration: 1.2 });
         } else {
