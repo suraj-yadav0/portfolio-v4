@@ -961,6 +961,9 @@
     var periodText = document.getElementById("heatmap-period-text");
     var peakText = document.getElementById("heatmap-peak-text");
     var allTimeNum = document.getElementById("heatmap-alltime-num");
+    var currStreakNum = document.getElementById("heatmap-curr-streak-num");
+    var maxStreakNum = document.getElementById("heatmap-max-streak-num");
+    var headCurrStreak = document.getElementById("heatmap-head-curr-streak");
     var yearButtons = document.querySelectorAll(".year-tab");
 
     if (!canvasContainer || !tooltip || !scrollWrap) return;
@@ -969,6 +972,50 @@
     var currentYear = "last";
 
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    function calculateStreaks(contributions) {
+      if (!contributions || !contributions.length) {
+        return { currentStreak: 0, longestStreak: 0 };
+      }
+      var sorted = contributions.slice().sort(function (a, b) {
+        return a.date.localeCompare(b.date);
+      });
+      var longestStreak = 0;
+      var currentRun = 0;
+      for (var i = 0; i < sorted.length; i++) {
+        if (sorted[i].count > 0) {
+          currentRun++;
+          if (currentRun > longestStreak) longestStreak = currentRun;
+        } else {
+          currentRun = 0;
+        }
+      }
+      var todayStr = new Date().toISOString().split("T")[0];
+      var pastOnly = sorted.filter(function (item) {
+        return item.date <= todayStr;
+      });
+      var currentStreak = 0;
+      var idx = pastOnly.length - 1;
+      if (idx >= 0 && pastOnly[idx].count === 0) idx--;
+      while (idx >= 0 && pastOnly[idx].count > 0) {
+        currentStreak++;
+        idx--;
+      }
+      return { currentStreak: currentStreak, longestStreak: longestStreak };
+    }
+
+    function updateStreakDisplays(streaks) {
+      if (!streaks) return;
+      if (currStreakNum && typeof streaks.currentStreak === "number") {
+        currStreakNum.textContent = streaks.currentStreak.toLocaleString();
+      }
+      if (headCurrStreak && typeof streaks.currentStreak === "number") {
+        headCurrStreak.textContent = streaks.currentStreak.toLocaleString();
+      }
+      if (maxStreakNum && typeof streaks.longestStreak === "number") {
+        maxStreakNum.textContent = streaks.longestStreak.toLocaleString();
+      }
+    }
 
     function formatDate(dateStr) {
       var parts = dateStr.split("-");
@@ -1200,6 +1247,14 @@
           if (allTimeNum && grandTotal > 0) {
             allTimeNum.textContent = grandTotal.toLocaleString();
           }
+          var streaks = {
+            currentStreak: data.currentStreak,
+            longestStreak: data.longestStreak
+          };
+          if (typeof streaks.currentStreak !== "number" || typeof streaks.longestStreak !== "number") {
+            streaks = calculateStreaks(data.allContributions || []);
+          }
+          updateStreakDisplays(streaks);
           renderHeatmap(globalData, currentYear);
         }
       })
@@ -1239,6 +1294,9 @@
           if (allTimeNum && grandTotal > 0) {
             allTimeNum.textContent = grandTotal.toLocaleString();
           }
+
+          var liveStreaks = calculateStreaks(sorted);
+          updateStreakDisplays(liveStreaks);
 
           renderHeatmap(globalData, currentYear);
         }
